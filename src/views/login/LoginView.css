@@ -1,0 +1,79 @@
+html,
+body {
+    background-color: #eee;
+    margin: 0;
+    padding: 0;
+}
+
+.login-view {
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+}
+
+.login-logo {
+    pointer-events: none;
+    width: 320px;
+}
+
+.dashboard-logo {
+    pointer-events: none;
+    width: 180px;
+    margin: 25px auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .login-logo, .dashboard-logo {
+        animation: App-logo-float infinite 3s ease-in-out;
+    }
+}
+
+.login-container {
+    width: 400px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: white;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06), 0 1px 5px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    padding: 40px 0;
+    margin-top: 25px;
+}
+
+.login-button {
+    width: 80%;
+}
+
+.run-button button {
+    transition: all ease-in-out 0.2s!important;
+    background: #888!important;
+}
+
+.run-button:hover button {
+    opacity: 0!important;
+    cursor: default;
+    transform: scale(1%);
+}
+
+.container-login-button {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.login-input, .password-input {
+    width: 80%;
+    margin-bottom: 15px!important;
+}
+
+.password-strength {
+    width: 80%;
+    margin-top: -15px;
+    margin-bottom: 15px;
+}
