@@ -17,6 +17,7 @@ import Routes from "../../constants/RoutesPath";
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Fade from '@mui/material/Fade';
+import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 
 const LoginView = ({setLoginToken, setSnackBar, setShowSpinner}) => {
     const [values, setValues] = useState({email: "", password: "", showPassword: false})
@@ -46,7 +47,7 @@ const LoginView = ({setLoginToken, setSnackBar, setShowSpinner}) => {
             setSnackBar({ type: 'success', message: 'Zalogowano pomyślnie', show: true })
         }).catch(errorMessage => {
             setShowSpinner(false)
-            setSnackBar({ type: 'error', message: errorMessage.message, show: true })
+            setSnackBar(prepareSnackBarErrorObj(errorMessage))
         });
     }
 

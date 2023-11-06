@@ -9,8 +9,13 @@ const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 const navConfig = [
     {
         title: 'home',
-        path: '/',
+        path: RoutesPath.HOME,
         icon: getIcon('dashicons:admin-home'),
+    },
+    {
+        title: 'role użytkowników',
+        path: RoutesPath.ROLES,
+        icon: getIcon('dashicons:shield'),
     }
 ];
 

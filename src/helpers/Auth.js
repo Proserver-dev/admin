@@ -22,9 +22,9 @@ export const authenticate = (data) => {
 
         let error = null;
         if (!data.email || !data.password)
-            error = "Musisz wprowadzić e-mail i hasło";
+            error = { message: "Musisz wprowadzić e-mail i hasło" };
         else if (!validateEmail(data.email))
-            error = "Wprowadzony adres e-mail jest nieprawidłowy";
+            error = { message: "Wprowadzony adres e-mail jest nieprawidłowy" };
 
 
         if (error) {
