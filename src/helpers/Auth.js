@@ -3,13 +3,14 @@ import Settings from "../constants/Settings";
 import validateEmail from "./validateEmail";
 import ApiEndpoints from "../constants/ApiEndpoints";
 import ApiResults from "../constants/ApiResults";
+import LocalStorageKeys from "../constants/LocalStorageKeys";
 
 export const getLoginToken = () => {
-    return localStorage.getItem("loginToken");
+    return localStorage.getItem(LocalStorageKeys.LOGIN_TOKEN);
 };
 
 export const getRefreshToken = () => {
-    return localStorage.getItem("refreshToken");
+    return localStorage.getItem(LocalStorageKeys.REFRESH_TOKEN);
 };
 
 export const setLogOut = () => {
@@ -33,21 +34,55 @@ export const authenticate = (data) => {
 
         axios.post(Settings.API + ApiEndpoints.LOGIN, data).then((response) => {
             if(response.data.user.role.short === "admin") {
-                localStorage.setItem("loginToken", response.data.token);
-                localStorage.setItem("refreshToken", response.data.refreshToken);
+                localStorage.setItem(LocalStorageKeys.LOGIN_TOKEN, response.data.token);
+                localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, response.data.refreshToken);
                 resolve(response.data);
             } else {
-                reject("Nie masz do tego uprawnień");
+                reject({ message: "Nie masz do tego uprawnień" });
             }
         }).catch((error) => {
-            let message = "Nie udało się połączyć z serwerem";
+            let err = { message: "Nie udało się połączyć z serwerem" };
             if (error.response && error.response.data.error) {
-                message = error.response.data.error;
-                if(ApiResults[message]) {
-                    message = ApiResults[message]
+                if(ApiResults[error.response.data.error]) {
+                    err = ApiResults[error.response.data.error]
+                } else {
+                    err = {
+                        ...err,
+                        code: error.response.data.error
+                    }
                 }
             }
-            reject(message);
+            reject(err);
         });
     });
+}
+
+export const refreshLoginToken = () => {
+    return new Promise((resolve, reject) => {
+
+        const config = {
+            headers: {
+                [LocalStorageKeys.REFRESH_TOKEN]: getRefreshToken()
+            }
+        }
+
+        axios.get(Settings.API + ApiEndpoints.REFRESH_TOKEN, config).then((response) => {
+            localStorage.setItem(LocalStorageKeys.LOGIN_TOKEN, response.data.token);
+            resolve(response.data);
+        }).catch((error) => {
+            let err = { message: "Nie udało się połączyć z serwerem" };
+            if (error.response && error.response.data.error) {
+                if(ApiResults[error.response.data.error]) {
+                    err = ApiResults[error.response.data.error]
+                } else {
+                    err = {
+                        ...err,
+                        code: error.response.data.error
+                    }
+                }
+            }
+            reject(err);
+        });
+    });
+
 }

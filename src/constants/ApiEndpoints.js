@@ -1,6 +1,7 @@
 const ApiEndpoints = {
     LOGIN: '/auth/login',
-    REFRESH_TOKEN: '/auth/refresh'
+    REFRESH_TOKEN: '/auth/refresh',
+    GET_ME: '/users/me'
 }
 
 export default ApiEndpoints;

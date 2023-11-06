@@ -3,13 +3,13 @@ import {Navigate, useRoutes} from "react-router-dom";
 import DashboardLayout from "../views/dashboard";
 import HomeView from "../views/home/HomeView";
 
-export default function Router({ setLoginToken }) {
+export default function Router(props) {
     return useRoutes([
         {
             path: RoutesPath.HOME,
-            element: <DashboardLayout setLoginToken={setLoginToken} />,
+            element: <DashboardLayout {...props} />,
             children: [
-                { path: '', element: <HomeView /> }
+                { path: RoutesPath.HOME, element: <HomeView {...props} /> }
             ],
         },
         { path: '*', element: <Navigate to={RoutesPath.HOME} replace /> },

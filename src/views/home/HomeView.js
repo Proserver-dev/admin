@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {Button, Stack, Typography} from "@mui/material";
 import { Container } from '@mui/material';
 
-const HomeView = () => {
+const HomeView = ({ currentUser }) => {
 
     return (
         <Container>
@@ -11,6 +11,7 @@ const HomeView = () => {
                     Strona główna
                 </Typography>
             </Stack>
+            <p>Zalogowany jako: {currentUser?.email}</p>
         </Container>
     )
 }

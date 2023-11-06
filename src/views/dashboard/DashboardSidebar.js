@@ -43,7 +43,7 @@ const AccountStyle = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.grey[500_12],
 }));
 
-export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, setLoginToken }) {
+export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, setLoginToken, setSnackBar, currentUser, setCurrentUser }) {
     const { pathname } = useLocation();
 
     const isDesktop = useResponsive('up', 'lg');
@@ -57,7 +57,9 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, setLog
 
     const handleLogout = () => {
         setLoginToken(null)
+        setCurrentUser({})
         setLogOut()
+        setSnackBar({ type: 'success', message: 'Wylogowano pomyślnie', show: true })
     }
 
     const renderContent = (
@@ -72,7 +74,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, setLog
                         <Avatar alt="" />
                         <Box sx={{ ml: 2, textAlign: 'center' }}>
                             <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                                Imie Nazwisko
+                                {currentUser?.nameLastname || currentUser?.userName || currentUser?.email}
                             </Typography>
                             <Label variant="ghost" color="error">
                                 Administrator
@@ -89,7 +91,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, setLog
             <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
                 <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
                     <Button onClick={handleLogout} target="_blank" variant="contained" color="error" startIcon={<LogoutIcon />}>
-                        Wyloguj się
+                        Wylogowanko
                     </Button>
                 </Stack>
             </Box>

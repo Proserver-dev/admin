@@ -32,13 +32,13 @@ const MainStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout({ setLoginToken }) {
+export default function DashboardLayout({ setLoginToken, setSnackBar, currentUser, setCurrentUser }) {
     const [open, setOpen] = useState(false);
 
     return (
         <RootStyle>
             <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
-            <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} setLoginToken={setLoginToken} />
+            <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} setLoginToken={setLoginToken} setSnackBar={setSnackBar} currentUser={currentUser} setCurrentUser={setCurrentUser} />
             <MainStyle>
                 <Outlet />
             </MainStyle>

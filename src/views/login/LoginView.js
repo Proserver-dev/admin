@@ -18,11 +18,8 @@ import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Fade from '@mui/material/Fade';
 
-const LoginView = ({setLoginToken}) => {
-    const [showLoader, setShowLoader] = useState(false)
+const LoginView = ({setLoginToken, setSnackBar, setShowSpinner}) => {
     const [values, setValues] = useState({email: "", password: "", showPassword: false})
-    const [showError, setShowError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
     const navigate = useNavigate();
 
     const handleChange = (prop) => (event) => {
@@ -41,25 +38,22 @@ const LoginView = ({setLoginToken}) => {
     };
 
     const handleLogin = () => {
+        setShowSpinner(true)
         authenticate(values).then((res) => {
             setLoginToken(res.token);
             navigate(Routes.HOME);
+            setShowSpinner(false)
+            setSnackBar({ type: 'success', message: 'Zalogowano pomyślnie', show: true })
         }).catch(errorMessage => {
-            setErrorMessage(errorMessage);
-            setShowError(true);
+            setShowSpinner(false)
+            setSnackBar({ type: 'error', message: errorMessage.message, show: true })
         });
     }
 
-    const Alert = React.forwardRef(function Alert(props, ref) {
-        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-    });
-
-    const handleCloseSnackBar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
+    const handleEnterKeyPress = (event) => {
+        if (event.key === 'Enter' && values.email !== "" && values.password !== "") {
+            handleLogin();
         }
-
-        setShowError(false)
     };
 
     return (
@@ -77,6 +71,7 @@ const LoginView = ({setLoginToken}) => {
                             type={values.showPassword ? 'text' : 'password'}
                             value={values.password}
                             onChange={handleChange('password')}
+                            onKeyPress={handleEnterKeyPress}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <Tooltip title={values.showPassword ? "Ukryj hasło" : "Pokaż hasło"}>
@@ -100,18 +95,6 @@ const LoginView = ({setLoginToken}) => {
                     </div>
                 </div>
             </div>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                open={showError}
-                autoHideDuration={6000}
-                TransitionComponent={Fade}
-                onClose={handleCloseSnackBar}
-                key={'bottomcenter'}
-            >
-                <Alert onClose={handleCloseSnackBar} severity="error" sx={{ width: '100%' }}>
-                    {errorMessage}
-                </Alert>
-            </Snackbar>
         </>
     )
 }
