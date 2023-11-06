@@ -13,6 +13,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
+    padding: 0 10px;
 }
 
 .login-logo {
@@ -33,7 +34,8 @@ body {
 }
 
 .login-container {
-    width: 400px;
+    max-width: 400px;
+    width: 100%;
     height: auto;
     display: flex;
     align-items: center;

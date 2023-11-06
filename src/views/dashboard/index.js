@@ -32,13 +32,13 @@ const MainStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout() {
+export default function DashboardLayout({ setLoginToken }) {
     const [open, setOpen] = useState(false);
 
     return (
         <RootStyle>
             <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
-            <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+            <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} setLoginToken={setLoginToken} />
             <MainStyle>
                 <Outlet />
             </MainStyle>

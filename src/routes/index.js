@@ -1,13 +1,13 @@
-import RoutesPath from "./constants/RoutesPath";
+import RoutesPath from "../constants/RoutesPath";
 import {Navigate, useRoutes} from "react-router-dom";
-import DashboardLayout from "./views/dashboard";
-import HomeView from "./views/home/HomeView";
+import DashboardLayout from "../views/dashboard";
+import HomeView from "../views/home/HomeView";
 
-export default function Router() {
+export default function Router({ setLoginToken }) {
     return useRoutes([
         {
             path: RoutesPath.HOME,
-            element: <DashboardLayout />,
+            element: <DashboardLayout setLoginToken={setLoginToken} />,
             children: [
                 { path: '', element: <HomeView /> }
             ],

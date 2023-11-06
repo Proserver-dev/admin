@@ -1,27 +1,27 @@
 import React, {useEffect, useState} from 'react';
-import {isLogged} from "./helpers/login";
+import {getLoginToken} from "./helpers/Auth";
 import './App.css';
 import LoginView from "./views/login/LoginView";
 import Router from './routes';
 import ScrollToTop from './components/ScrollToTop';
 
 const App = () => {
-  const [sessionLogin, setSessionLogin] = useState(isLogged())
+    const [loginToken, setLoginToken] = useState(getLoginToken())
 
-  return (
-      <>
-        {
-          sessionLogin === "zalogowany" ? (
-              <>
-                <ScrollToTop />
-                <Router />
-              </>
-          ) : (
-              <LoginView/>
-          )
-        }
-      </>
-  );
+    return (
+        <>
+            {
+                loginToken !== null ? (
+                    <>
+                        <ScrollToTop/>
+                        <Router setLoginToken={setLoginToken}/>
+                    </>
+                ) : (
+                    <LoginView setLoginToken={setLoginToken}/>
+                )
+            }
+        </>
+    );
 }
 
 export default App;

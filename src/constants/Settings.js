@@ -1,6 +1,7 @@
 const Settings = {
     TITLE: 'ProServer',
-    API: 'http://localhost:8000'
+    API: 'https://backend.proserver.dev',
+    SOCKET: 'https://backend.proserver.dev'
 }
 
 export default Settings;

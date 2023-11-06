@@ -15,6 +15,7 @@ import Label from "../../components/Label";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from '@mui/icons-material/Logout';
 import Settings from "../../constants/Settings";
+import {setLogOut} from "../../helpers/Auth";
 
 // ----------------------------------------------------------------------
 
@@ -42,7 +43,7 @@ const AccountStyle = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.grey[500_12],
 }));
 
-export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, setLoginToken }) {
     const { pathname } = useLocation();
 
     const isDesktop = useResponsive('up', 'lg');
@@ -53,6 +54,11 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathname]);
+
+    const handleLogout = () => {
+        setLoginToken(null)
+        setLogOut()
+    }
 
     const renderContent = (
         <>
@@ -82,7 +88,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
             <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
                 <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
-                    <Button onClick={() => {}} target="_blank" variant="contained" color="error" startIcon={<LogoutIcon />}>
+                    <Button onClick={handleLogout} target="_blank" variant="contained" color="error" startIcon={<LogoutIcon />}>
                         Wyloguj się
                     </Button>
                 </Stack>

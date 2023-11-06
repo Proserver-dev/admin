@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     TextField,
     Button,
@@ -6,16 +7,23 @@ import {
     InputLabel,
     InputAdornment,
     OutlinedInput,
-    IconButton, Snackbar, Tooltip,
+    IconButton, Tooltip,
 } from "@mui/material";
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import SweetAlert from 'react-bootstrap-sweetalert';
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import Settings from "../../constants/Settings"
+import {authenticate} from "../../helpers/Auth";
+import Routes from "../../constants/RoutesPath";
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Fade from '@mui/material/Fade';
 
-const LoginView = () => {
+const LoginView = ({setLoginToken}) => {
     const [showLoader, setShowLoader] = useState(false)
     const [values, setValues] = useState({email: "", password: "", showPassword: false})
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const navigate = useNavigate();
 
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
@@ -33,7 +41,26 @@ const LoginView = () => {
     };
 
     const handleLogin = () => {
+        authenticate(values).then((res) => {
+            setLoginToken(res.token);
+            navigate(Routes.HOME);
+        }).catch(errorMessage => {
+            setErrorMessage(errorMessage);
+            setShowError(true);
+        });
     }
+
+    const Alert = React.forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setShowError(false)
+    };
 
     return (
         <>
@@ -73,6 +100,18 @@ const LoginView = () => {
                     </div>
                 </div>
             </div>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                open={showError}
+                autoHideDuration={6000}
+                TransitionComponent={Fade}
+                onClose={handleCloseSnackBar}
+                key={'bottomcenter'}
+            >
+                <Alert onClose={handleCloseSnackBar} severity="error" sx={{ width: '100%' }}>
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
         </>
     )
 }
