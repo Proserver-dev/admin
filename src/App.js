@@ -11,22 +11,13 @@ import {Backdrop, CircularProgress} from "@mui/material";
 import Routes from "./constants/RoutesPath";
 import {getMe} from "./helpers/User";
 import ApiResults from "./constants/ApiResults";
+import handleTokenExpiration from "./helpers/handleTokenExpiration";
 
 const App = () => {
     const [loginToken, setLoginToken] = useState(getLoginToken())
     const [currentUser, setCurrentUser] = useState({})
     const [snackBar, setSnackBar] = useState({ type: 'error', message: '', show: false})
     const [showSpinner, setShowSpinner] = useState(false)
-
-    const handleTokenExpiration = (errorMessage) => {
-        setCurrentUser({});
-        setLoginToken(null);
-        setSnackBar({
-            type: 'error',
-            message: errorMessage,
-            show: true
-        });
-    };
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -43,13 +34,13 @@ const App = () => {
                         setCurrentUser(userAfterRefresh);
                     } catch (refreshError) {
                         if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
-                            handleTokenExpiration('Refresh-Token wygasł. Zaloguj się ponownie');
+                            handleTokenExpiration('Refresh-Token wygasł. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
                         } else {
-                            handleTokenExpiration('Z jakiegoś nieoczekiwanego powodu nie udało się odświeżyć tokena. Zaloguj się ponownie');
+                            handleTokenExpiration('Z jakiegoś nieoczekiwanego powodu nie udało się odświeżyć tokena. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
                         }
                     }
                 } else {
-                    handleTokenExpiration('Nie udało się pobrać informacji o użytkowniku. Zaloguj się ponownie');
+                    handleTokenExpiration('Nie udało się pobrać informacji o użytkowniku. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
                 }
             }
         };
