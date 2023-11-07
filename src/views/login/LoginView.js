@@ -9,14 +9,10 @@ import {
     OutlinedInput,
     IconButton, Tooltip,
 } from "@mui/material";
-import SweetAlert from 'react-bootstrap-sweetalert';
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import Settings from "../../constants/Settings"
 import {authenticate} from "../../helpers/Auth";
 import Routes from "../../constants/RoutesPath";
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import Fade from '@mui/material/Fade';
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 
 const LoginView = ({setLoginToken, setSnackBar, setShowSpinner}) => {
