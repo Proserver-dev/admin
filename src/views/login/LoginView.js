@@ -14,8 +14,11 @@ import Settings from "../../constants/Settings"
 import {authenticate} from "../../helpers/Auth";
 import Routes from "../../constants/RoutesPath";
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
+import {useDispatch} from "react-redux";
+import {setLoginToken, setSnackBar} from "../../redux/actions";
 
-const LoginView = ({setLoginToken, setSnackBar, setShowSpinner}) => {
+const LoginView = () => {
+    const dispatch = useDispatch();
     const [values, setValues] = useState({email: "", password: "", showPassword: false})
     const navigate = useNavigate();
 
@@ -35,15 +38,15 @@ const LoginView = ({setLoginToken, setSnackBar, setShowSpinner}) => {
     };
 
     const handleLogin = () => {
-        setShowSpinner(true)
+        dispatch({ type: 'SHOW_SPINNER' });
         authenticate(values).then((res) => {
-            setLoginToken(res.token);
+            dispatch(setLoginToken(res.token))
             navigate(Routes.HOME);
-            setShowSpinner(false)
-            setSnackBar({ type: 'success', message: 'Zalogowano pomyślnie', show: true })
+            dispatch({ type: 'HIDE_SPINNER' });
+            dispatch(setSnackBar({ type: 'success', message: 'Zalogowano pomyślnie', show: true }))
         }).catch(errorMessage => {
-            setShowSpinner(false)
-            setSnackBar(prepareSnackBarErrorObj(errorMessage))
+            dispatch({ type: 'HIDE_SPINNER' });
+            dispatch(setSnackBar(prepareSnackBarErrorObj(errorMessage)))
         });
     }
 

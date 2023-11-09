@@ -20,48 +20,56 @@ import Tooltip from '@mui/material/Tooltip';
 import {addRole, getRoles} from "../../helpers/Role";
 import {getMe} from "../../helpers/User";
 import ApiResults from "../../constants/ApiResults";
-import {refreshLoginToken} from "../../helpers/Auth";
-import handleTokenExpiration from "../../helpers/handleTokenExpiration";
+import {refreshLoginToken, setLogOut} from "../../helpers/Auth";
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
+import {setCurrentUser, setLoginToken, setSnackBar} from "../../redux/actions";
+import {useDispatch} from "react-redux";
 
-const RolesView = ({setShowSpinner, setSnackBar, setCurrentUser, setLoginToken}) => {
+const RolesView = () => {
+    const dispatch = useDispatch();
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newItem, setNewItem] = useState({name: ''});
 
     const handleAddItem = () => {
         const addRoleData = async () => {
-            await setShowSpinner(true)
+            dispatch({ type: 'SHOW_SPINNER' });
             try {
                 const res = await addRole(newItem)
                 setNewItem({name: ''});
                 setData([...data, res.role]);
                 setIsModalOpen(false);
-                setSnackBar({type: 'success', message: 'Pomyślnie utworzono nową rolę', show: true})
+                dispatch(setSnackBar({type: 'success', message: 'Pomyślnie utworzono nową rolę', show: true}))
             } catch (error) {
                 if (error.code === ApiResults.ERR_TOKEN_EXPIRED.code) {
                     try {
+                        dispatch({ type: 'DISCONNECT_SOCKET' });
                         const refreshResponse = await refreshLoginToken();
+                        dispatch({ type: 'CONNECT_SOCKET' });
                         // setLoginToken(refreshResponse.token);
 
                         const rolesAfterRefresh = await addRole(newItem)
                         setNewItem({name: ''});
                         setData([...data, rolesAfterRefresh.role]);
                         setIsModalOpen(false);
-                        setSnackBar({type: 'success', message: 'Pomyślnie utworzono nową rolę', show: true})
+                        dispatch(setSnackBar({type: 'success', message: 'Pomyślnie utworzono nową rolę', show: true}))
                     } catch (refreshError) {
                         if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
-                            handleTokenExpiration('Refresh-Token wygasł. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
+                            dispatch({ type: 'DISCONNECT_SOCKET' });
+                            dispatch(setCurrentUser({}));
+                            dispatch(setLoginToken(null));
+                            setLogOut()
+                            dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Refresh-Token wygasł. Zaloguj się ponownie' })));
                         } else {
-                            setSnackBar(prepareSnackBarErrorObj(refreshError))
+                            dispatch(setSnackBar(prepareSnackBarErrorObj(refreshError)))
                         }
                     }
                 } else {
-                    setSnackBar(prepareSnackBarErrorObj(error))
+                    dispatch(setSnackBar(prepareSnackBarErrorObj(error)))
                 }
             }
             setTimeout(() => {
-                setShowSpinner(false);
+                dispatch({ type: 'HIDE_SPINNER' });
             }, 250);
         }
 
@@ -71,31 +79,37 @@ const RolesView = ({setShowSpinner, setSnackBar, setCurrentUser, setLoginToken})
 
     useEffect(() => {
         const fetchRolesData = async () => {
-            await setShowSpinner(true)
+            dispatch({ type: 'SHOW_SPINNER' });
             try {
                 const roles = await getRoles()
                 setData(roles)
             } catch (error) {
                 if (error.code === ApiResults.ERR_TOKEN_EXPIRED.code) {
                     try {
+                        dispatch({ type: 'DISCONNECT_SOCKET' });
                         const refreshResponse = await refreshLoginToken();
+                        dispatch({ type: 'CONNECT_SOCKET' });
                         // setLoginToken(refreshResponse.token);
 
                         const rolesAfterRefresh = await getRoles()
                         setData(rolesAfterRefresh)
                     } catch (refreshError) {
                         if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
-                            handleTokenExpiration('Refresh-Token wygasł. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
+                            dispatch({ type: 'DISCONNECT_SOCKET' });
+                            dispatch(setCurrentUser({}));
+                            dispatch(setLoginToken(null));
+                            setLogOut()
+                            dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Refresh-Token wygasł. Zaloguj się ponownie' })));
                         } else {
-                            setSnackBar(prepareSnackBarErrorObj(refreshError))
+                            dispatch(setSnackBar(prepareSnackBarErrorObj(refreshError)))
                         }
                     }
                 } else {
-                    setSnackBar(prepareSnackBarErrorObj(error))
+                    dispatch(setSnackBar(prepareSnackBarErrorObj(error)))
                 }
             }
             setTimeout(() => {
-                setShowSpinner(false);
+                dispatch({ type: 'HIDE_SPINNER' });
             }, 250);
         }
         fetchRolesData().then(() => {

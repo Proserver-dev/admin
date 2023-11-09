@@ -16,6 +16,11 @@ const navConfig = [
         title: 'role użytkowników',
         path: RoutesPath.ROLES,
         icon: getIcon('dashicons:shield'),
+    },
+    {
+        title: 'Wiadomości do wszystkich',
+        path: RoutesPath.SEND_TO_ALL,
+        icon: getIcon('dashicons:upload'),
     }
 ];
 

@@ -1,9 +1,10 @@
 import React, {useEffect} from 'react';
 import {Button, Stack, Typography} from "@mui/material";
 import { Container } from '@mui/material';
+import {useSelector} from "react-redux";
 
-const HomeView = ({ currentUser }) => {
-
+const HomeView = () => {
+    const currentUser = useSelector((state) => state.currentUser);
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>

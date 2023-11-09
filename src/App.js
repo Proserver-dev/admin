@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getLoginToken, refreshLoginToken} from "./helpers/Auth";
+import {getLoginToken, refreshLoginToken, setLogOut} from "./helpers/Auth";
 import './App.css';
 import LoginView from "./views/login/LoginView";
 import Router from './routes';
@@ -11,36 +11,53 @@ import {Backdrop, CircularProgress} from "@mui/material";
 import Routes from "./constants/RoutesPath";
 import {getMe} from "./helpers/User";
 import ApiResults from "./constants/ApiResults";
-import handleTokenExpiration from "./helpers/handleTokenExpiration";
+import { useSelector, useDispatch } from 'react-redux';
+import {setCurrentUser, setLoginToken, setSnackBar} from "./redux/actions";
+import prepareSnackBarErrorObj from "./helpers/prepareSnackBarErrorObj";
 
 const App = () => {
-    const [loginToken, setLoginToken] = useState(getLoginToken())
-    const [currentUser, setCurrentUser] = useState({})
-    const [snackBar, setSnackBar] = useState({ type: 'error', message: '', show: false})
-    const [showSpinner, setShowSpinner] = useState(false)
+    const dispatch = useDispatch();
+    const loginToken = useSelector((state) => state.loginToken);
+    const snackBar = useSelector((state) => state.snackBar);
+    const showSpinner = useSelector((state) => state.showSpinner);
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const user = await getMe();
-                setCurrentUser(user);
+                dispatch(setCurrentUser(user));
+                dispatch({ type: 'CONNECT_SOCKET' });
             } catch (error) {
                 if (error.code === ApiResults.ERR_TOKEN_EXPIRED.code) {
                     try {
+                        dispatch({ type: 'DISCONNECT_SOCKET' });
                         const refreshResponse = await refreshLoginToken();
                         // setLoginToken(refreshResponse.token);
 
                         const userAfterRefresh = await getMe();
-                        setCurrentUser(userAfterRefresh);
+                        dispatch(setCurrentUser(userAfterRefresh));
+                        dispatch({ type: 'CONNECT_SOCKET' });
                     } catch (refreshError) {
                         if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
-                            handleTokenExpiration('Refresh-Token wygasł. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
+                            dispatch({ type: 'DISCONNECT_SOCKET' });
+                            dispatch(setCurrentUser({}));
+                            dispatch(setLoginToken(null));
+                            setLogOut()
+                            dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Refresh-Token wygasł. Zaloguj się ponownie' })));
                         } else {
-                            handleTokenExpiration('Z jakiegoś nieoczekiwanego powodu nie udało się odświeżyć tokena. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
+                            dispatch({ type: 'DISCONNECT_SOCKET' });
+                            dispatch(setCurrentUser({}));
+                            dispatch(setLoginToken(null));
+                            setLogOut()
+                            dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Z jakiegoś nieoczekiwanego powodu nie udało się odświeżyć tokena. Zaloguj się ponownie' })));
                         }
                     }
                 } else {
-                    handleTokenExpiration('Nie udało się pobrać informacji o użytkowniku. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
+                    dispatch({ type: 'DISCONNECT_SOCKET' });
+                    dispatch(setCurrentUser({}));
+                    dispatch(setLoginToken(null));
+                    setLogOut()
+                    dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Nie udało się pobrać informacji o użytkowniku. Zaloguj się ponownie' })));
                 }
             }
         };
@@ -59,7 +76,7 @@ const App = () => {
             return;
         }
 
-        setSnackBar({ ...snackBar, show: false })
+        dispatch(setSnackBar({ ...snackBar, show: false }))
     };
 
     return (
@@ -67,11 +84,11 @@ const App = () => {
             {
                 loginToken !== null ? (
                     <>
-                        <ScrollToTop/>
-                        <Router setLoginToken={setLoginToken} setSnackBar={setSnackBar} setShowSpinner={setShowSpinner} currentUser={currentUser} setCurrentUser={setCurrentUser}/>
+                        <ScrollToTop />
+                        <Router />
                     </>
                 ) : (
-                    <LoginView setLoginToken={setLoginToken} setSnackBar={setSnackBar} setShowSpinner={setShowSpinner}/>
+                    <LoginView />
                 )
             }
 

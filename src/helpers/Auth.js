@@ -62,7 +62,8 @@ export const refreshLoginToken = () => {
 
         const config = {
             headers: {
-                [LocalStorageKeys.REFRESH_TOKEN]: getRefreshToken()
+                [LocalStorageKeys.REFRESH_TOKEN]: getRefreshToken(),
+                [LocalStorageKeys.LOGIN_TOKEN]: getLoginToken()
             }
         }
 
