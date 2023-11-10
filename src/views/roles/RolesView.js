@@ -22,7 +22,7 @@ import {getMe} from "../../helpers/User";
 import ApiResults from "../../constants/ApiResults";
 import {refreshLoginToken, setLogOut} from "../../helpers/Auth";
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
-import {setCurrentUser, setLoginToken, setSnackBar} from "../../redux/actions";
+import {setCurrentUser, setSnackBar} from "../../redux/actions";
 import {useDispatch} from "react-redux";
 
 const RolesView = () => {
@@ -56,8 +56,7 @@ const RolesView = () => {
                     } catch (refreshError) {
                         if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
                             dispatch({ type: 'DISCONNECT_SOCKET' });
-                            dispatch(setCurrentUser({}));
-                            dispatch(setLoginToken(null));
+                            dispatch({ type: 'LOGOUT_CURRENT_USER' });
                             setLogOut()
                             dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Refresh-Token wygasł. Zaloguj się ponownie' })));
                         } else {
@@ -96,8 +95,7 @@ const RolesView = () => {
                     } catch (refreshError) {
                         if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
                             dispatch({ type: 'DISCONNECT_SOCKET' });
-                            dispatch(setCurrentUser({}));
-                            dispatch(setLoginToken(null));
+                            dispatch({ type: 'LOGOUT_CURRENT_USER' });
                             setLogOut()
                             dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Refresh-Token wygasł. Zaloguj się ponownie' })));
                         } else {

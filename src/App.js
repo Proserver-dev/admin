@@ -12,14 +12,18 @@ import Routes from "./constants/RoutesPath";
 import {getMe} from "./helpers/User";
 import ApiResults from "./constants/ApiResults";
 import { useSelector, useDispatch } from 'react-redux';
-import {setCurrentUser, setLoginToken, setSnackBar} from "./redux/actions";
+import {setCurrentUser, setSnackBar} from "./redux/actions";
 import prepareSnackBarErrorObj from "./helpers/prepareSnackBarErrorObj";
 
 const App = () => {
     const dispatch = useDispatch();
-    const loginToken = useSelector((state) => state.loginToken);
+    const currentUser = useSelector((state) => state.currentUser);
     const snackBar = useSelector((state) => state.snackBar);
     const showSpinner = useSelector((state) => state.showSpinner);
+
+
+    // Endpoint /users/me (poniższy) na razie nie jest potrzebny, bo w /auth/login zwracany jest cały user
+    /*
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -40,32 +44,31 @@ const App = () => {
                     } catch (refreshError) {
                         if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
                             dispatch({ type: 'DISCONNECT_SOCKET' });
-                            dispatch(setCurrentUser({}));
-                            dispatch(setLoginToken(null));
+                            dispatch({ type: 'LOGOUT_CURRENT_USER' });
                             setLogOut()
                             dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Refresh-Token wygasł. Zaloguj się ponownie' })));
                         } else {
                             dispatch({ type: 'DISCONNECT_SOCKET' });
-                            dispatch(setCurrentUser({}));
-                            dispatch(setLoginToken(null));
+                            dispatch({ type: 'LOGOUT_CURRENT_USER' });
                             setLogOut()
                             dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Z jakiegoś nieoczekiwanego powodu nie udało się odświeżyć tokena. Zaloguj się ponownie' })));
                         }
                     }
                 } else {
                     dispatch({ type: 'DISCONNECT_SOCKET' });
-                    dispatch(setCurrentUser({}));
-                    dispatch(setLoginToken(null));
+                    dispatch({ type: 'LOGOUT_CURRENT_USER' });
                     setLogOut()
                     dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Nie udało się pobrać informacji o użytkowniku. Zaloguj się ponownie' })));
                 }
             }
         };
 
-        if (loginToken !== null) {
+        if (currentUser.id !== null) {
             fetchUserData().then(() => {});
         }
-    }, [loginToken]);
+    }, [currentUser]);
+
+     */
 
     const Alert = React.forwardRef(function Alert(props, ref) {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -82,7 +85,7 @@ const App = () => {
     return (
         <>
             {
-                loginToken !== null ? (
+                currentUser.id !== null ? (
                     <>
                         <ScrollToTop />
                         <Router />

@@ -1,8 +1,3 @@
-export const setLoginToken = (token) => ({
-    type: 'SET_LOGIN_TOKEN',
-    payload: token,
-});
-
 export const setCurrentUser = (user) => ({
     type: 'SET_CURRENT_USER',
     payload: user,

@@ -17,7 +17,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Settings from "../../constants/Settings";
 import {setLogOut} from "../../helpers/Auth";
 import {useDispatch, useSelector} from "react-redux";
-import {setCurrentUser, setLoginToken, setSnackBar} from "../../redux/actions";
+import {setCurrentUser, setSnackBar} from "../../redux/actions";
 
 // ----------------------------------------------------------------------
 
@@ -61,9 +61,9 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
     }, [pathname]);
 
     const handleLogout = () => {
+        // TODO: tutaj trzeba jeszcze zrobić request do API /auth/logout
         dispatch({ type: 'DISCONNECT_SOCKET' });
-        dispatch(setLoginToken(null))
-        dispatch(setCurrentUser({}))
+        dispatch({ type: 'LOGOUT_CURRENT_USER' });
         setLogOut()
         dispatch(setSnackBar({ type: 'success', message: 'Wylogowano pomyślnie', show: true }))
     }

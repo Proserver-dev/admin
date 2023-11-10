@@ -15,7 +15,7 @@ import {authenticate} from "../../helpers/Auth";
 import Routes from "../../constants/RoutesPath";
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 import {useDispatch} from "react-redux";
-import {setLoginToken, setSnackBar} from "../../redux/actions";
+import {setSnackBar} from "../../redux/actions";
 
 const LoginView = () => {
     const dispatch = useDispatch();
@@ -40,7 +40,9 @@ const LoginView = () => {
     const handleLogin = () => {
         dispatch({ type: 'SHOW_SPINNER' });
         authenticate(values).then((res) => {
-            dispatch(setLoginToken(res.token))
+            // nie musimy robić nic z tokenem, bo jest on zapisywany w localStorage
+            dispatch({ type: 'SET_CURRENT_USER', payload: res.user })
+            dispatch({ type: 'CONNECT_SOCKET' });
             navigate(Routes.HOME);
             dispatch({ type: 'HIDE_SPINNER' });
             dispatch(setSnackBar({ type: 'success', message: 'Zalogowano pomyślnie', show: true }))

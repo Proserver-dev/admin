@@ -7,8 +7,7 @@ import Settings from "../constants/Settings";
 import LocalStorageKeys from "../constants/LocalStorageKeys";
 
 const initialState = {
-    loginToken: getLoginToken(),
-    currentUser: {},
+    currentUser: { id: null },
     snackBar: { type: 'error', message: '', show: false },
     showSpinner: false,
     socket: null,
@@ -16,10 +15,10 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'SET_LOGIN_TOKEN':
-            return { ...state, loginToken: action.payload };
         case 'SET_CURRENT_USER':
             return { ...state, currentUser: action.payload };
+        case 'LOGOUT_CURRENT_USER':
+            return { ...state, currentUser: { id: null }};
         case 'SET_SNACK_BAR':
             return { ...state, snackBar: action.payload };
         case 'SHOW_SPINNER':
