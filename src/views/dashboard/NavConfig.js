@@ -21,6 +21,11 @@ const navConfig = [
         title: 'Wiadomości do wszystkich',
         path: RoutesPath.SEND_TO_ALL,
         icon: getIcon('dashicons:upload'),
+    },
+    {
+        title: 'Logi',
+        path: RoutesPath.LOGS,
+        icon: getIcon('dashicons:list-view'),
     }
 ];
 

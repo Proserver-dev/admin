@@ -3,7 +3,8 @@ const ApiEndpoints = {
     REFRESH_TOKEN: '/auth/refresh',
     GET_ME: '/users/me',
     ROLES: '/roles',
-    MESSAGES_TO_ALL: '/messages-to-all'
+    MESSAGES_TO_ALL: '/messages-to-all',
+    LOGS: '/logs/' // :name
 }
 
 export default ApiEndpoints;

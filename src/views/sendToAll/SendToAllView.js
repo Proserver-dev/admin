@@ -40,6 +40,7 @@ function SendToAllView() {
         setPage(pageParam);
     }, [location.search]);
 
+    // TODO: może zrobić jeszcze jakiś event dodatkowy dla "messageToAll" np. "messageToAllError", nasłuchiwać na nim i jak przyjdzie error to wyświetlić snackbara
     const handleSend = () => {
         dispatch({ type: 'EMIT_SOCKET_EVENT', payload: { event: 'messageToAll', data: { message: message, type: type }}})
         setData({

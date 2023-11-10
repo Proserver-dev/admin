@@ -4,6 +4,7 @@ import DashboardLayout from "../views/dashboard";
 import HomeView from "../views/home/HomeView";
 import RolesView from "../views/roles/RolesView";
 import SendToAllView from "../views/sendToAll/SendToAllView";
+import LogsView from "../views/logs/LogsView";
 
 export default function Router() {
     return useRoutes([
@@ -13,7 +14,8 @@ export default function Router() {
             children: [
                 { path: RoutesPath.HOME, element: <HomeView /> },
                 { path: RoutesPath.ROLES, element: <RolesView /> },
-                { path: RoutesPath.SEND_TO_ALL, element: <SendToAllView /> }
+                { path: RoutesPath.SEND_TO_ALL, element: <SendToAllView /> },
+                { path: RoutesPath.LOGS, element: <LogsView /> }
             ],
         },
         { path: '*', element: <Navigate to={RoutesPath.HOME} replace /> },
