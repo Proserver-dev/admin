@@ -20,6 +20,30 @@ const App = () => {
     const currentUser = useSelector((state) => state.currentUser);
     const snackBar = useSelector((state) => state.snackBar);
     const showSpinner = useSelector((state) => state.showSpinner);
+    const socket = useSelector((state) => state.socket);
+
+    useEffect(() => {
+        if (socket) {
+            socket.on('messageToAll', (data) => {
+                if (data && data.message && data.type) {
+                    let messageType = 'info';
+
+                    if(data.type !== 'forceLogout') {
+                        messageType = data.type
+                    }
+
+                    // nasłuchuje na messageToAll i jak coś przyjdzie, to pokazuje wszystkim zalogowanym adminom snackbara
+                    dispatch(setSnackBar({ type: messageType, message: data.message+" | "+data.type, show: true }));
+                }
+            });
+        }
+
+        return () => {
+            if (socket) {
+                socket.off('messageToAll');
+            }
+        };
+    }, [socket, dispatch]);
 
 
     // Endpoint /users/me (poniższy) na razie nie jest potrzebny, bo w /auth/login zwracany jest cały user
