@@ -16,6 +16,7 @@ import Routes from "../../constants/RoutesPath";
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 import {useDispatch} from "react-redux";
 import {setSnackBar} from "../../redux/actions";
+import videoBackground from '../../assets/login_view.mp4';
 
 const LoginView = () => {
     const dispatch = useDispatch();
@@ -60,6 +61,11 @@ const LoginView = () => {
 
     return (
         <>
+            <video autoPlay loop muted className="video-background">
+                <source src={videoBackground} type="video/mp4" />
+                Twoja przeglądarka nie obsługuje odtwarzacza video.
+            </video>
+            <div className="overlay"></div>
             <div className="login-view">
                 <h1>{Settings.TITLE}</h1>
                 <div className="login-container">

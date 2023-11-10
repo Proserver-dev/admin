@@ -6,6 +6,7 @@ body {
 }
 
 .login-view {
+    position: relative;
     text-align: center;
     min-height: 100vh;
     display: flex;
@@ -14,6 +15,27 @@ body {
     justify-content: center;
     font-size: calc(10px + 2vmin);
     padding: 0 10px;
+    z-index: 2;
+}
+
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(238,238,238, 0.8);
+    z-index: 1;
 }
 
 .login-logo {

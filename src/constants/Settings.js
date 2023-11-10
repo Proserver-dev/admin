@@ -1,5 +1,5 @@
 const Settings = {
-    TITLE: 'ProServer',
+    TITLE: 'RideClub',
     API: 'https://backend.proserver.dev',
     SOCKET: 'https://backend.proserver.dev'
 }

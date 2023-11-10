@@ -42,6 +42,11 @@ function SendToAllView() {
 
     // TODO: może zrobić jeszcze jakiś event dodatkowy dla "messageToAll" np. "messageToAllError", nasłuchiwać na nim i jak przyjdzie error to wyświetlić snackbara
     const handleSend = () => {
+        if(type !== 'forceLogout' && message === '') {
+            dispatch({ type: 'SET_SNACK_BAR', payload: { type: 'error', message: 'Wiadomość dla tego typu nie może być pusta', show: true }})
+            return;
+        }
+
         dispatch({ type: 'EMIT_SOCKET_EVENT', payload: { event: 'messageToAll', data: { message: message, type: type }}})
         setData({
             count: data.count + 1,
