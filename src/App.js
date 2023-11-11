@@ -58,29 +58,52 @@ const App = () => {
             if (socket) {
                 socket.off('messageToAll');
                 socket.off('newSocketConnection');
+                dispatch({ type: 'DISCONNECT_SOCKET' });
             }
         };
     }, [socket, dispatch]);
 
     // Endpoint /users/me (poniższy) na razie nie jest potrzebny, bo w /auth/login zwracany jest cały user
     useEffect(() => {
-        dispatch({type: 'SHOW_SPINNER'});
-        getMe()
-            .then(res => {
-                dispatch(setCurrentUser(res));
-                dispatch({type: 'CONNECT_SOCKET'});
-            })
-            .catch(err => {
-                // dispatch({type: 'DISCONNECT_SOCKET'});
-                // dispatch({type: 'LOGOUT_CURRENT_USER'});
-                // dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
-            })
-            .finally(() => {
-                setTimeout(() => {
-                    dispatch({type: 'HIDE_SPINNER'});
-                }, 250);
-            })
+        if(getLoginToken() !== null) {
+            dispatch({type: 'SHOW_SPINNER'});
+            getMe()
+                .then(res => {
+                    dispatch(setCurrentUser(res));
+                    dispatch({type: 'CONNECT_SOCKET'});
+                })
+                .catch(() => {
+                    // obsługa błędów jest w axiosWithToken.js
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        dispatch({type: 'HIDE_SPINNER'});
+                    }, 250);
+                })
+        }
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        window.addEventListener('unload', handleUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+            window.removeEventListener('unload', handleUnload);
+        };
     }, []);
+
+    const handleBeforeUnload = async (event) => {
+        // przed zamknięciem strony
+        // event.preventDefault(); // TODO: to trzeba przerobić, przez to wymaga potwierdzenia zamknięcia okna. Bez tego też jest ok, bo jest zabezpieczenie po stronie serwera
+        // event.returnValue = '';
+        dispatch({ type: 'DISCONNECT_SOCKET' });
+    };
+
+    const handleUnload = async (event) => {
+        // przed odświeżeniem strony
+        // event.preventDefault(); // TODO: to trzeba przerobić, przez to wymaga potwierdzenia zamknięcia okna. Bez tego też jest ok, bo jest zabezpieczenie po stronie serwera
+        // event.returnValue = '';
+        dispatch({ type: 'DISCONNECT_SOCKET' });
+    };
 
 
     const Alert = React.forwardRef(function Alert(props, ref) {

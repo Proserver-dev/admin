@@ -18,10 +18,6 @@ export const getRefreshToken = () => {
 };
 
 export const handleTokenRefreshError = (error) => {
-    // Handle refresh token error or redirect to login
-    // store.dispatch(setSnackBar(prepareSnackBarErrorObj(error)));
-    // store.dispatch(setSnackBar({ message: ApiResults.ERR_REFRESH_TOKEN_EXPIRED.message + " | " + ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code, type: 'error', show: true  }));
-
     store.dispatch({ type: 'SHOW_SPINNER' });
     reqUserTryToLogout()
         .then(res => {
@@ -81,7 +77,7 @@ export const reqRefreshLoginToken = () => {
         axios.get(Settings.API + ApiEndpoints.GET_AUTH_REFRESH, config)
             .then(res => {
                 localStorage.setItem(LocalStorageKeys.LOGIN_TOKEN, res.data.token);
-                resolve()
+                resolve(res.data.token)
             })
             .catch(err => reject(err));
     });

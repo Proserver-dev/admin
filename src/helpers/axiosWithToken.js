@@ -30,10 +30,6 @@ axiosWithToken.interceptors.response.use(
                 originalRequest.headers[LocalStorageKeys.LOGIN_TOKEN] = `${token}`;
                 return axios(originalRequest);
             } catch (err) {
-                // store.dispatch(setSnackBar(prepareSnackBarErrorObj(error)));
-                // store.dispatch({type: 'DISCONNECT_SOCKET'});
-                // store.dispatch({type: 'LOGOUT_CURRENT_USER'});
-                // localStorage.clear();
                 return handleTokenRefreshError(err);
             }
         }

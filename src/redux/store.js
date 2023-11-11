@@ -43,12 +43,6 @@ const reducer = (state = initialState, action) => {
                 return { ...state, socket: null };
             }
             return state;
-        case 'EMIT_SOCKET_EVENT':
-            // TODO: to nie specjalnie chce działać, jeśli w czasie działania aplikacji nie ma połączenia z socketem, to przy próbie wykonania emitu i tak go nie nawiąże w ten sposób
-            if (!state.socket) {
-                store.dispatch({ type: 'CONNECT_SOCKET' });
-            }
-            return state;
         default:
             return state;
     }
@@ -57,7 +51,14 @@ const reducer = (state = initialState, action) => {
 const socketMiddleware = (store) => (next) => (action) => {
     if (action.type === 'EMIT_SOCKET_EVENT') {
         const { event, data } = action.payload;
-        store.getState().socket.emit(event, data);
+        let socket = store.getState().socket
+        if(!socket) {
+            store.dispatch({ type: 'CONNECT_SOCKET' });
+            socket = store.getState().socket
+            socket.emit(event, data);
+        } else {
+            socket.emit(event, data);
+        }
     }
     return next(action);
 };
