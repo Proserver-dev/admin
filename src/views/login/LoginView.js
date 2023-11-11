@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {
     TextField,
     Button,
@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import Settings from "../../constants/Settings"
-import {authenticate} from "../../helpers/Auth";
+import {reqAuthenticate} from "../../helpers/Auth";
 import Routes from "../../constants/RoutesPath";
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 import {useDispatch} from "react-redux";
@@ -39,18 +39,20 @@ const LoginView = () => {
     };
 
     const handleLogin = () => {
-        dispatch({ type: 'SHOW_SPINNER' });
-        authenticate(values).then((res) => {
-            // nie musimy robić nic z tokenem, bo jest on zapisywany w localStorage
-            dispatch({ type: 'SET_CURRENT_USER', payload: res.user })
-            dispatch({ type: 'CONNECT_SOCKET' });
-            navigate(Routes.HOME);
-            dispatch({ type: 'HIDE_SPINNER' });
-            dispatch(setSnackBar({ type: 'success', message: 'Zalogowano pomyślnie', show: true }))
-        }).catch(errorMessage => {
-            dispatch({ type: 'HIDE_SPINNER' });
-            dispatch(setSnackBar(prepareSnackBarErrorObj(errorMessage)))
-        });
+        dispatch({type: 'SHOW_SPINNER'});
+        reqAuthenticate(values)
+            .then(res => {
+                dispatch({type: 'SET_CURRENT_USER', payload: res.user})
+                dispatch({type: 'CONNECT_SOCKET'});
+                navigate(Routes.HOME);
+                dispatch(setSnackBar({type: 'success', message: 'Zalogowano pomyślnie', show: true}))
+            })
+            .catch(err => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+            })
+            .finally(() => {
+                dispatch({type: 'HIDE_SPINNER'});
+            })
     }
 
     const handleEnterKeyPress = (event) => {
@@ -62,7 +64,7 @@ const LoginView = () => {
     return (
         <>
             <video autoPlay loop muted className="video-background">
-                <source src={videoBackground} type="video/mp4" />
+                <source src={videoBackground} type="video/mp4"/>
                 Twoja przeglądarka nie obsługuje odtwarzacza video.
             </video>
             <div className="overlay"></div>

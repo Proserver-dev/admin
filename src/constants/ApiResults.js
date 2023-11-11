@@ -6,7 +6,7 @@ const ApiResults = {
     ERR_PROVIDE_DEVICE_TOKEN: { message: 'Nie masz do tego uprawnień', code: 'ERR_PROVIDE_DEVICE_TOKEN' },
     ERR_WRONG_PASSWORD: { message: 'Nieprawidłowe hasło', code: 'ERR_WRONG_PASSWORD' },
     ERR_TOKEN_EXPIRED: { message: 'Token logowania wygasł', code: 'ERR_TOKEN_EXPIRED' },
-    ERR_REFRESH_TOKEN_EXPIRED: { message: 'Refresh-Token jest nieaktualny', code: 'ERR_REFRESH_TOKEN_EXPIRED' },
+    ERR_REFRESH_TOKEN_EXPIRED: { message: 'Refresh-Token jest nieaktualny. Zaloguj się ponownie', code: 'ERR_REFRESH_TOKEN_EXPIRED' },
     ERR_GET_ROLES: { message: 'Wystąpił błąd podczas pobierania ról', code: 'ERR_GET_ROLES' },
     ERR_DELETE_ROLE: { message: 'Wystąpił błąd podczas usuwania roli', code: 'ERR_DELETE_ROLE:' },
     ERR_ROLE_NAME_IS_RESERVED: { message: 'Nie możesz dodać roli o tej nazwie', code: 'ERR_ROLE_NAME_IS_RESERVED' },

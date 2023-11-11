@@ -12,13 +12,15 @@ const root = createRoot(container);
 
 // przez <React.StrictMode> wszystko renderuje się 2 razy
 
-root.render(
+const main = (
     <Provider store={store}>
         <HashRouter>
             <App/>
         </HashRouter>
     </Provider>
-);
+)
+
+root.render(main);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

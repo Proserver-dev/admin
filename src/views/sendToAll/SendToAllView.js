@@ -20,6 +20,8 @@ import {getMessagesToAll} from "../../helpers/MessagesToAll";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useLocation} from "react-router-dom";
 import {format} from "date-fns";
+import {setSnackBar} from "../../redux/actions";
+import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 
 const initialMessage = ''; // Domyślna wiadomość
 const itemsPerPage = 10; // Liczba elementów na stronę
@@ -63,9 +65,8 @@ function SendToAllView() {
             .then((res) => {
                 setData(res)
             })
-            .catch(() => {
-                // TODO: tutaj dorobić obsługę błędu i wygaśniętego tokena
-
+            .catch((err) => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
             })
             .finally(() => {
                 setTimeout(() => {

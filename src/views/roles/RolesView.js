@@ -17,13 +17,10 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
-import {addRole, getRoles} from "../../helpers/Role";
-import {getMe} from "../../helpers/User";
-import ApiResults from "../../constants/ApiResults";
-import {refreshLoginToken, setLogOut} from "../../helpers/Auth";
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
-import {setCurrentUser, setSnackBar} from "../../redux/actions";
+import {setSnackBar} from "../../redux/actions";
 import {useDispatch} from "react-redux";
+import {reqAddRole, reqGetRoles} from "../../helpers/Role";
 
 const RolesView = () => {
     const dispatch = useDispatch();
@@ -32,86 +29,39 @@ const RolesView = () => {
     const [newItem, setNewItem] = useState({name: ''});
 
     const handleAddItem = () => {
-        const addRoleData = async () => {
-            dispatch({ type: 'SHOW_SPINNER' });
-            try {
-                const res = await addRole(newItem)
+        dispatch({type: 'SHOW_SPINNER'});
+        reqAddRole(newItem)
+            .then(res => {
                 setNewItem({name: ''});
                 setData([...data, res.role]);
                 setIsModalOpen(false);
                 dispatch(setSnackBar({type: 'success', message: 'Pomyślnie utworzono nową rolę', show: true}))
-            } catch (error) {
-                if (error.code === ApiResults.ERR_TOKEN_EXPIRED.code) {
-                    try {
-                        dispatch({ type: 'DISCONNECT_SOCKET' });
-                        const refreshResponse = await refreshLoginToken();
-                        dispatch({ type: 'CONNECT_SOCKET' });
-                        // setLoginToken(refreshResponse.token);
-
-                        const rolesAfterRefresh = await addRole(newItem)
-                        setNewItem({name: ''});
-                        setData([...data, rolesAfterRefresh.role]);
-                        setIsModalOpen(false);
-                        dispatch(setSnackBar({type: 'success', message: 'Pomyślnie utworzono nową rolę', show: true}))
-                    } catch (refreshError) {
-                        if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
-                            dispatch({ type: 'DISCONNECT_SOCKET' });
-                            dispatch({ type: 'LOGOUT_CURRENT_USER' });
-                            setLogOut()
-                            dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Refresh-Token wygasł. Zaloguj się ponownie' })));
-                        } else {
-                            dispatch(setSnackBar(prepareSnackBarErrorObj(refreshError)))
-                        }
-                    }
-                } else {
-                    dispatch(setSnackBar(prepareSnackBarErrorObj(error)))
-                }
-            }
-            setTimeout(() => {
-                dispatch({ type: 'HIDE_SPINNER' });
-            }, 250);
-        }
-
-        addRoleData().then(() => {
-        });
+            })
+            .catch(err => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    dispatch({type: 'HIDE_SPINNER'});
+                }, 250);
+            })
     };
 
     useEffect(() => {
-        const fetchRolesData = async () => {
-            dispatch({ type: 'SHOW_SPINNER' });
-            try {
-                const roles = await getRoles()
-                setData(roles)
-            } catch (error) {
-                if (error.code === ApiResults.ERR_TOKEN_EXPIRED.code) {
-                    try {
-                        dispatch({ type: 'DISCONNECT_SOCKET' });
-                        const refreshResponse = await refreshLoginToken();
-                        dispatch({ type: 'CONNECT_SOCKET' });
-                        // setLoginToken(refreshResponse.token);
-
-                        const rolesAfterRefresh = await getRoles()
-                        setData(rolesAfterRefresh)
-                    } catch (refreshError) {
-                        if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
-                            dispatch({ type: 'DISCONNECT_SOCKET' });
-                            dispatch({ type: 'LOGOUT_CURRENT_USER' });
-                            setLogOut()
-                            dispatch(setSnackBar(prepareSnackBarErrorObj({ message: 'Refresh-Token wygasł. Zaloguj się ponownie' })));
-                        } else {
-                            dispatch(setSnackBar(prepareSnackBarErrorObj(refreshError)))
-                        }
-                    }
-                } else {
-                    dispatch(setSnackBar(prepareSnackBarErrorObj(error)))
-                }
-            }
-            setTimeout(() => {
-                dispatch({ type: 'HIDE_SPINNER' });
-            }, 250);
-        }
-        fetchRolesData().then(() => {
-        });
+        dispatch({type: 'SHOW_SPINNER'});
+        reqGetRoles()
+            .then(res => {
+                setData(res)
+                console.log(res)
+            })
+            .catch(err => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    dispatch({type: 'HIDE_SPINNER'});
+                }, 250);
+            })
     }, [])
 
     // TODO: tutaj dorobić aktualizowanie i kasowanie ról
@@ -146,10 +96,10 @@ const RolesView = () => {
                                     {item.short !== 'admin' && item.short !== 'user' && item.short !== 'blocked' && (
                                         <>
                                             <Tooltip title="Edytuj">
-                                                <EditIcon color="primary" style={{ marginRight: '10px' }} />
+                                                <EditIcon color="primary" style={{marginRight: '10px'}}/>
                                             </Tooltip>
                                             <Tooltip title="Usuń">
-                                                <DeleteIcon color="error" />
+                                                <DeleteIcon color="error"/>
                                             </Tooltip>
                                         </>
                                     )}

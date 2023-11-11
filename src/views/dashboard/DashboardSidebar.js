@@ -1,23 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import {Link as RouterLink, useLocation, useNavigate} from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
 // components
-import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
 import navConfig from './NavConfig';
 import Label from "../../components/Label";
-import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from '@mui/icons-material/Logout';
 import Settings from "../../constants/Settings";
-import {setLogOut} from "../../helpers/Auth";
+import {reqUserLogout} from "../../helpers/Auth";
 import {useDispatch, useSelector} from "react-redux";
-import {setCurrentUser, setSnackBar} from "../../redux/actions";
+import {setSnackBar} from "../../redux/actions";
+import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
+import RoutesPath from "../../constants/RoutesPath";
 
 // ----------------------------------------------------------------------
 
@@ -47,6 +47,7 @@ const AccountStyle = styled('div')(({ theme }) => ({
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const currentUser = useSelector((state) => state.currentUser);
     const isSocketConnected = useSelector((state) => state.socket);
 
@@ -60,12 +61,24 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathname]);
 
-    const handleLogout = () => {
-        // TODO: tutaj trzeba jeszcze zrobić request do API /auth/logout
-        dispatch({ type: 'DISCONNECT_SOCKET' });
-        dispatch({ type: 'LOGOUT_CURRENT_USER' });
-        setLogOut()
-        dispatch(setSnackBar({ type: 'success', message: 'Wylogowano pomyślnie', show: true }))
+    const handleLogout = async () => {
+        dispatch({type: 'SHOW_SPINNER'});
+        reqUserLogout()
+            .then(res => {
+                navigate(RoutesPath.HOME)
+                dispatch({type: 'DISCONNECT_SOCKET'});
+                dispatch({type: 'LOGOUT_CURRENT_USER'});
+                localStorage.clear();
+                dispatch(setSnackBar({type: 'success', message: 'Wylogowano pomyślnie', show: true}))
+            })
+            .catch(err => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    dispatch({type: 'HIDE_SPINNER'});
+                }, 250);
+            })
     }
 
     const renderContent = (
