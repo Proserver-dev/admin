@@ -1,21 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import {Link as RouterLink, useLocation, useNavigate} from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
 // components
-import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
 import navConfig from './NavConfig';
 import Label from "../../components/Label";
-import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from '@mui/icons-material/Logout';
 import Settings from "../../constants/Settings";
-import {setLogOut} from "../../helpers/Auth";
+import {reqUserLogout} from "../../helpers/Auth";
+import {useDispatch, useSelector} from "react-redux";
+import {setSnackBar} from "../../redux/actions";
+import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
+import RoutesPath from "../../constants/RoutesPath";
 
 // ----------------------------------------------------------------------
 
@@ -43,9 +45,13 @@ const AccountStyle = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.grey[500_12],
 }));
 
-export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, setLoginToken, setSnackBar, currentUser, setCurrentUser }) {
-    const { pathname } = useLocation();
+export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const currentUser = useSelector((state) => state.currentUser);
+    const isSocketConnected = useSelector((state) => state.socket);
 
+    const { pathname } = useLocation();
     const isDesktop = useResponsive('up', 'lg');
 
     useEffect(() => {
@@ -55,11 +61,24 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, setLog
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathname]);
 
-    const handleLogout = () => {
-        setLoginToken(null)
-        setCurrentUser({})
-        setLogOut()
-        setSnackBar({ type: 'success', message: 'Wylogowano pomyślnie', show: true })
+    const handleLogout = async () => {
+        dispatch({type: 'SHOW_SPINNER'});
+        reqUserLogout()
+            .then(res => {
+                navigate(RoutesPath.HOME)
+                dispatch({type: 'DISCONNECT_SOCKET'});
+                dispatch({type: 'LOGOUT_CURRENT_USER'});
+                localStorage.clear();
+                dispatch(setSnackBar({type: 'success', message: 'Wylogowano pomyślnie', show: true}))
+            })
+            .catch(err => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    dispatch({type: 'HIDE_SPINNER'});
+                }, 250);
+            })
     }
 
     const renderContent = (
@@ -90,6 +109,9 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, setLog
 
             <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
                 <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
+                    {!isSocketConnected && (
+                        <p style={{ color: 'red' }}>Nie jesteś połączony z socketem</p>
+                    )}
                     <Button onClick={handleLogout} target="_blank" variant="contained" color="error" startIcon={<LogoutIcon />}>
                         Wylogowanko
                     </Button>

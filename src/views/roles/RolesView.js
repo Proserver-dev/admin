@@ -17,89 +17,51 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
-import {addRole, getRoles} from "../../helpers/Role";
-import {getMe} from "../../helpers/User";
-import ApiResults from "../../constants/ApiResults";
-import {refreshLoginToken} from "../../helpers/Auth";
-import handleTokenExpiration from "../../helpers/handleTokenExpiration";
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
+import {setSnackBar} from "../../redux/actions";
+import {useDispatch} from "react-redux";
+import {reqAddRole, reqGetRoles} from "../../helpers/Role";
 
-const RolesView = ({setShowSpinner, setSnackBar, setCurrentUser, setLoginToken}) => {
+const RolesView = () => {
+    const dispatch = useDispatch();
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newItem, setNewItem] = useState({name: ''});
 
     const handleAddItem = () => {
-        const addRoleData = async () => {
-            await setShowSpinner(true)
-            try {
-                const res = await addRole(newItem)
+        dispatch({type: 'SHOW_SPINNER'});
+        reqAddRole(newItem)
+            .then(res => {
                 setNewItem({name: ''});
                 setData([...data, res.role]);
                 setIsModalOpen(false);
-                setSnackBar({type: 'success', message: 'Pomyślnie utworzono nową rolę', show: true})
-            } catch (error) {
-                if (error.code === ApiResults.ERR_TOKEN_EXPIRED.code) {
-                    try {
-                        const refreshResponse = await refreshLoginToken();
-                        // setLoginToken(refreshResponse.token);
-
-                        const rolesAfterRefresh = await addRole(newItem)
-                        setNewItem({name: ''});
-                        setData([...data, rolesAfterRefresh.role]);
-                        setIsModalOpen(false);
-                        setSnackBar({type: 'success', message: 'Pomyślnie utworzono nową rolę', show: true})
-                    } catch (refreshError) {
-                        if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
-                            handleTokenExpiration('Refresh-Token wygasł. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
-                        } else {
-                            setSnackBar(prepareSnackBarErrorObj(refreshError))
-                        }
-                    }
-                } else {
-                    setSnackBar(prepareSnackBarErrorObj(error))
-                }
-            }
-            setTimeout(() => {
-                setShowSpinner(false);
-            }, 250);
-        }
-
-        addRoleData().then(() => {
-        });
+                dispatch(setSnackBar({type: 'success', message: 'Pomyślnie utworzono nową rolę', show: true}))
+            })
+            .catch(err => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    dispatch({type: 'HIDE_SPINNER'});
+                }, 250);
+            })
     };
 
     useEffect(() => {
-        const fetchRolesData = async () => {
-            await setShowSpinner(true)
-            try {
-                const roles = await getRoles()
-                setData(roles)
-            } catch (error) {
-                if (error.code === ApiResults.ERR_TOKEN_EXPIRED.code) {
-                    try {
-                        const refreshResponse = await refreshLoginToken();
-                        // setLoginToken(refreshResponse.token);
-
-                        const rolesAfterRefresh = await getRoles()
-                        setData(rolesAfterRefresh)
-                    } catch (refreshError) {
-                        if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
-                            handleTokenExpiration('Refresh-Token wygasł. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
-                        } else {
-                            setSnackBar(prepareSnackBarErrorObj(refreshError))
-                        }
-                    }
-                } else {
-                    setSnackBar(prepareSnackBarErrorObj(error))
-                }
-            }
-            setTimeout(() => {
-                setShowSpinner(false);
-            }, 250);
-        }
-        fetchRolesData().then(() => {
-        });
+        dispatch({type: 'SHOW_SPINNER'});
+        reqGetRoles()
+            .then(res => {
+                setData(res)
+                console.log(res)
+            })
+            .catch(err => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    dispatch({type: 'HIDE_SPINNER'});
+                }, 250);
+            })
     }, [])
 
     // TODO: tutaj dorobić aktualizowanie i kasowanie ról
@@ -134,10 +96,10 @@ const RolesView = ({setShowSpinner, setSnackBar, setCurrentUser, setLoginToken})
                                     {item.short !== 'admin' && item.short !== 'user' && item.short !== 'blocked' && (
                                         <>
                                             <Tooltip title="Edytuj">
-                                                <EditIcon color="primary" style={{ marginRight: '10px' }} />
+                                                <EditIcon color="primary" style={{marginRight: '10px'}}/>
                                             </Tooltip>
                                             <Tooltip title="Usuń">
-                                                <DeleteIcon color="error" />
+                                                <DeleteIcon color="error"/>
                                             </Tooltip>
                                         </>
                                     )}

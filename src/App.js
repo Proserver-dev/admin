@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import {getLoginToken, refreshLoginToken} from "./helpers/Auth";
+import React, {useEffect} from 'react';
 import './App.css';
 import LoginView from "./views/login/LoginView";
 import Router from './routes';
@@ -8,47 +7,81 @@ import Fade from "@mui/material/Fade";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import {Backdrop, CircularProgress} from "@mui/material";
-import Routes from "./constants/RoutesPath";
+import {useSelector, useDispatch} from 'react-redux';
+import {setCurrentUser, setSnackBar} from "./redux/actions";
 import {getMe} from "./helpers/User";
-import ApiResults from "./constants/ApiResults";
-import handleTokenExpiration from "./helpers/handleTokenExpiration";
+import prepareSnackBarErrorObj from "./helpers/prepareSnackBarErrorObj";
+import {getLoginToken} from "./helpers/Auth";
+import {useNavigate} from "react-router-dom";
+import RoutesPath from "./constants/RoutesPath";
 
 const App = () => {
-    const [loginToken, setLoginToken] = useState(getLoginToken())
-    const [currentUser, setCurrentUser] = useState({})
-    const [snackBar, setSnackBar] = useState({ type: 'error', message: '', show: false})
-    const [showSpinner, setShowSpinner] = useState(false)
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const currentUser = useSelector((state) => state.currentUser);
+    const snackBar = useSelector((state) => state.snackBar);
+    const showSpinner = useSelector((state) => state.showSpinner);
+    const socket = useSelector((state) => state.socket);
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const user = await getMe();
-                setCurrentUser(user);
-            } catch (error) {
-                if (error.code === ApiResults.ERR_TOKEN_EXPIRED.code) {
-                    try {
-                        const refreshResponse = await refreshLoginToken();
-                        // setLoginToken(refreshResponse.token);
+        if (socket) {
+            socket.on('messageToAll', (data) => {
+                if (data && data.message && data.type) {
+                    let messageType = 'info';
 
-                        const userAfterRefresh = await getMe();
-                        setCurrentUser(userAfterRefresh);
-                    } catch (refreshError) {
-                        if (refreshError.code === ApiResults.ERR_REFRESH_TOKEN_EXPIRED.code) {
-                            handleTokenExpiration('Refresh-Token wygasł. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
-                        } else {
-                            handleTokenExpiration('Z jakiegoś nieoczekiwanego powodu nie udało się odświeżyć tokena. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
-                        }
+                    if (data.type !== 'forceLogout') {
+                        messageType = data.type
                     }
-                } else {
-                    handleTokenExpiration('Nie udało się pobrać informacji o użytkowniku. Zaloguj się ponownie', setCurrentUser, setLoginToken, setSnackBar);
+
+                    // nasłuchuje na messageToAll i jak coś przyjdzie, to pokazuje wszystkim zalogowanym adminom snackbara
+                    dispatch(setSnackBar({type: messageType, message: data.message + " | " + data.type, show: true}));
                 }
+            });
+
+            socket.on('newSocketConnection', (data) => {
+                if (data && data.logout) {
+                    // tutaj nie robimy requesta do /auth/logout , bo przyczyną wylogowania jest zalogowanie się na innym urządzeniu
+                    navigate(RoutesPath.HOME)
+                    dispatch({type: 'SHOW_SPINNER'});
+                    dispatch({type: 'DISCONNECT_SOCKET'});
+                    dispatch({type: 'LOGOUT_CURRENT_USER'});
+                    localStorage.clear();
+                    setTimeout(() => {
+                        dispatch({type: 'HIDE_SPINNER'});
+                    }, 250);
+                    dispatch(setSnackBar({type: 'warning', message: 'Ktoś zalogował się na Twoje konto!', show: true}))
+                }
+            });
+        }
+
+        return () => {
+            if (socket) {
+                socket.off('messageToAll');
+                socket.off('newSocketConnection');
             }
         };
+    }, [socket, dispatch]);
 
-        if (loginToken !== null) {
-            fetchUserData().then(() => {});
-        }
-    }, [loginToken]);
+    // Endpoint /users/me (poniższy) na razie nie jest potrzebny, bo w /auth/login zwracany jest cały user
+    useEffect(() => {
+        dispatch({type: 'SHOW_SPINNER'});
+        getMe()
+            .then(res => {
+                dispatch(setCurrentUser(res));
+                dispatch({type: 'CONNECT_SOCKET'});
+            })
+            .catch(err => {
+                // dispatch({type: 'DISCONNECT_SOCKET'});
+                // dispatch({type: 'LOGOUT_CURRENT_USER'});
+                // dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    dispatch({type: 'HIDE_SPINNER'});
+                }, 250);
+            })
+    }, []);
+
 
     const Alert = React.forwardRef(function Alert(props, ref) {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -59,39 +92,39 @@ const App = () => {
             return;
         }
 
-        setSnackBar({ ...snackBar, show: false })
+        dispatch(setSnackBar({...snackBar, show: false}))
     };
 
     return (
         <>
             {
-                loginToken !== null ? (
+                getLoginToken() !== null ? (
                     <>
                         <ScrollToTop/>
-                        <Router setLoginToken={setLoginToken} setSnackBar={setSnackBar} setShowSpinner={setShowSpinner} currentUser={currentUser} setCurrentUser={setCurrentUser}/>
+                        <Router/>
                     </>
                 ) : (
-                    <LoginView setLoginToken={setLoginToken} setSnackBar={setSnackBar} setShowSpinner={setShowSpinner}/>
+                    <LoginView/>
                 )
             }
 
             <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
                 open={snackBar.show}
                 autoHideDuration={6000}
                 TransitionComponent={Fade}
                 onClose={handleCloseSnackBar}
                 key={'bottomcenter'}
             >
-                <Alert onClose={handleCloseSnackBar} severity={snackBar.type} sx={{ width: '100%' }}>
+                <Alert onClose={handleCloseSnackBar} severity={snackBar.type} sx={{width: '100%'}}>
                     {snackBar.message}
                 </Alert>
             </Snackbar>
             <Backdrop
-                sx={{ color: '#fff', zIndex: '999999'}}
+                sx={{color: '#fff', zIndex: '999999'}}
                 open={showSpinner}
             >
-                <CircularProgress color="inherit" />
+                <CircularProgress color="inherit"/>
             </Backdrop>
         </>
     );

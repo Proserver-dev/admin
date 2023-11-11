@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {
     TextField,
     Button,
@@ -11,11 +11,15 @@ import {
 } from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import Settings from "../../constants/Settings"
-import {authenticate} from "../../helpers/Auth";
+import {reqAuthenticate} from "../../helpers/Auth";
 import Routes from "../../constants/RoutesPath";
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
+import {useDispatch} from "react-redux";
+import {setSnackBar} from "../../redux/actions";
+import videoBackground from '../../assets/login_view.mp4';
 
-const LoginView = ({setLoginToken, setSnackBar, setShowSpinner}) => {
+const LoginView = () => {
+    const dispatch = useDispatch();
     const [values, setValues] = useState({email: "", password: "", showPassword: false})
     const navigate = useNavigate();
 
@@ -35,16 +39,20 @@ const LoginView = ({setLoginToken, setSnackBar, setShowSpinner}) => {
     };
 
     const handleLogin = () => {
-        setShowSpinner(true)
-        authenticate(values).then((res) => {
-            setLoginToken(res.token);
-            navigate(Routes.HOME);
-            setShowSpinner(false)
-            setSnackBar({ type: 'success', message: 'Zalogowano pomyślnie', show: true })
-        }).catch(errorMessage => {
-            setShowSpinner(false)
-            setSnackBar(prepareSnackBarErrorObj(errorMessage))
-        });
+        dispatch({type: 'SHOW_SPINNER'});
+        reqAuthenticate(values)
+            .then(res => {
+                dispatch({type: 'SET_CURRENT_USER', payload: res.user})
+                dispatch({type: 'CONNECT_SOCKET'});
+                navigate(Routes.HOME);
+                dispatch(setSnackBar({type: 'success', message: 'Zalogowano pomyślnie', show: true}))
+            })
+            .catch(err => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+            })
+            .finally(() => {
+                dispatch({type: 'HIDE_SPINNER'});
+            })
     }
 
     const handleEnterKeyPress = (event) => {
@@ -55,6 +63,11 @@ const LoginView = ({setLoginToken, setSnackBar, setShowSpinner}) => {
 
     return (
         <>
+            <video autoPlay loop muted className="video-background">
+                <source src={videoBackground} type="video/mp4"/>
+                Twoja przeglądarka nie obsługuje odtwarzacza video.
+            </video>
+            <div className="overlay"></div>
             <div className="login-view">
                 <h1>{Settings.TITLE}</h1>
                 <div className="login-container">

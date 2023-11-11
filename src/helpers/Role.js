@@ -1,71 +1,20 @@
-import LocalStorageKeys from "../constants/LocalStorageKeys";
-import {getLoginToken} from "./Auth";
-import axios from "axios";
 import Settings from "../constants/Settings";
 import ApiEndpoints from "../constants/ApiEndpoints";
-import ApiResults from "../constants/ApiResults";
+import axios from "axios";
+import axiosWithToken from "./axiosWithToken";
 
-export const getRoles = () => {
-    return new Promise((resolve, reject) => {
-
-        const config = {
-            headers: {
-                [LocalStorageKeys.LOGIN_TOKEN]: getLoginToken()
-            }
-        }
-
-        axios.get(Settings.API + ApiEndpoints.ROLES, config).then((response) => {
-            resolve(response.data);
-        }).catch((error) => {
-            let err = { message: "Nie udało się połączyć z serwerem" };
-            if (error.response && error.response.data.error) {
-                if(ApiResults[error.response.data.error]) {
-                    err = ApiResults[error.response.data.error]
-                } else {
-                    err = {
-                        ...err,
-                        code: error.response.data.error
-                    }
-                }
-            }
-            reject(err);
-        });
-    });
+export const reqGetRoles = () => {
+    return axiosWithToken.get(`${Settings.API}${ApiEndpoints.GET_ROLES}`)
+        .then(res => res.data)
+        .catch(err => Promise.reject(err));
 }
 
-export const addRole = (data) => {
-    return new Promise((resolve, reject) => {
+export const reqAddRole = (data) => {
+    if (!data.name) {
+        return Promise.reject({ message: "Musisz wprowadzić nazwę roli" });
+    }
 
-        let error = null;
-        if (!data.name)
-            error = { message: "Musisz wprowadzić nazwę roli" };
-
-        if (error) {
-            reject(error);
-            return;
-        }
-
-        const config = {
-            headers: {
-                [LocalStorageKeys.LOGIN_TOKEN]: getLoginToken()
-            }
-        }
-
-        axios.post(Settings.API + ApiEndpoints.ROLES, data, config).then((response) => {
-            resolve(response.data);
-        }).catch((error) => {
-            let err = { message: "Nie udało się połączyć z serwerem" };
-            if (error.response && error.response.data.error) {
-                if(ApiResults[error.response.data.error]) {
-                    err = ApiResults[error.response.data.error]
-                } else {
-                    err = {
-                        ...err,
-                        code: error.response.data.error
-                    }
-                }
-            }
-            reject(err);
-        });
-    });
+    return axiosWithToken.post(`${Settings.API}${ApiEndpoints.POST_ROLE}`, data)
+        .then(res => res.data)
+        .catch(err => Promise.reject(err));
 }
