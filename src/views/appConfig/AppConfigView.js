@@ -11,13 +11,16 @@ import {
     TableHead,
     TableRow,
     Paper,
-    Switch, Typography, Stack,
+    Switch,
+    Typography,
+    Stack,
+    TextareaAutosize,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { setSnackBar } from '../../redux/actions';
 import prepareSnackBarErrorObj from '../../helpers/prepareSnackBarErrorObj';
 import { reqGetAppConfigs, reqPutAppConfigs } from '../../helpers/AppConfig';
-import {format} from "date-fns";
+import { format } from 'date-fns';
 
 const AppConfigView = () => {
     const dispatch = useDispatch();
@@ -40,7 +43,9 @@ const AppConfigView = () => {
                 dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
             })
             .finally(() => {
-                dispatch({ type: 'HIDE_SPINNER' });
+                setTimeout(() => {
+                    dispatch({ type: 'HIDE_SPINNER' });
+                }, 250);
             });
     }, []);
 
@@ -50,7 +55,7 @@ const AppConfigView = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-
+        dispatch({ type: 'SHOW_SPINNER' });
         try {
             const changedData = Object.entries(formData).reduce((acc, [key, value]) => {
                 const originalValue = configurations.find((item) => item.key === key)?.value;
@@ -68,11 +73,20 @@ const AppConfigView = () => {
                         value: changedData[item.key] || item.value,
                     }))
                 );
+                setTimeout(() => {
+                    dispatch({ type: 'HIDE_SPINNER' });
+                }, 250);
                 dispatch(setSnackBar({ type: 'success', message: 'Dane zostały zaktualizowane.', show: true }));
             } else {
+                setTimeout(() => {
+                    dispatch({ type: 'HIDE_SPINNER' });
+                }, 250);
                 dispatch(setSnackBar({ type: 'info', message: 'Brak zmian do zapisania.', show: true }));
             }
         } catch (error) {
+            setTimeout(() => {
+                dispatch({ type: 'HIDE_SPINNER' });
+            }, 250);
             dispatch(setSnackBar(prepareSnackBarErrorObj(error)));
         }
     };
@@ -109,6 +123,18 @@ const AppConfigView = () => {
                                                 checked={formData[config.key] === '1'}
                                                 onChange={() => handleInputChange(config.key, formData[config.key] === '1' ? '0' : '1')}
                                             />
+                                        ) : config.key === 'REGISTRATION_DISABLED_REASON' || config.key === 'LOGIN_DISABLED_REASON' ? (
+                                            <TextareaAutosize
+                                                value={formData[config.key]}
+                                                onChange={(e) => handleInputChange(config.key, e.target.value)}
+                                                disabled={
+                                                    (config.key === 'REGISTRATION_DISABLED_REASON' &&
+                                                        formData['REGISTRATION_ENABLED'] === '1') ||
+                                                    (config.key === 'LOGIN_DISABLED_REASON' && formData['LOGIN_ENABLED'] === '1')
+                                                }
+                                                style={{ minWidth: '300px', maxWidth: '300px' }}
+                                                minRows={4}
+                                            />
                                         ) : (
                                             <TextField
                                                 type="text"
@@ -122,9 +148,7 @@ const AppConfigView = () => {
                                             />
                                         )}
                                     </TableCell>
-                                    <TableCell>
-                                        { config.updatedAt !== "" && format(new Date(config.updatedAt), 'yyyy-MM-dd HH:mm:ss') }
-                                    </TableCell>
+                                    <TableCell>{config.updatedAt !== '' && format(new Date(config.updatedAt), 'yyyy-MM-dd HH:mm:ss')}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
