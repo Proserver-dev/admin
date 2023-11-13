@@ -1,18 +1,27 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useTable, useSortBy, useFilters, useGlobalFilter } from 'react-table';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
     Container,
     TextField,
     Stack,
     Typography,
     Paper,
+    Table,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
 } from '@mui/material';
-import {setSnackBar} from "../../redux/actions";
-import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
-import {useDispatch} from "react-redux";
-import {reqGetApiResults} from "../../helpers/AppConfig";
-import { faChevronUp, faChevronDown } from '@fortawesome/fontawesome-free-solid';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useTable, useSortBy, useFilters, useGlobalFilter} from 'react-table';
+import {setSnackBar} from '../../redux/actions';
+import prepareSnackBarErrorObj from '../../helpers/prepareSnackBarErrorObj';
+import {useDispatch} from 'react-redux';
+import {reqGetApiResults} from '../../helpers/AppConfig';
+import {
+    faChevronUp,
+    faChevronDown,
+} from '@fortawesome/fontawesome-free-solid';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const ApiResultsView = () => {
     const dispatch = useDispatch();
@@ -22,18 +31,18 @@ const ApiResultsView = () => {
     useEffect(() => {
         dispatch({type: 'SHOW_SPINNER'});
         reqGetApiResults()
-            .then(res => {
-                setData(Object.values(res))
+            .then((res) => {
+                setData(Object.values(res));
             })
-            .catch(err => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+            .catch((err) => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
             })
             .finally(() => {
                 setTimeout(() => {
                     dispatch({type: 'HIDE_SPINNER'});
                 }, 250);
-            })
-    },[]);
+            });
+    }, []);
 
     const columns = useMemo(
         () => [
@@ -48,6 +57,7 @@ const ApiResultsView = () => {
             {
                 Header: 'Status Code',
                 accessor: 'status_code',
+                Cell: ({value}) => <div style={{textAlign: 'left'}}>{value}</div>,
             },
         ],
         []
@@ -65,7 +75,7 @@ const ApiResultsView = () => {
         {
             columns,
             data,
-            initialState: { sortBy: [{ id: 'code' }] },
+            initialState: {sortBy: [{id: 'code'}]},
         },
         useFilters,
         useGlobalFilter,
@@ -78,7 +88,13 @@ const ApiResultsView = () => {
 
     return (
         <Container>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
+            <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                mb={5}
+                marginTop={5}
+            >
                 <Typography variant="h4" gutterBottom className="page-title">
                     API Results
                 </Typography>
@@ -89,46 +105,56 @@ const ApiResultsView = () => {
                 fullWidth
                 value={filterText}
                 onChange={(e) => setFilterText(e.target.value)}
-                sx={{ marginBottom: 2 }}
+                sx={{marginBottom: 2}}
             />
             <Paper>
-                <table {...getTableProps()} style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                    {headerGroups.map((headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()} style={{ borderBottom: '1px solid #ddd' }}>
-                            {headerGroup.headers.map((column) => (
-                                <th
-                                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                                    style={{
-                                        background: '#f2f2f2',
-                                        padding: '8px',
-                                        cursor: 'pointer',
-                                    }}
-                                >
-                                    {column.render('Header')}
-                                    <span>
-                      {column.isSorted ? (column.isSortedDesc ? (<FontAwesomeIcon icon={faChevronDown} />) : (<FontAwesomeIcon icon={faChevronUp} />)) : ''}
+                <Table {...getTableProps()} style={{width: '100%'}}>
+                    <TableHead>
+                        {headerGroups.map((headerGroup) => (
+                            <TableRow {...headerGroup.getHeaderGroupProps()}>
+                                {headerGroup.headers.map((column) => (
+                                    <TableCell
+                                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                                        style={{
+                                            background: '#f2f2f2',
+                                            padding: '8px',
+                                            cursor: 'pointer',
+                                            userSelect: 'none', // Zapobiega zaznaczaniu tekstu
+                                            textAlign: column.id === 'status_code' ? 'left' : 'left', // Wycentrowanie tekstu w ostatniej kolumnie
+                                        }}
+                                    >
+                                        {column.render('Header')}
+                                        <span>
+                      {column.isSorted ? (
+                          column.isSortedDesc ? (
+                              <FontAwesomeIcon icon={faChevronDown}/>
+                          ) : (
+                              <FontAwesomeIcon icon={faChevronUp}/>
+                          )
+                      ) : (
+                          ''
+                      )}
                     </span>
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                    </thead>
-                    <tbody {...getTableBodyProps()}>
-                    {Object.values(rows).map((row) => {
-                        prepareRow(row);
-                        return (
-                            <tr {...row.getRowProps()} style={{ borderBottom: '1px solid #ddd' }}>
-                                {Object.values(row.cells).map((cell) => (
-                                    <td {...cell.getCellProps()} style={{ padding: '8px' }}>
-                                        {cell.render('Cell')}
-                                    </td>
+                                    </TableCell>
                                 ))}
-                            </tr>
-                        );
-                    })}
-                    </tbody>
-                </table>
+                            </TableRow>
+                        ))}
+                    </TableHead>
+                    <TableBody {...getTableBodyProps()}>
+                        {Object.values(rows).map((row) => {
+                            prepareRow(row);
+                            return (
+                                <TableRow {...row.getRowProps()}>
+                                    {Object.values(row.cells).map((cell) => (
+                                        <TableCell {...cell.getCellProps()} style={{padding: '8px'}}>
+                                            {cell.render('Cell')}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
             </Paper>
         </Container>
     );
