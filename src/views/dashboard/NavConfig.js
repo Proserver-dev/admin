@@ -36,6 +36,11 @@ const navConfig = [
         title: 'Konfiguracja aplikacji',
         path: RoutesPath.APP_CONFIG,
         icon: getIcon('dashicons:admin-generic'),
+    },
+    {
+        title: 'Lokalizacje użytkowników',
+        path: RoutesPath.MAP_USERS_LOCATION,
+        icon: getIcon('dashicons:location-alt'),
     }
 ];
 
