@@ -142,7 +142,7 @@ function SendToAllView() {
                         {data.rows.map((row) => (
                             <TableRow key={row.id}>
                                 <TableCell>{row.id}</TableCell>
-                                <TableCell>{row.sendBy}</TableCell>
+                                <TableCell>{row.sendBy.email}</TableCell>
                                 <TableCell>{row.message}</TableCell>
                                 <TableCell>{row.type}</TableCell>
                                 <TableCell>

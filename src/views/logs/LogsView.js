@@ -1,34 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Stack, Typography, TextField, Button } from "@mui/material";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
 import Settings from "../../constants/Settings";
+import {reqGetRoles} from "../../helpers/Role";
+import {setSnackBar} from "../../redux/actions";
+import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
+import {reqGetLogs} from "../../helpers/Logs";
 
 const LogsView = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { name } = useParams();
-    const currentUser = useSelector((state) => state.currentUser);
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedDate, setSelectedDate] = useState(name || new Date().toISOString().split('T')[0]);
 
-    // TODO: to trzeba przenieść do zewnętrznej funkcji, request do API
-    useEffect(() => {
-        const fetchLogs = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(`${Settings.API}/logs/${selectedDate}`);
-                setLogs(response.data);
-            } catch (error) {
-                console.error('Error fetching logs:', error);
-            } finally {
+    const fetchData = () => {
+        dispatch({ type: 'SHOW_SPINNER' });
+        setLoading(true);
+        reqGetLogs(selectedDate)
+            .then(res => {
+                console.log(res);
+                setLogs(res);
+            })
+            .catch(err => {
+                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+            })
+            .finally(() => {
                 setLoading(false);
-            }
-        };
+                setTimeout(() => {
+                    dispatch({ type: 'HIDE_SPINNER' });
+                }, 250);
+            });
+    };
 
-        fetchLogs();
+    useEffect(() => {
+        fetchData();
     }, [selectedDate]);
+
+    const handleRefresh = () => {
+        fetchData();
+    };
 
     const handleDateChange = (event) => {
         setSelectedDate(event.target.value);
@@ -42,6 +56,9 @@ const LogsView = () => {
                 <Typography variant="h4" gutterBottom className="page-title">
                     Logi
                 </Typography>
+                <Button variant="outlined" onClick={handleRefresh}>
+                    Odśwież
+                </Button>
             </Stack>
 
             <Stack direction="row" alignItems="center" spacing={2} mt={3}>

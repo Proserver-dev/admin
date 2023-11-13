@@ -18,3 +18,25 @@ export const reqAddRole = (data) => {
         .then(res => res.data)
         .catch(err => Promise.reject(err));
 }
+
+export const reqUpdateRole = (roleId, data) => {
+    if (!roleId || !data.name) {
+        return Promise.reject({ message: "Musisz podać identyfikator roli i wprowadzić nową nazwę roli" });
+    }
+
+    const queryParams = new URLSearchParams({ name: data.name });
+
+    return axiosWithToken.put(`${Settings.API}${ApiEndpoints.PUT_ROLE}/${roleId}?${queryParams.toString()}`)
+        .then(res => res.data)
+        .catch(err => Promise.reject(err));
+}
+
+export const reqDeleteRole = (roleId) => {
+    if (!roleId) {
+        return Promise.reject({ message: "Musisz podać identyfikator roli do usunięcia" });
+    }
+
+    return axiosWithToken.delete(`${Settings.API}${ApiEndpoints.DELETE_ROLE}/${roleId}`)
+        .then(res => res.data)
+        .catch(err => Promise.reject(err));
+}

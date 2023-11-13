@@ -5,6 +5,7 @@ import HomeView from "../views/home/HomeView";
 import RolesView from "../views/roles/RolesView";
 import SendToAllView from "../views/sendToAll/SendToAllView";
 import LogsView from "../views/logs/LogsView";
+import ApiResultsView from "../views/apiResults/ApiResultsView";
 
 export default function Router() {
     return useRoutes([
@@ -15,7 +16,8 @@ export default function Router() {
                 { path: RoutesPath.HOME, element: <HomeView /> },
                 { path: RoutesPath.ROLES, element: <RolesView /> },
                 { path: RoutesPath.SEND_TO_ALL, element: <SendToAllView /> },
-                { path: RoutesPath.LOGS, element: <LogsView /> }
+                { path: RoutesPath.LOGS, element: <LogsView /> },
+                { path: RoutesPath.API_RESULTS, element: <ApiResultsView /> }
             ],
         },
         { path: '*', element: <Navigate to={RoutesPath.HOME} replace /> },

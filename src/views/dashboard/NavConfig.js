@@ -26,6 +26,11 @@ const navConfig = [
         title: 'Logi',
         path: RoutesPath.LOGS,
         icon: getIcon('dashicons:list-view'),
+    },
+    {
+        title: 'Api results',
+        path: RoutesPath.API_RESULTS,
+        icon: getIcon('dashicons:rest-api'),
     }
 ];
 

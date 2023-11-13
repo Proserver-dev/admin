@@ -5,6 +5,7 @@ const ApiEndpoints = {
 
     GET_USERS_ME: '/users/me',
     GET_USERS: '/users',
+    GET_AUTH_HISTORY: '/admin/users/get-auth-history',
 
     GET_ROLES: '/roles',
     GET_ROLE: '/roles/', // :id
@@ -17,6 +18,8 @@ const ApiEndpoints = {
     GET_LOGS: '/logs/', // :name
 
     GET_API_RESULTS: '/api-results',
+    GET_APP_CONFIG: '/admin/app-config',
+    PUT_APP_CONFIG: '/admin/app-config',
 }
 
 export default ApiEndpoints;

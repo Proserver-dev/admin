@@ -17,6 +17,7 @@ import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 import {useDispatch} from "react-redux";
 import {setSnackBar} from "../../redux/actions";
 import videoBackground from '../../assets/login_view.mp4';
+import Logo from "../../assets/rideclub_logo.png";
 
 const LoginView = () => {
     const dispatch = useDispatch();
@@ -69,7 +70,7 @@ const LoginView = () => {
             </video>
             <div className="overlay"></div>
             <div className="login-view">
-                <h1>{Settings.TITLE}</h1>
+                <img src={Logo} alt={Settings.TITLE} className="login-logo"/>
                 <div className="login-container">
                     <TextField id="email" label="E-mail" variant="outlined" className="login-input" value={values.email}
                                onChange={handleChange('email')}/>
