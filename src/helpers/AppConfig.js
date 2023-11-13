@@ -12,3 +12,11 @@ export const reqGetAppConfigs = () => {
         .then(res => res.data)
         .catch(err => Promise.reject(err));
 }
+
+export const reqPutAppConfigs = (data) => {
+    const queryParams = new URLSearchParams(data);
+
+    return axiosWithToken.put(`${Settings.API}${ApiEndpoints.GET_APP_CONFIG}?${queryParams.toString()}`)
+        .then(res => res.data)
+        .catch(err => Promise.reject(err));
+}

@@ -31,6 +31,11 @@ const navConfig = [
         title: 'Api results',
         path: RoutesPath.API_RESULTS,
         icon: getIcon('dashicons:rest-api'),
+    },
+    {
+        title: 'Konfiguracja aplikacji',
+        path: RoutesPath.APP_CONFIG,
+        icon: getIcon('dashicons:admin-generic'),
     }
 ];
 
