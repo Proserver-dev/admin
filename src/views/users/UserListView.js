@@ -99,6 +99,7 @@ const UserListView = () => {
                         <TableRow>
                             <TableCell>ID</TableCell>
                             <TableCell>isActivated</TableCell>
+                            <TableCell>isLoggedIn</TableCell>
                             <TableCell>Email</TableCell>
                             <TableCell>User Name</TableCell>
                             <TableCell>Name Lastname</TableCell>
@@ -112,6 +113,13 @@ const UserListView = () => {
                                 <TableCell>{user.id}</TableCell>
                                 <TableCell>
                                     {user.isActivated ? (
+                                        <FaCheckCircle style={{ color: 'green' }} />
+                                    ) : (
+                                        <FaTimesCircle style={{ color: 'red' }} />
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {user.isLoggedIn ? (
                                         <FaCheckCircle style={{ color: 'green' }} />
                                     ) : (
                                         <FaTimesCircle style={{ color: 'red' }} />
