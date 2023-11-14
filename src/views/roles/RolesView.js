@@ -124,7 +124,7 @@ const RolesView = () => {
                     Role użytkowników
                 </Typography>
                 <Button variant="contained" onClick={() => setIsModalOpen(true)}>
-                    Dodaj nową pozycję
+                    Dodaj nową rolę
                 </Button>
             </Stack>
             <TableContainer component={Paper}>

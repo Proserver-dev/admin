@@ -41,6 +41,11 @@ const navConfig = [
         title: 'Lokalizacje użytkowników',
         path: RoutesPath.MAP_USERS_LOCATION,
         icon: getIcon('dashicons:location-alt'),
+    },
+    {
+        title: 'Lista użytkowników',
+        path: RoutesPath.USER_LIST,
+        icon: getIcon('dashicons:admin-users'),
     }
 ];
 
