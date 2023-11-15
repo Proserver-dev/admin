@@ -9,7 +9,6 @@ import useResponsive from '../../hooks/useResponsive';
 // components
 import NavSection from '../../components/NavSection';
 //
-import navConfig from './NavConfig';
 import Label from "../../components/Label";
 import LogoutIcon from '@mui/icons-material/Logout';
 import Settings from "../../constants/Settings";
@@ -99,14 +98,14 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
                                 {currentUser?.nameLastname || currentUser?.userName || currentUser?.email}
                             </Typography>
                             <Label variant="ghost" color="error">
-                                Administrator
+                                {currentUser?.role?.name}
                             </Label>
                         </Box>
                     </AccountStyle>
                 </Link>
             </Box>
 
-            <NavSection navConfig={navConfig} />
+            <NavSection />
 
             <Box sx={{ flexGrow: 1 }} />
 

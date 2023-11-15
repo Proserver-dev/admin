@@ -6,6 +6,9 @@ import { alpha, useTheme, styled } from '@mui/material/styles';
 import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
 //
 import Iconify from './Iconify';
+import {translate} from "../helpers/i18n";
+import RoutesPath from "../constants/RoutesPath";
+import {useTranslation} from "react-i18next";
 
 // ----------------------------------------------------------------------
 
@@ -139,10 +142,55 @@ NavSection.propTypes = {
     navConfig: PropTypes.array,
 };
 
-export default function NavSection({ navConfig, ...other }) {
+export default function NavSection({ ...other }) {
     const { pathname } = useLocation();
+    const { t, i18n } = useTranslation();
 
-    // const match = (path) => (path ? !!matchPath({ path, end: false }, pathname) : false);
+    const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
+
+    const navConfig = [
+        {
+            title: t("APP_MENU_HOME"),
+            path: RoutesPath.HOME,
+            icon: getIcon('dashicons:admin-home'),
+        },
+        {
+            title: t("APP_MENU_USER_ROLES"),
+            path: RoutesPath.ROLES,
+            icon: getIcon('dashicons:shield'),
+        },
+        {
+            title: t("APP_MENU_MESSAGES_TO_ALL"),
+            path: RoutesPath.SEND_TO_ALL,
+            icon: getIcon('dashicons:upload'),
+        },
+        {
+            title: t("APP_MENU_LOGS"),
+            path: RoutesPath.LOGS,
+            icon: getIcon('dashicons:list-view'),
+        },
+        {
+            title: t("APP_MENU_API_RESULTS"),
+            path: RoutesPath.API_RESULTS,
+            icon: getIcon('dashicons:rest-api'),
+        },
+        {
+            title: t("APP_MENU_APP_SETTINGS"),
+            path: RoutesPath.APP_CONFIG,
+            icon: getIcon('dashicons:admin-generic'),
+        },
+        {
+            title: t("APP_MENU_USER_LOCATIONS"),
+            path: RoutesPath.MAP_USERS_LOCATION,
+            icon: getIcon('dashicons:location-alt'),
+        },
+        {
+            title: t("APP_MENU_USER_LIST"),
+            path: RoutesPath.USER_LIST,
+            icon: getIcon('dashicons:admin-users'),
+        }
+    ];
+
     const match = (path) => (path ? path === pathname : false);
 
     return (
