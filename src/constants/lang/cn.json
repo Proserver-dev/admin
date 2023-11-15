@@ -58,6 +58,7 @@
   "LOGIN_DISABLED_REASON": "禁用登录的原因",
   "LOGIN_TOKEN_LIFE_TIME": "登录令牌生命周期",
   "REFRESH_TOKEN_LIFE_TIME": "刷新令牌生命周期",
+  "THROTTLE_TIME_SENDING_EMAILS": "每个用户可以多久发送一封电子邮件（以毫秒为单位）",
 
   "APP_SUCCESS_LOGOUT": "成功注销",
   "APP_SUCCESS_LOGIN": "成功登录",

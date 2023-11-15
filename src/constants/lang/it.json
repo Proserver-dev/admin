@@ -58,6 +58,7 @@
   "LOGIN_DISABLED_REASON": "Motivo disabilitazione login",
   "LOGIN_TOKEN_LIFE_TIME": "Durata del Token di accesso",
   "REFRESH_TOKEN_LIFE_TIME": "Durata del Refresh Token",
+  "THROTTLE_TIME_SENDING_EMAILS": "Con quale frequenza è possibile inviare una email (per utente) in millisecondi",
 
   "APP_SUCCESS_LOGOUT": "Logout riuscito",
   "APP_SUCCESS_LOGIN": "Login riuscito",

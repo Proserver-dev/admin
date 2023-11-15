@@ -58,6 +58,7 @@
   "LOGIN_DISABLED_REASON": "Powód wyłączenia logowania",
   "LOGIN_TOKEN_LIFE_TIME": "Czas życia Login-Tokena",
   "REFRESH_TOKEN_LIFE_TIME": "Czas życia Refresh-Tokena",
+  "THROTTLE_TIME_SENDING_EMAILS": "Co ile czasu można wysłać maila (per user) w milisekundach",
 
   "APP_SUCCESS_LOGOUT": "Wylogowano pomyślnie",
   "APP_SUCCESS_LOGIN": "Zalogowano pomyślnie",

@@ -58,6 +58,7 @@
   "LOGIN_DISABLED_REASON": "Reason for login disablement",
   "LOGIN_TOKEN_LIFE_TIME": "Login Token lifetime",
   "REFRESH_TOKEN_LIFE_TIME": "Refresh Token lifetime",
+  "THROTTLE_TIME_SENDING_EMAILS": "How often can an email be sent (per user) in milliseconds",
 
   "APP_SUCCESS_LOGOUT": "Successfully logged out",
   "APP_SUCCESS_LOGIN": "Successfully logged in",
