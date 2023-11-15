@@ -1,6 +1,7 @@
 import plFlag from '../../assets/flags/pl.svg';
 import gbFlag from '../../assets/flags/gb.svg';
 import itFlag from '../../assets/flags/it.svg';
+import cnFlag from '../../assets/flags/cn.svg';
 
 const Countries = {
     'PL': {
@@ -14,6 +15,10 @@ const Countries = {
     'IT': {
         flag: itFlag,
         nameKey: 'APP_LANG_IT_LABEL'
+    },
+    'CN': {
+        flag: cnFlag,
+        nameKey: 'APP_LANG_CN_LABEL'
     }
 }
 

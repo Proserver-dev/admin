@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 import translationsPL from './pl.json';
 import translationsGB from './gb.json';
 import translationsIT from './it.json';
+import translationsCN from './cn.json';
 import Settings from "../Settings";
 import Cookies from "js-cookie";
 
@@ -12,6 +13,7 @@ i18n.use(initReactI18next).init({
         PL: { translation: translationsPL },
         GB: { translation: translationsGB },
         IT: { translation: translationsIT },
+        CN: { translation: translationsCN },
     },
     lng: Cookies.get('currentLang'),
     fallbackLng: Settings.DEFAULT_LANG,
