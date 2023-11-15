@@ -18,6 +18,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setSnackBar} from "../../redux/actions";
 import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 import RoutesPath from "../../constants/RoutesPath";
+import Logo from "../../assets/rideclub_logo.png";
 
 // ----------------------------------------------------------------------
 
@@ -83,8 +84,8 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
     const renderContent = (
         <>
-            <Box sx={{ px: 2.5, py: 2.5, display: 'inline-flex' }}>
-                <h1>{Settings.TITLE}</h1>
+            <Box sx={{ px: 2.5, py: 2.5, display: 'inline-flex', justifyContent: 'center' }}>
+                <img src={Logo} alt={Settings.TITLE} style={{ maxWidth: '100px', width: '100%' }}/>
             </Box>
 
             <Box sx={{ mb: 5, mx: 2.5 }}>

@@ -26,6 +26,26 @@ const navConfig = [
         title: 'Logi',
         path: RoutesPath.LOGS,
         icon: getIcon('dashicons:list-view'),
+    },
+    {
+        title: 'Api results',
+        path: RoutesPath.API_RESULTS,
+        icon: getIcon('dashicons:rest-api'),
+    },
+    {
+        title: 'Konfiguracja aplikacji',
+        path: RoutesPath.APP_CONFIG,
+        icon: getIcon('dashicons:admin-generic'),
+    },
+    {
+        title: 'Lokalizacje użytkowników',
+        path: RoutesPath.MAP_USERS_LOCATION,
+        icon: getIcon('dashicons:location-alt'),
+    },
+    {
+        title: 'Lista użytkowników',
+        path: RoutesPath.USER_LIST,
+        icon: getIcon('dashicons:admin-users'),
     }
 ];
 

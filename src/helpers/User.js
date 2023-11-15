@@ -11,3 +11,19 @@ export const getMe = () => {
             .catch(err => reject(err))
     });
 }
+
+export const reqGetUsers = (limit, offset) => {
+    return new Promise((resolve, reject) => {
+
+        const config = {
+            params: {
+                limit: limit,
+                offset: offset
+            }
+        }
+
+        axiosWithToken.get(Settings.API + ApiEndpoints.GET_USERS, config)
+            .then(res => resolve(res.data))
+            .catch(err => reject(err))
+    });
+}
