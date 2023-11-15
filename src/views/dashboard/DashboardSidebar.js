@@ -74,7 +74,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
                 dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_LOGOUT"), show: true}))
             })
             .catch(err => {
-                const message = t(err?.error) || err?.error || t("ERR_UNKNOWN")
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
                 dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {

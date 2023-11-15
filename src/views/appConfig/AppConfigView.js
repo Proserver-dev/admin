@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
     Container,
     TextField,
@@ -20,9 +19,10 @@ import { useDispatch } from 'react-redux';
 import { setSnackBar } from '../../redux/actions';
 import { reqGetAppConfigs, reqPutAppConfigs } from '../../helpers/AppConfig';
 import { format } from 'date-fns';
-import {translate} from "../../helpers/i18n";
+import {useTranslation} from "react-i18next";
 
 const AppConfigView = () => {
+    const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const [configurations, setConfigurations] = useState([]);
     const [formData, setFormData] = useState({});
@@ -40,7 +40,7 @@ const AppConfigView = () => {
                 );
             })
             .catch((err) => {
-                const message = translate(err?.response?.data?.error) || err?.response?.data?.error || translate("ERR_UNKNOWN")
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
                 dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
@@ -88,7 +88,7 @@ const AppConfigView = () => {
             setTimeout(() => {
                 dispatch({ type: 'HIDE_SPINNER' });
             }, 250);
-            const message = translate(err?.response?.data?.error) || err?.response?.data?.error || translate("ERR_UNKNOWN")
+            const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
             dispatch(setSnackBar({ type: 'error', message: message, show: true }));
         }
     };
@@ -97,7 +97,7 @@ const AppConfigView = () => {
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
                 <Typography variant="h4" gutterBottom className="page-title">
-                    Konfiguracja aplikacji
+                    {t("APP_MENU_APP_SETTINGS")}
                 </Typography>
             </Stack>
             <form onSubmit={handleFormSubmit}>
@@ -105,15 +105,15 @@ const AppConfigView = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Key</TableCell>
-                                <TableCell>Value</TableCell>
-                                <TableCell>Updated At</TableCell>
+                                <TableCell>{t("APP_TABLE_COL_KEY")}</TableCell>
+                                <TableCell>{t("APP_TABLE_COL_VALUE")}</TableCell>
+                                <TableCell>{t("APP_TABLE_COL_UPDATED_AT")}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {configurations.map((config) => (
                                 <TableRow key={config.id}>
-                                    <TableCell>{config.key}</TableCell>
+                                    <TableCell>{t(config.key) || config.key}</TableCell>
                                     <TableCell>
                                         {config.key === 'REGISTRATION_ENABLED' ? (
                                             <Switch
@@ -157,7 +157,7 @@ const AppConfigView = () => {
                     </Table>
                 </TableContainer>
                 <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-                    Zapisz zmiany
+                    {t("APP_SAVE_CHANGES_BTN_LABEL")}
                 </Button>
             </form>
         </Container>

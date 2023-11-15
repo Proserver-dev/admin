@@ -52,11 +52,22 @@
   "SUCCESS_LOGOUT": "Pomyślnie wylogowano",
   "ERR_UNKNOWN": "Wystąpił nieznany błąd",
 
+  "REGISTRATION_ENABLED": "Status rejestracji (włączona / wyłączona)",
+  "REGISTRATION_DISABLED_REASON": "Powód wyłączenia rejestracji",
+  "LOGIN_ENABLED": "Status logowania (włączone / wyłączone)",
+  "LOGIN_DISABLED_REASON": "Powód wyłączenia logowania",
+  "LOGIN_TOKEN_LIFE_TIME": "Czas życia Login-Tokena",
+  "REFRESH_TOKEN_LIFE_TIME": "Czas życia Refresh-Tokena",
+
   "APP_SUCCESS_LOGOUT": "Wylogowano pomyślnie",
   "APP_SUCCESS_LOGIN": "Zalogowano pomyślnie",
   "APP_SUCCESS_CREATE_NEW_ROLE": "Pomyślnie utworzono nową rolę",
   "APP_SUCCESS_EDITED_ROLE": "Pomyślnie zaktualizowano rolę",
   "APP_SUCCESS_DELETED_ROLE": "Pomyślnie usunięto rolę",
+
+  "APP_ERR_PROVIDE_NAME_ROLE": "Musisz wprowadzić nazwę roli",
+  "APP_ERR_PROVIDE_ID_AND_NEW_NAME_ROLE": "Musisz podać identyfikator i wprowadzić nową nazwę roli",
+  "APP_ERR_PROVIDE_ID_ROLE_TO_DELETE": "Musisz podać identyfikator roli do usunięcia",
 
   "APP_LANG_PL_LABEL": "Polski",
   "APP_LANG_US_LABEL": "Angielski (US)",
@@ -71,7 +82,7 @@
   "APP_MENU_USER_ROLES": "Role użytkowników",
   "APP_MENU_MESSAGES_TO_ALL": "Wiadomości do wszystkich",
   "APP_MENU_LOGS": "Logi",
-  "APP_MENU_API_RESULTS": "Api Results",
+  "APP_MENU_API_RESULTS": "API Results",
   "APP_MENU_APP_SETTINGS": "Ustawienia aplikacji",
   "APP_MENU_USER_LOCATIONS": "Lokalizacje użytkowników",
   "APP_MENU_USER_LIST": "Lista użytkowników",
@@ -83,6 +94,7 @@
   "APP_SEND_BTN_LABEL": "Wyślij",
   "APP_ADD_BTN_LABEL": "Dodaj",
   "APP_SAVE_BTN_LABEL": "Zapisz",
+  "APP_SAVE_CHANGES_BTN_LABEL": "Zapisz zmiany",
   "APP_YES_BTN_LABEL": "Tak",
   "APP_NO_BTN_LABEL": "Nie",
   "APP_REFRESH_BTN_LABEL": "Odśwież",
@@ -111,6 +123,11 @@
   "APP_TABLE_COL_SEND_BY": "Wysłano przez",
   "APP_TABLE_COL_TYPE": "Typ",
   "APP_TABLE_COL_SLUG": "Slug",
+  "APP_TABLE_COL_KEY": "Klucz",
+  "APP_TABLE_COL_VALUE": "Wartość",
+  "APP_TABLE_COL_CODE": "Kod",
+  "APP_TABLE_COL_DESCRIPTION": "Opis",
+  "APP_TABLE_COL_STATUS_CODE": "Kod statusu",
 
   "APP_TITLE_USER_DETAILS": "Szczegóły użytkownika",
   "APP_TITLE_ADD_NEW_USER_ROLE": "Dodaj nową rolę",
@@ -128,8 +145,10 @@
   "APP_YOUR_BROWSER_NOT_SUPPORTS_VIDEO_TAG": "Twoja przeglądarka nie obsługuje tagu video",
 
   "APP_CHANGE_VISIBILITY_PASSWORD": "Zmień widoczność hasła",
+  "APP_LOGGED_AS": "Zalogowany jako",
 
   "APP_NAME_TXT": "Nazwa",
   "APP_MESSAGE_TXT": "Wiadomość",
-  "APP_TYPE_TXT": "Typ"
+  "APP_TYPE_TXT": "Typ",
+  "APP_SEARCH_TXT": "Szukaj"
 }
