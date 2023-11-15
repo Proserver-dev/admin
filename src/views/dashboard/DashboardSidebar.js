@@ -16,9 +16,9 @@ import Settings from "../../constants/Settings";
 import {reqUserLogout} from "../../helpers/Auth";
 import {useDispatch, useSelector} from "react-redux";
 import {setSnackBar} from "../../redux/actions";
-import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 import RoutesPath from "../../constants/RoutesPath";
 import Logo from "../../assets/rideclub_logo.png";
+import {useTranslation} from "react-i18next";
 
 // ----------------------------------------------------------------------
 
@@ -47,6 +47,7 @@ const AccountStyle = styled('div')(({ theme }) => ({
 }));
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+    const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const currentUser = useSelector((state) => state.currentUser);
@@ -70,10 +71,11 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
                 dispatch({type: 'DISCONNECT_SOCKET'});
                 dispatch({type: 'LOGOUT_CURRENT_USER'});
                 localStorage.clear();
-                dispatch(setSnackBar({type: 'success', message: 'Wylogowano pomyślnie', show: true}))
+                dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_LOGOUT"), show: true}))
             })
             .catch(err => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+                const message = t(err?.error) || err?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -111,10 +113,10 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
                 <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
                     {!isSocketConnected && (
-                        <p style={{ color: 'red' }}>Nie jesteś połączony z socketem</p>
+                        <p style={{ color: 'red' }}>{t("APP_YOU_ARE_NOT_CONNECTED_WITH_SOCKET")}</p>
                     )}
                     <Button onClick={handleLogout} target="_blank" variant="contained" color="error" startIcon={<LogoutIcon />}>
-                        Wylogowanko
+                        {t("APP_LOGOUT_BTN_LABEL")}
                     </Button>
                 </Stack>
             </Box>

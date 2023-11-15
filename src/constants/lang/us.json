@@ -1,0 +1,33 @@
+{
+  "ERR_LOGIN_ERROR": "Login error",
+  "ERR_PROVIDE_LOGIN_DATA": "You must enter an email and password",
+  "ERR_USER_NOT_EXISTS": "User does not exist",
+  "ERR_PROVIDE_DEVICE_TOKEN": "You do not have permission for this",
+  "ERR_WRONG_PASSWORD": "Incorrect password",
+  "ERR_TOKEN_EXPIRED": "Login token has expired",
+  "ERR_REFRESH_TOKEN_EXPIRED": "Refresh token is expired. Please log in again",
+  "ERR_GET_ROLES": "An error occurred while fetching roles",
+  "ERR_DELETE_ROLE": "An error occurred while deleting the role",
+  "ERR_ROLE_NAME_IS_RESERVED": "You cannot add a role with this name",
+  "ERR_ROLE_ALREADY_EXISTS": "Role already exists",
+  "ERR_ROLE_EDIT_NAME_IS_RESERVED": "You cannot edit this role, it is locked",
+  "ERR_ROLE_EDIT_ALREADY_EXISTS": "You cannot change the role name to one that already exists",
+  "ERR_ROLE_DELETE_NAME_IS_RESERVED": "You cannot delete this role, it is locked",
+  "ERR_PROVIDE_NAME_FIELD": "You must provide a value for the 'name' field",
+  "ERR_INVALID_EMAIL_ADDRESS": "Invalid email address",
+
+  "ERR_UNKNOWN": "An unknown error occurred",
+
+  "APP_LANG_PL_LABEL": "Polish",
+  "APP_LANG_US_LABEL": "English (US)",
+
+  "APP_EMAIL_FIELD_LABEL": "Email",
+  "APP_PASSWORD_FIELD_LABEL": "Password",
+  "APP_LOGIN_SUBMIT_BTN_LABEL": "Login",
+  "APP_LOGOUT_BTN_LABEL": "Logout",
+  "APP_SHOW_PASSWORD_BTN_TOOLTIP": "Show password",
+  "APP_HIDE_PASSWORD_BTN_TOOLTIP": "Hide password",
+  "APP_SUCCESS_LOGOUT": "You have been logged out",
+  "APP_SUCCESS_LOGIN": "You have been logged in",
+  "APP_YOU_ARE_NOT_CONNECTED_WITH_SOCKET": "You are not connected with socket"
+}

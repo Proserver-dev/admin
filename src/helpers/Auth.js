@@ -4,10 +4,9 @@ import Settings from "../constants/Settings";
 import validateEmail from "./validateEmail";
 import ApiEndpoints from "../constants/ApiEndpoints";
 import LocalStorageKeys from "../constants/LocalStorageKeys";
-import prepareSnackBarErrorObj from "./prepareSnackBarErrorObj";
 import {setSnackBar} from "../redux/actions";
 import axiosWithToken from "./axiosWithToken";
-import ApiResults from "../constants/ApiResults";
+import {translate} from "./i18n";
 
 export const getLoginToken = () => {
     return localStorage.getItem(LocalStorageKeys.LOGIN_TOKEN);
@@ -18,13 +17,20 @@ export const getRefreshToken = () => {
 };
 
 export const handleTokenRefreshError = (error) => {
+    store.dispatch({ type: 'DISCONNECT_SOCKET' });
+    store.dispatch({ type: 'LOGOUT_CURRENT_USER' });
+    localStorage.clear();
+
+    /*
     store.dispatch({ type: 'SHOW_SPINNER' });
     reqUserTryToLogout()
         .then(res => {
-            store.dispatch(setSnackBar(prepareSnackBarErrorObj(error)));
+            const message = translate(error?.response?.data?.error) || error?.response?.data?.error || translate("ERR_UNKNOWN")
+            store.dispatch(setSnackBar({ type: 'error', message: message, show: true }));
         })
         .catch(err => {
-            store.dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+            const message = translate(err?.response?.data?.error) || err?.response?.data?.error || translate("ERR_UNKNOWN")
+            store.dispatch(setSnackBar({ type: 'error', message: message, show: true }));
         })
         .finally(() => {
             store.dispatch({ type: 'DISCONNECT_SOCKET' });
@@ -32,6 +38,8 @@ export const handleTokenRefreshError = (error) => {
             localStorage.clear();
             store.dispatch({ type: 'HIDE_SPINNER' });
         })
+
+     */
 };
 
 export const reqAuthenticate = (data) => {
@@ -40,9 +48,9 @@ export const reqAuthenticate = (data) => {
 
         let error = null;
         if (!data.email || !data.password)
-            error = {message: "Musisz wprowadzić e-mail i hasło"};
+            error = { error: "ERR_PROVIDE_LOGIN_DATA" };
         else if (!validateEmail(data.email))
-            error = {message: "Wprowadzony adres e-mail jest nieprawidłowy"};
+            error = { error: "ERR_INVALID_EMAIL_ADDRESS" };
 
 
         if (error) {
@@ -56,10 +64,10 @@ export const reqAuthenticate = (data) => {
                 localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, res.data.refreshToken);
                 resolve(res.data);
             } else {
-                reject({message: "Nie masz do tego uprawnień"});
+                reject({ error: "ERR_ADMIN_PRIVILEGES_REQUIRED"} );
             }
         }).catch(err => {
-            reject(err);
+            reject(err.response.data);
         });
     });
 }
@@ -79,7 +87,9 @@ export const reqRefreshLoginToken = () => {
                 localStorage.setItem(LocalStorageKeys.LOGIN_TOKEN, res.data.token);
                 resolve(res.data.token)
             })
-            .catch(err => reject(err));
+            .catch(err => {
+                reject(err)
+            });
     });
 }
 
@@ -91,7 +101,7 @@ export const reqUserLogout = () => {
                 resolve(res.data);
             })
             .catch(err => {
-                reject(err)
+                reject(err.response.data)
             });
     });
 }
@@ -111,7 +121,7 @@ export const reqUserTryToLogout = () => {
                 resolve(res.data);
             })
             .catch(err => {
-                reject(err)
+                reject(err.response.data)
             });
     });
 }

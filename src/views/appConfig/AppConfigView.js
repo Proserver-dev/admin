@@ -18,9 +18,9 @@ import {
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { setSnackBar } from '../../redux/actions';
-import prepareSnackBarErrorObj from '../../helpers/prepareSnackBarErrorObj';
 import { reqGetAppConfigs, reqPutAppConfigs } from '../../helpers/AppConfig';
 import { format } from 'date-fns';
+import {translate} from "../../helpers/i18n";
 
 const AppConfigView = () => {
     const dispatch = useDispatch();
@@ -40,7 +40,8 @@ const AppConfigView = () => {
                 );
             })
             .catch((err) => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+                const message = translate(err?.response?.data?.error) || err?.response?.data?.error || translate("ERR_UNKNOWN")
+                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -83,11 +84,12 @@ const AppConfigView = () => {
                 }, 250);
                 dispatch(setSnackBar({ type: 'info', message: 'Brak zmian do zapisania.', show: true }));
             }
-        } catch (error) {
+        } catch (err) {
             setTimeout(() => {
                 dispatch({ type: 'HIDE_SPINNER' });
             }, 250);
-            dispatch(setSnackBar(prepareSnackBarErrorObj(error)));
+            const message = translate(err?.response?.data?.error) || err?.response?.data?.error || translate("ERR_UNKNOWN")
+            dispatch(setSnackBar({ type: 'error', message: message, show: true }));
         }
     };
 

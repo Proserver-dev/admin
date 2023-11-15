@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import {useTable, useSortBy, useFilters, useGlobalFilter} from 'react-table';
 import {setSnackBar} from '../../redux/actions';
-import prepareSnackBarErrorObj from '../../helpers/prepareSnackBarErrorObj';
 import {useDispatch} from 'react-redux';
 import {reqGetApiResults} from '../../helpers/AppConfig';
 import {
@@ -22,6 +21,8 @@ import {
     faChevronDown,
 } from '@fortawesome/fontawesome-free-solid';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {translate} from "../../helpers/i18n";
+import store from "../../redux/store";
 
 const ApiResultsView = () => {
     const dispatch = useDispatch();
@@ -35,7 +36,8 @@ const ApiResultsView = () => {
                 setData(Object.values(res));
             })
             .catch((err) => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+                const message = translate(err?.response?.data?.error) || err?.response?.data?.error || translate("ERR_UNKNOWN")
+                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
                 setTimeout(() => {
