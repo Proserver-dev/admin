@@ -17,12 +17,13 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
-import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 import {setSnackBar} from "../../redux/actions";
 import {useDispatch} from "react-redux";
 import {reqAddRole, reqDeleteRole, reqGetRoles, reqUpdateRole} from "../../helpers/Role";
+import {useTranslation} from "react-i18next";
 
 const RolesView = () => {
+    const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,7 +39,8 @@ const RolesView = () => {
                 setData(res)
             })
             .catch(err => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -54,10 +56,11 @@ const RolesView = () => {
                 setNewItem({name: ''});
                 setData([...data, res.role]);
                 setIsModalOpen(false);
-                dispatch(setSnackBar({type: 'success', message: 'Pomyślnie utworzono nową rolę', show: true}))
+                dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_CREATE_NEW_ROLE"), show: true}))
             })
             .catch(err => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -77,10 +80,11 @@ const RolesView = () => {
             .then((res) => {
                 setIsEditModalOpen(false);
                 setData(data.map(item => (item.id === selectedRole.id ? { ...res.role } : item)));
-                dispatch(setSnackBar({ type: 'success', message: 'Pomyślnie zaktualizowano rolę', show: true }));
+                dispatch(setSnackBar({ type: 'success', message: t("APP_SUCCESS_EDITED_ROLE"), show: true }));
             })
             .catch(err => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -100,10 +104,11 @@ const RolesView = () => {
             .then(() => {
                 setIsDeleteConfirmationOpen(false);
                 setData(data.filter(item => item.id !== selectedRole.id));
-                dispatch(setSnackBar({ type: 'success', message: 'Pomyślnie usunięto rolę', show: true }));
+                dispatch(setSnackBar({ type: 'success', message: t("APP_SUCCESS_DELETED_ROLE"), show: true }));
             })
             .catch(err => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -121,20 +126,20 @@ const RolesView = () => {
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
                 <Typography variant="h4" gutterBottom className="page-title">
-                    Role użytkowników
+                    {t("APP_MENU_USER_ROLES")}
                 </Typography>
                 <Button variant="contained" onClick={() => setIsModalOpen(true)}>
-                    Dodaj nową rolę
+                    {t("APP_ADD_NEW_USER_ROLE_BTN_LABEL")}
                 </Button>
             </Stack>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Short</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_ID")}</TableCell>
+                            <TableCell>{t("APP_NAME_TXT")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_SLUG")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_ACTIONS")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -146,14 +151,14 @@ const RolesView = () => {
                                 <TableCell>
                                     {item.short !== 'admin' && item.short !== 'user' && item.short !== 'blocked' && (
                                         <>
-                                            <Tooltip title="Edytuj">
+                                            <Tooltip title={t("APP_EDIT_BTN_TOOLTIP")}>
                                                 <EditIcon
                                                     color="primary"
                                                     onClick={() => handleEdit(item)}
                                                     style={{marginRight: '10px'}}
                                                 />
                                             </Tooltip>
-                                            <Tooltip title="Usuń">
+                                            <Tooltip title={t("APP_DELETE_BTN_TOOLTIP")}>
                                                 <DeleteIcon
                                                     color="error"
                                                     onClick={() => handleDelete(item)}
@@ -173,15 +178,15 @@ const RolesView = () => {
                 <Container style={{background: 'white', padding: '20px', borderRadius: '4px', maxWidth: '300px'}}>
                     <Stack direction="column" spacing={2}>
                         <Typography variant="h6" gutterBottom>
-                            Dodaj nową rolę
+                            {t("APP_TITLE_ADD_NEW_USER_ROLE")}
                         </Typography>
                         <TextField
-                            label="Name"
+                            label={t("APP_NAME_TXT")}
                             value={newItem.name}
                             onChange={(e) => setNewItem({...newItem, name: e.target.value})}
                         />
                         <Button variant="contained" color="primary" onClick={handleAddItem}>
-                            Dodaj
+                            {t("APP_ADD_BTN_LABEL")}
                         </Button>
                     </Stack>
                 </Container>
@@ -192,15 +197,15 @@ const RolesView = () => {
                 <Container style={{ background: 'white', padding: '20px', borderRadius: '4px', maxWidth: '300px' }}>
                     <Stack direction="column" spacing={2}>
                         <Typography variant="h6" gutterBottom>
-                            Edytuj rolę
+                            {t("APP_TITLE_EDIT_USER_ROLE")}
                         </Typography>
                         <TextField
-                            label="Name"
+                            label={t("APP_NAME_TXT")}
                             value={selectedRole.name}
                             onChange={(e) => setSelectedRole({ ...selectedRole, name: e.target.value })}
                         />
                         <Button variant="contained" color="primary" onClick={handleUpdateItem}>
-                            Zapisz
+                            {t("APP_SAVE_BTN_LABEL")}
                         </Button>
                     </Stack>
                 </Container>
@@ -211,14 +216,14 @@ const RolesView = () => {
                 <Container style={{ background: 'white', padding: '20px', borderRadius: '4px', maxWidth: '300px' }}>
                     <Stack direction="column" spacing={2}>
                         <Typography variant="h6" gutterBottom>
-                            Czy na pewno chcesz usunąć?
+                            {t("APP_ARE_YOU_SURE_YOU_WANT_TO_DELETE")}
                         </Typography>
                         <Stack direction="row" spacing={2} justifyContent="flex-end">
                             <Button variant="contained" color="error" onClick={handleConfirmDelete}>
-                                Tak
+                                {t("APP_YES_BTN_LABEL")}
                             </Button>
                             <Button variant="outlined" onClick={handleCancelDelete}>
-                                Nie
+                                {t("APP_NO_BTN_LABEL")}
                             </Button>
                         </Stack>
                     </Stack>

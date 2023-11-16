@@ -2,6 +2,8 @@
 
 https://www.latlong.net/ - strona do pobierania współrzędnych geograficznych
 
+`ncu -u` - To polecenie aktualizuje wersje paczek w pliku package.json. Po tym trzeba wykonać `npm install`
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

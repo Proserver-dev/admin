@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import {useTable, useSortBy, useFilters, useGlobalFilter} from 'react-table';
 import {setSnackBar} from '../../redux/actions';
-import prepareSnackBarErrorObj from '../../helpers/prepareSnackBarErrorObj';
 import {useDispatch} from 'react-redux';
 import {reqGetApiResults} from '../../helpers/AppConfig';
 import {
@@ -22,8 +21,10 @@ import {
     faChevronDown,
 } from '@fortawesome/fontawesome-free-solid';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {useTranslation} from "react-i18next";
 
 const ApiResultsView = () => {
+    const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const [filterText, setFilterText] = useState('');
     const [data, setData] = useState([]);
@@ -35,7 +36,8 @@ const ApiResultsView = () => {
                 setData(Object.values(res));
             })
             .catch((err) => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -47,15 +49,15 @@ const ApiResultsView = () => {
     const columns = useMemo(
         () => [
             {
-                Header: 'Code',
+                Header: t("APP_TABLE_COL_CODE"),
                 accessor: 'code',
             },
             {
-                Header: 'Description',
+                Header: t("APP_TABLE_COL_DESCRIPTION"),
                 accessor: 'description',
             },
             {
-                Header: 'Status Code',
+                Header: t("APP_TABLE_COL_STATUS_CODE"),
                 accessor: 'status_code',
                 Cell: ({value}) => <div style={{textAlign: 'left'}}>{value}</div>,
             },
@@ -96,11 +98,11 @@ const ApiResultsView = () => {
                 marginTop={5}
             >
                 <Typography variant="h4" gutterBottom className="page-title">
-                    API Results
+                    {t("APP_MENU_API_RESULTS")}
                 </Typography>
             </Stack>
             <TextField
-                label="Search"
+                label={t("APP_SEARCH_TXT")}
                 variant="outlined"
                 fullWidth
                 value={filterText}
@@ -119,8 +121,8 @@ const ApiResultsView = () => {
                                             background: '#f2f2f2',
                                             padding: '8px',
                                             cursor: 'pointer',
-                                            userSelect: 'none', // Zapobiega zaznaczaniu tekstu
-                                            textAlign: column.id === 'status_code' ? 'left' : 'left', // Wycentrowanie tekstu w ostatniej kolumnie
+                                            userSelect: 'none',
+                                            textAlign: column.id === 'status_code' ? 'left' : 'left',
                                         }}
                                     >
                                         {column.render('Header')}

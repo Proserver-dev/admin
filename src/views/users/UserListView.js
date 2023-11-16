@@ -16,18 +16,18 @@ import {
 import { format } from 'date-fns';
 import {reqGetUsers} from "../../helpers/User";
 import {setSnackBar} from "../../redux/actions";
-import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 import {useDispatch, useSelector} from "react-redux";
 import {useLocation, useNavigate} from "react-router-dom";
-import { RiQuestionLine, RiKeyLine } from 'react-icons/ri';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import InfoIcon from '@mui/icons-material/Info';
 import PasswordIcon from '@mui/icons-material/Key';
 import HistoryIcon from '@mui/icons-material/History';
+import {useTranslation} from "react-i18next";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
 const UserListView = () => {
+    const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -50,7 +50,8 @@ const UserListView = () => {
                 setData(res)
             })
             .catch(err => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -79,10 +80,10 @@ const UserListView = () => {
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
                 <Typography variant="h4" gutterBottom className="page-title">
-                    Lista użytkowników
+                    {t("APP_MENU_USER_LIST")}
                 </Typography>
                 <Button variant="contained" onClick={() => {}}>
-                    Dodaj nowego użytkownika
+                    {t("APP_ADD_NEW_USER_BTN_LABEL")}
                 </Button>
             </Stack>
             <TextField
@@ -97,14 +98,14 @@ const UserListView = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>isActivated</TableCell>
-                            <TableCell>isLoggedIn</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>User Name</TableCell>
-                            <TableCell>Name Lastname</TableCell>
-                            <TableCell>Role</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_ID")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_IS_ACTIVATED")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_IS_LOGGED_IN")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_EMAIL")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_USER_NAME")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_NAME_LASTNAME")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_ROLE")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_ACTIONS")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -130,21 +131,21 @@ const UserListView = () => {
                                 <TableCell>{user.nameLastname}</TableCell>
                                 <TableCell>{user.role?.short}</TableCell>
                                 <TableCell>
-                                    <Tooltip title="Zobacz więcej">
+                                    <Tooltip title={t("APP_SHOW_MORE_BTN_TOOLTIP")}>
                                         <InfoIcon
                                             color="primary"
                                             onClick={() => handleViewDetails(user)}
                                             style={{ marginRight: '10px', cursor: 'pointer' }}
                                         />
                                     </Tooltip>
-                                    <Tooltip title="Zmień hasło">
+                                    <Tooltip title={t("APP_CHANGE_PASSWORD_BTN_TOOLTIP")}>
                                         <PasswordIcon
                                             color="warning"
                                             onClick={() => {}}
                                             style={{ marginRight: '10px', cursor: 'pointer' }}
                                         />
                                     </Tooltip>
-                                    <Tooltip title="Pokaż Auth History">
+                                    <Tooltip title={t("APP_SHOW_AUTH_HISTORY_BTN_TOOLTIP")}>
                                         <HistoryIcon
                                             color="primary"
                                             onClick={() => {}}
@@ -179,17 +180,16 @@ const UserListView = () => {
                         p: 4,
                     }}
                 >
-                    <Typography variant="h6">User Details</Typography>
+                    <Typography variant="h6">{t("APP_TITLE_USER_DETAILS")}</Typography>
                     {selectedUser && (
                         <div>
-                            <p>ID: {selectedUser.id}</p>
-                            <p>Email: {selectedUser.email}</p>
-                            <p>User Name: {selectedUser.userName}</p>
-                            <p>Name Lastname: {selectedUser.nameLastname}</p>
-                            <p>Role name: {selectedUser.role?.name}</p>
-                            <p>Role short: {selectedUser.role?.short}</p>
-                            <p>Updated At: {format(new Date(selectedUser.updatedAt), 'yyyy-MM-dd HH:mm:ss')}</p>
-                            <p>Created At: {format(new Date(selectedUser.createdAt), 'yyyy-MM-dd HH:mm:ss')}</p>
+                            <p>{t("APP_TABLE_COL_ID")}: {selectedUser.id}</p>
+                            <p>{t("APP_TABLE_COL_EMAIL")}: {selectedUser.email}</p>
+                            <p>{t("APP_TABLE_COL_USER_NAME")}: {selectedUser.userName}</p>
+                            <p>{t("APP_TABLE_COL_NAME_LASTNAME")}: {selectedUser.nameLastname}</p>
+                            <p>{t("APP_TABLE_COL_ROLE")}: {selectedUser.role?.name} ({selectedUser.role?.short})</p>
+                            <p>{t("APP_TABLE_COL_UPDATED_AT")}: {format(new Date(selectedUser.updatedAt), 'yyyy-MM-dd HH:mm:ss')}</p>
+                            <p>{t("APP_TABLE_COL_CREATED_AT")}: {format(new Date(selectedUser.createdAt), 'yyyy-MM-dd HH:mm:ss')}</p>
                         </div>
                     )}
                 </Box>

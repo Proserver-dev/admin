@@ -34,13 +34,14 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(238,238,238, 0.8);
+    /*background: rgba(238,238,238, 0.8);*/
+    background: rgba(0,0,0, 0.8);
     z-index: 1;
 }
 
 .login-logo {
     pointer-events: none;
-    width: 220px;
+    width: 350px;
 }
 
 .dashboard-logo {
@@ -63,11 +64,14 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background-color: white;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06), 0 1px 5px rgba(0, 0, 0, 0.12);
     overflow: hidden;
     padding: 40px 0;
     margin-top: 25px;
+    background: rgba(0,0,0, 0.5);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
 }
 
 .login-button {
@@ -100,4 +104,61 @@ body {
     width: 80%;
     margin-top: -15px;
     margin-bottom: 15px;
+}
+
+/* Zmiana koloru bordera */
+.login-view .MuiOutlinedInput-root {
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+        border-color: #555; /* Kolor bordera w stanie aktywnym (focused) */
+        transition: .4s;
+    }
+    .MuiOutlinedInput-notchedOutline {
+        border-color: #555; /* Kolor domyślnego bordera */
+        transition: .4s;
+    }
+}
+
+/* Zmiana koloru tekstu */
+.login-view .MuiInputLabel-root {
+    color: white !important; /* Kolor tekstu labela */
+}
+
+/* Zmiana koloru tekstu w stanie aktywnym (focused) */
+.login-view .MuiInputLabel-root.Mui-focused {
+    color: white !important;
+}
+
+/* Zmiana koloru wprowadzanych znaków */
+.login-view .MuiInputBase-input {
+    color: white !important; /* Kolor wprowadzanych znaków */
+}
+
+/* Zmiana koloru placeholdera */
+.login-view .MuiInputLabel-outlined {
+    color: #555 !important; /* Kolor placeholdera dla OutlinedInput */
+}
+
+/* Zmiana koloru ikony do wyświetlania/chowania hasła */
+.login-view .MuiIconButton-root {
+    color: white !important; /* Kolor ikony */
+}
+
+/* Zmiana koloru bordera w stanie hover */
+.login-view .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: white;
+}
+
+/* Zmiana koloru bordera w stanie hover */
+.login-view .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: white !important;
+}
+
+/* Zmiana koloru tekstu w stanie hover */
+.login-view .MuiInputLabel-root.Mui-focused:hover {
+    color: white !important;
+}
+
+/* Zmiana koloru ikony do wyświetlania/chowania hasła w stanie hover */
+.login-view .MuiIconButton-root:hover {
+    color: white !important;
 }

@@ -14,19 +14,20 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem, Container, Grid,
+    MenuItem, Container, Grid, Stack,
 } from '@mui/material';
 import {getMessagesToAll} from "../../helpers/MessagesToAll";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useLocation} from "react-router-dom";
 import {format} from "date-fns";
 import {setSnackBar} from "../../redux/actions";
-import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
+import {useTranslation} from "react-i18next";
 
 const initialMessage = ''; // Domyślna wiadomość
 const itemsPerPage = 10; // Liczba elementów na stronę
 
 function SendToAllView() {
+    const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -34,7 +35,7 @@ function SendToAllView() {
     const [message, setMessage] = useState(initialMessage);
     const [type, setType] = useState('forceLogout');
     const [page, setPage] = useState(1);
-    const [data, setData] = useState({ count: 0, rows: []})
+    const [data, setData] = useState({count: 0, rows: []})
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -44,33 +45,37 @@ function SendToAllView() {
 
     // TODO: może zrobić jeszcze jakiś event dodatkowy dla "messageToAll" np. "messageToAllError", nasłuchiwać na nim i jak przyjdzie error to wyświetlić snackbara
     const handleSend = () => {
-        if(type !== 'forceLogout' && message === '') {
-            dispatch({ type: 'SET_SNACK_BAR', payload: { type: 'error', message: 'Wiadomość dla tego typu nie może być pusta', show: true }})
+        if (type !== 'forceLogout' && message === '') {
+            dispatch({
+                type: 'SET_SNACK_BAR',
+                payload: {type: 'error', message: 'Wiadomość dla tego typu nie może być pusta', show: true}
+            })
             return;
         }
 
-        dispatch({ type: 'EMIT_SOCKET_EVENT', payload: { event: 'messageToAll', data: { message: message, type: type }}})
+        dispatch({type: 'EMIT_SOCKET_EVENT', payload: {event: 'messageToAll', data: {message: message, type: type}}})
         setData({
             count: data.count + 1,
             rows: [
-                { id: '', sendBy: currentUser?.id, message: message, type: type, createdAt: ''},
+                {id: '', sendBy: currentUser?.id, message: message, type: type, createdAt: ''},
                 ...data.rows
             ]
         })
     }
 
     useEffect(() => {
-        dispatch({ type: 'SHOW_SPINNER' });
-        getMessagesToAll(itemsPerPage, itemsPerPage*(page-1))
+        dispatch({type: 'SHOW_SPINNER'});
+        getMessagesToAll(itemsPerPage, itemsPerPage * (page - 1))
             .then((res) => {
                 setData(res)
             })
             .catch((err) => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)))
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
             })
             .finally(() => {
                 setTimeout(() => {
-                    dispatch({ type: 'HIDE_SPINNER' });
+                    dispatch({type: 'HIDE_SPINNER'});
                 }, 250);
             })
     }, [page])
@@ -92,23 +97,25 @@ function SendToAllView() {
 
     return (
         <Container>
-            <Typography variant="h6">Wiadomość do wszystkich:</Typography>
-            <Grid container spacing={2} style={{ marginTop: '15px', marginBottom: '15px' }}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
+                <Typography variant="h4" className="page-title">{t("APP_MENU_MESSAGES_TO_ALL")}</Typography>
+            </Stack>
+            <Grid container spacing={2} style={{marginTop: '15px', marginBottom: '15px'}}>
                 <Grid item xs={2}>
                     <FormControl fullWidth>
-                        <InputLabel>Typ</InputLabel>
+                        <InputLabel>{t("APP_TYPE_TXT")}</InputLabel>
                         <Select value={type} onChange={handleChangeType}>
-                            <MenuItem value="forceLogout">Force logout all</MenuItem>
-                            <MenuItem value="info">Info</MenuItem>
-                            <MenuItem value="warning">Warning</MenuItem>
-                            <MenuItem value="error">Error</MenuItem>
-                            <MenuItem value="success">Success</MenuItem>
+                            <MenuItem value="forceLogout">{t("APP_TYPE_MESSAGE_FORCE_LOGOUT_ALL")}</MenuItem>
+                            <MenuItem value="info">{t("APP_TYPE_MESSAGE_INFO")}</MenuItem>
+                            <MenuItem value="warning">{t("APP_TYPE_MESSAGE_WARNING")}</MenuItem>
+                            <MenuItem value="error">{t("APP_TYPE_MESSAGE_ERROR")}</MenuItem>
+                            <MenuItem value="success">{t("APP_TYPE_MESSAGE_SUCCESS")}</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
-                        label="Wiadomość"
+                        label={t("APP_MESSAGE_TXT")}
                         variant="outlined"
                         fullWidth
                         value={message}
@@ -122,7 +129,7 @@ function SendToAllView() {
                         fullWidth
                         onClick={() => handleSend(message, type)}
                     >
-                        Wyślij
+                        {t("APP_SEND_BTN_LABEL")}
                     </Button>
                 </Grid>
             </Grid>
@@ -131,11 +138,11 @@ function SendToAllView() {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Wysłane przez</TableCell>
-                            <TableCell>Wiadomość</TableCell>
-                            <TableCell>Typ</TableCell>
-                            <TableCell>Utworzone</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_ID")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_SEND_BY")}</TableCell>
+                            <TableCell>{t("APP_MESSAGE_TXT")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_TYPE")}</TableCell>
+                            <TableCell>{t("APP_TABLE_COL_CREATED_AT")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -146,7 +153,7 @@ function SendToAllView() {
                                 <TableCell>{row.message}</TableCell>
                                 <TableCell>{row.type}</TableCell>
                                 <TableCell>
-                                    { row.createdAt !== "" && format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss') }
+                                    {row.createdAt !== "" && format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss')}
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -158,7 +165,7 @@ function SendToAllView() {
                 count={Math.ceil(data.count / itemsPerPage)}
                 page={page}
                 onChange={handlePageChange}
-                style={{ marginTop: '15px' }}
+                style={{marginTop: '15px'}}
             />
         </Container>
     );

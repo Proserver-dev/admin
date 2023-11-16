@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Stack, Typography, TextField, Button } from "@mui/material";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {useNavigate, useParams} from 'react-router-dom';
-import axios from 'axios';
-import Settings from "../../constants/Settings";
-import {reqGetRoles} from "../../helpers/Role";
 import {setSnackBar} from "../../redux/actions";
-import prepareSnackBarErrorObj from "../../helpers/prepareSnackBarErrorObj";
 import {reqGetLogs} from "../../helpers/Logs";
+import {useTranslation} from "react-i18next";
 
 const LogsView = () => {
+    const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { name } = useParams();
@@ -26,7 +24,8 @@ const LogsView = () => {
                 setLogs(res);
             })
             .catch(err => {
-                dispatch(setSnackBar(prepareSnackBarErrorObj(err)));
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
             })
             .finally(() => {
                 setLoading(false);
@@ -54,15 +53,15 @@ const LogsView = () => {
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
                 <Typography variant="h4" gutterBottom className="page-title">
-                    Logi
+                    {t("APP_MENU_LOGS")}
                 </Typography>
                 <Button variant="outlined" onClick={handleRefresh}>
-                    Odśwież
+                    {t("APP_REFRESH_BTN_LABEL")}
                 </Button>
             </Stack>
 
             <Stack direction="row" alignItems="center" spacing={2} mt={3}>
-                <Typography variant="h6">Wybierz datę:</Typography>
+                <Typography variant="h6">{t("APP_CHOOSE_DATE_BTN_LABEL")}</Typography>
                 <TextField
                     type="date"
                     variant="outlined"
@@ -73,15 +72,15 @@ const LogsView = () => {
                     variant="contained"
                     onClick={() => navigate(`/logs/${selectedDate}`)}
                 >
-                    Pokaż logi
+                    {t("APP_SHOW_LOGS_BTN_LABEL")}
                 </Button>
             </Stack>
 
             {loading ? (
-                <Typography variant="body1">Ładowanie danych...</Typography>
+                <Typography variant="body1">{t("APP_LOADING_DATA_TXT")}...</Typography>
             ) : (
                 <>
-                    <Typography variant="h6" style={{ marginTop: '25px' }}>Treść logów:</Typography>
+                    <Typography variant="h6" style={{ marginTop: '25px' }}>{t("APP_LOGS_CONTENT_TXT")}:</Typography>
                     <div dangerouslySetInnerHTML={{ __html: logs }} style={{ marginTop: '25px' }}/>
                 </>
             )}

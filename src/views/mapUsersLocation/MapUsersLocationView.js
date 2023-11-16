@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Circle, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import carIconUrl from '../../assets/car-marker2.png';
+import {useTranslation} from "react-i18next";
 
 const customMarker = new L.Icon({
     iconUrl: require('leaflet/dist/images/marker-icon.png'),
@@ -27,6 +28,7 @@ const customCarMarker = new L.Icon({
 });
 
 const MapUsersLocationView = () => {
+    const { t, i18n } = useTranslation();
     const center = [52.0692, 19.4807]; // Współrzędne na środku Polski
     const mapRef = useRef(null);
     const [containerHeight, setContainerHeight] = useState(875);

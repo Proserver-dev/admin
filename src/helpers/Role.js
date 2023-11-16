@@ -11,7 +11,7 @@ export const reqGetRoles = () => {
 
 export const reqAddRole = (data) => {
     if (!data.name) {
-        return Promise.reject({ message: "Musisz wprowadzić nazwę roli" });
+        return Promise.reject({ response: { data: { error: "APP_ERR_PROVIDE_NAME_ROLE" }}});
     }
 
     return axiosWithToken.post(`${Settings.API}${ApiEndpoints.POST_ROLE}`, data)
@@ -21,7 +21,7 @@ export const reqAddRole = (data) => {
 
 export const reqUpdateRole = (roleId, data) => {
     if (!roleId || !data.name) {
-        return Promise.reject({ message: "Musisz podać identyfikator roli i wprowadzić nową nazwę roli" });
+        return Promise.reject({ response: { data: { error: "APP_ERR_PROVIDE_ID_AND_NEW_NAME_ROLE" }}});
     }
 
     const queryParams = new URLSearchParams({ name: data.name });
@@ -33,7 +33,7 @@ export const reqUpdateRole = (roleId, data) => {
 
 export const reqDeleteRole = (roleId) => {
     if (!roleId) {
-        return Promise.reject({ message: "Musisz podać identyfikator roli do usunięcia" });
+        return Promise.reject({ response: { data: { error: "APP_ERR_PROVIDE_ID_ROLE_TO_DELETE" }}});
     }
 
     return axiosWithToken.delete(`${Settings.API}${ApiEndpoints.DELETE_ROLE}/${roleId}`)
