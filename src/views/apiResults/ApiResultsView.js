@@ -49,15 +49,15 @@ const ApiResultsView = () => {
     const columns = useMemo(
         () => [
             {
-                Header: t("APP_TABLE_COL_CODE"),
+                Header: "APP_TABLE_COL_CODE",
                 accessor: 'code',
             },
             {
-                Header: t("APP_TABLE_COL_DESCRIPTION"),
+                Header: "APP_TABLE_COL_DESCRIPTION",
                 accessor: 'description',
             },
             {
-                Header: t("APP_TABLE_COL_STATUS_CODE"),
+                Header: "APP_TABLE_COL_STATUS_CODE",
                 accessor: 'status_code',
                 Cell: ({value}) => <div style={{textAlign: 'left'}}>{value}</div>,
             },
@@ -125,7 +125,7 @@ const ApiResultsView = () => {
                                             textAlign: column.id === 'status_code' ? 'left' : 'left',
                                         }}
                                     >
-                                        {column.render('Header')}
+                                        {t(column.render('Header'))}
                                         <span>
                       {column.isSorted ? (
                           column.isSortedDesc ? (
