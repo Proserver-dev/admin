@@ -18,6 +18,7 @@ import Cookies from 'js-cookie';
 import Countries from "./constants/lang/Countries";
 import Settings from './constants/Settings'
 import i18n from './constants/lang/i18n';
+import SocketEvents from "./constants/SocketEvents";
 
 const App = () => {
     const { t, i18n } = useTranslation();
@@ -51,7 +52,7 @@ const App = () => {
 
     useEffect(() => {
         if (socket) {
-            socket.on('messageToAll', (data) => {
+            socket.on(SocketEvents.LISTEN_MESSAGE_TO_ALL, (data) => {
                 if (data && data.message && data.type) {
                     let messageType = 'info';
 
@@ -64,14 +65,13 @@ const App = () => {
                 }
             });
 
-            socket.on('newSocketConnection', (data) => {
+            socket.on(SocketEvents.LISTEN_NEW_SOCKET_CONNECTION, (data) => {
                 if (data && data.logout) {
                     // tutaj nie robimy requesta do /auth/logout , bo przyczyną wylogowania jest zalogowanie się na innym urządzeniu
                     navigate(RoutesPath.HOME)
                     dispatch({type: 'SHOW_SPINNER'});
                     dispatch({type: 'DISCONNECT_SOCKET'});
                     dispatch({type: 'LOGOUT_CURRENT_USER'});
-                    localStorage.clear();
                     setTimeout(() => {
                         dispatch({type: 'HIDE_SPINNER'});
                     }, 250);
