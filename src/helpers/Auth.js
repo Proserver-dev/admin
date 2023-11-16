@@ -18,7 +18,6 @@ export const getRefreshToken = () => {
 export const handleTokenRefreshError = (error) => {
     store.dispatch({ type: 'DISCONNECT_SOCKET' });
     store.dispatch({ type: 'LOGOUT_CURRENT_USER' });
-    localStorage.clear();
 };
 
 export const reqAuthenticate = (data) => {

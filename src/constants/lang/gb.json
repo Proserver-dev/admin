@@ -141,6 +141,7 @@
   "APP_TYPE_MESSAGE_ERROR": "Error",
   "APP_TYPE_MESSAGE_SUCCESS": "Success",
   "APP_TYPE_MESSAGE_FORCE_LOGOUT_ALL": "Force Logout All",
+  "APP_MESSAGE_WITH_THIS_TYPE_CANNOT_BE_EMPTY": "Message with this type cannot be empty",
 
   "APP_ARE_YOU_SURE_YOU_WANT_TO_DELETE": "Are you sure you want to delete?",
   "APP_LOADING_DATA_TXT": "Loading data",

@@ -141,6 +141,7 @@
   "APP_TYPE_MESSAGE_ERROR": "Errore",
   "APP_TYPE_MESSAGE_SUCCESS": "Successo",
   "APP_TYPE_MESSAGE_FORCE_LOGOUT_ALL": "Forza logout di tutti",
+  "APP_MESSAGE_WITH_THIS_TYPE_CANNOT_BE_EMPTY": "Il messaggio di questo tipo non può essere vuoto",
 
   "APP_ARE_YOU_SURE_YOU_WANT_TO_DELETE": "Sei sicuro di voler eliminare?",
   "APP_LOADING_DATA_TXT": "Caricamento dati",

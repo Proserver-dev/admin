@@ -69,7 +69,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
                 navigate(RoutesPath.HOME)
                 dispatch({type: 'DISCONNECT_SOCKET'});
                 dispatch({type: 'LOGOUT_CURRENT_USER'});
-                localStorage.clear();
                 dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_LOGOUT"), show: true}))
             })
             .catch(err => {

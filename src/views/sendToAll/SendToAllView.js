@@ -22,6 +22,7 @@ import {useNavigate, useLocation} from "react-router-dom";
 import {format} from "date-fns";
 import {setSnackBar} from "../../redux/actions";
 import {useTranslation} from "react-i18next";
+import SocketEvents from "../../constants/SocketEvents";
 
 const initialMessage = ''; // Domyślna wiadomość
 const itemsPerPage = 10; // Liczba elementów na stronę
@@ -48,12 +49,12 @@ function SendToAllView() {
         if (type !== 'forceLogout' && message === '') {
             dispatch({
                 type: 'SET_SNACK_BAR',
-                payload: {type: 'error', message: 'Wiadomość dla tego typu nie może być pusta', show: true}
+                payload: {type: 'error', message: t("APP_MESSAGE_WITH_THIS_TYPE_CANNOT_BE_EMPTY"), show: true}
             })
             return;
         }
 
-        dispatch({type: 'EMIT_SOCKET_EVENT', payload: {event: 'messageToAll', data: {message: message, type: type}}})
+        dispatch({type: 'EMIT_SOCKET_EVENT', payload: {event: SocketEvents.EMIT_MESSAGE_TO_ALL, data: {message: message, type: type}}})
         setData({
             count: data.count + 1,
             rows: [

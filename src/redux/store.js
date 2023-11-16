@@ -18,6 +18,7 @@ const reducer = (state = initialState, action) => {
         case 'SET_CURRENT_USER':
             return { ...state, currentUser: action.payload };
         case 'LOGOUT_CURRENT_USER':
+            localStorage.clear();
             return { ...state, currentUser: { id: null }};
         case 'SET_SNACK_BAR':
             return { ...state, snackBar: action.payload };
