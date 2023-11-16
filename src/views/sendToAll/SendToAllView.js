@@ -58,7 +58,7 @@ function SendToAllView() {
         setData({
             count: data.count + 1,
             rows: [
-                {id: '', sendBy: currentUser?.id, message: message, type: type, createdAt: ''},
+                {id: '', sendBy: currentUser, message: message, type: type, createdAt: ''},
                 ...data.rows
             ]
         })
