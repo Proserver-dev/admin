@@ -144,6 +144,7 @@
   "APP_MESSAGE_WITH_THIS_TYPE_CANNOT_BE_EMPTY": "Wiadomość dla tego typu nie może być pusta",
 
   "APP_ARE_YOU_SURE_YOU_WANT_TO_DELETE": "Czy na pewno chcesz usunąć?",
+  "APP_ARE_YOU_SURE_YOU_WANT_TO_LOGOUT_ALL": "Czy na pewno chcesz wylogować wszystkich?",
   "APP_LOADING_DATA_TXT": "Ładowanie danych",
   "APP_LOGS_CONTENT_TXT": "Treść logów",
   "APP_YOUR_BROWSER_NOT_SUPPORTS_VIDEO_TAG": "Twoja przeglądarka nie obsługuje tagu video",

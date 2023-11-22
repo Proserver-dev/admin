@@ -14,7 +14,7 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem, Container, Grid, Stack,
+    MenuItem, Container, Grid, Stack, Dialog, DialogTitle, DialogActions,
 } from '@mui/material';
 import {getMessagesToAll} from "../../helpers/MessagesToAll";
 import {useDispatch, useSelector} from "react-redux";
@@ -34,9 +34,10 @@ function SendToAllView() {
     const location = useLocation();
     const currentUser = useSelector((state) => state.currentUser);
     const [message, setMessage] = useState(initialMessage);
-    const [type, setType] = useState('forceLogout');
+    const [type, setType] = useState('info');
     const [page, setPage] = useState(1);
     const [data, setData] = useState({count: 0, rows: []})
+    const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -44,7 +45,6 @@ function SendToAllView() {
         setPage(pageParam);
     }, [location.search]);
 
-    // TODO: może zrobić jeszcze jakiś event dodatkowy dla "messageToAll" np. "messageToAllError", nasłuchiwać na nim i jak przyjdzie error to wyświetlić snackbara
     const handleSend = () => {
         if (type !== 'forceLogout' && message === '') {
             dispatch({
@@ -54,6 +54,15 @@ function SendToAllView() {
             return;
         }
 
+        if (type === 'forceLogout') {
+            setOpenConfirmationDialog(true);
+        } else {
+            sendToAll();
+        }
+    };
+
+    // TODO: może zrobić jeszcze jakiś event dodatkowy dla "messageToAll" np. "messageToAllError", nasłuchiwać na nim i jak przyjdzie error to wyświetlić snackbara
+    const sendToAll = () => {
         dispatch({type: 'EMIT_SOCKET_EVENT', payload: {event: SocketEvents.EMIT_MESSAGE_TO_ALL, data: {message: message, type: type}}})
         setData({
             count: data.count + 1,
@@ -93,6 +102,15 @@ function SendToAllView() {
         navigate(`?page=${value}`)
     };
 
+    const handleConfirmationDialogClose = () => {
+        setOpenConfirmationDialog(false);
+    };
+
+    const handleConfirmationDialogConfirm = () => {
+        setOpenConfirmationDialog(false);
+        sendToAll();
+    };
+
     const startItem = (page - 1) * itemsPerPage;
     const endItem = page * itemsPerPage;
 
@@ -102,7 +120,7 @@ function SendToAllView() {
                 <Typography variant="h4" className="page-title">{t("APP_MENU_MESSAGES_TO_ALL")}</Typography>
             </Stack>
             <Grid container spacing={2} style={{marginTop: '15px', marginBottom: '15px'}}>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <FormControl fullWidth>
                         <InputLabel>{t("APP_TYPE_TXT")}</InputLabel>
                         <Select value={type} onChange={handleChangeType}>
@@ -123,7 +141,7 @@ function SendToAllView() {
                         onChange={handleChangeMessage}
                     />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -168,6 +186,21 @@ function SendToAllView() {
                 onChange={handlePageChange}
                 style={{marginTop: '15px'}}
             />
+            <Dialog
+                open={openConfirmationDialog}
+                onClose={handleConfirmationDialogClose}
+                aria-labelledby="confirmation-dialog-title"
+            >
+                <DialogTitle>{t("APP_ARE_YOU_SURE_YOU_WANT_TO_LOGOUT_ALL")}</DialogTitle>
+                <DialogActions>
+                    <Button variant="contained" color="error" onClick={handleConfirmationDialogConfirm} autoFocus>
+                        {t("APP_YES_BTN_LABEL")}
+                    </Button>
+                    <Button variant="outlined" onClick={handleConfirmationDialogClose} >
+                        {t("APP_NO_BTN_LABEL")}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 }
