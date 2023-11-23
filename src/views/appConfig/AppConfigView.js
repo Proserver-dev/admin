@@ -93,7 +93,7 @@ const AppConfigView = () => {
                     (newPasswordMinChars >=
                         (parseInt(newPasswordMinSmallLetters) + parseInt(newPasswordMinBigLetters) + parseInt(newPasswordMinDigits) + parseInt(newPasswordMinSpecialChars))
                     )
-                    || type === 'main'
+                    || type !== 'password'
                 ) {
                     await reqPutAppConfigs(changedData);
                     setConfigurations((prevConfigurations) =>
