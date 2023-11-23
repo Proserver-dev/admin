@@ -155,13 +155,14 @@ const RolesView = () => {
                                                 <EditIcon
                                                     color="primary"
                                                     onClick={() => handleEdit(item)}
-                                                    style={{marginRight: '10px'}}
+                                                    style={{ marginRight: '10px', cursor: 'pointer' }}
                                                 />
                                             </Tooltip>
                                             <Tooltip title={t("APP_DELETE_BTN_TOOLTIP")}>
                                                 <DeleteIcon
                                                     color="error"
                                                     onClick={() => handleDelete(item)}
+                                                    style={{ marginRight: '10px', cursor: 'pointer' }}
                                                 />
                                             </Tooltip>
                                         </>
