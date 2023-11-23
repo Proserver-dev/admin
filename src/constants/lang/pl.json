@@ -60,15 +60,25 @@
   "REFRESH_TOKEN_LIFE_TIME": "Czas życia Refresh-Tokena",
   "THROTTLE_TIME_SENDING_EMAILS": "Co ile czasu można wysłać maila (per user) w milisekundach",
 
+  "PASSWORD_MIN_CHARS": "Minimalna ilość znaków hasła",
+  "PASSWORD_MIN_SMALL_LETTERS": "Minimalna ilość małych liter w haśle",
+  "PASSWORD_MIN_BIG_LETTERS": "Minimalna ilość dużych liter w haśle",
+  "PASSWORD_MIN_DIGITS": "Minimalna ilość cyfr w haśle",
+  "PASSWORD_MIN_SPECIAL_CHARS": "Minimalna ilość znaków specjalnych w haśle",
+
   "APP_SUCCESS_LOGOUT": "Wylogowano pomyślnie",
   "APP_SUCCESS_LOGIN": "Zalogowano pomyślnie",
   "APP_SUCCESS_CREATE_NEW_ROLE": "Pomyślnie utworzono nową rolę",
   "APP_SUCCESS_EDITED_ROLE": "Pomyślnie zaktualizowano rolę",
   "APP_SUCCESS_DELETED_ROLE": "Pomyślnie usunięto rolę",
+  "APP_SUCCESS_SAVE_CHANGES": "Pomyślnie zapisano zmiany",
 
   "APP_ERR_PROVIDE_NAME_ROLE": "Musisz wprowadzić nazwę roli",
   "APP_ERR_PROVIDE_ID_AND_NEW_NAME_ROLE": "Musisz podać identyfikator i wprowadzić nową nazwę roli",
   "APP_ERR_PROVIDE_ID_ROLE_TO_DELETE": "Musisz podać identyfikator roli do usunięcia",
+  "APP_ERR_PASSWORD_MIN_CHARS": "Suma minimalnych wartości poszczególnych znaków dla hasła musi być większa lub równa minimalnej ilości wszystkich znaków hasła",
+
+  "APP_INFO_NO_CHANGES_TO_SAVE": "Brak zmian do zapisania",
 
   "APP_LANG_PL_LABEL": "Polski",
   "APP_LANG_GB_LABEL": "Angielski",
@@ -87,6 +97,8 @@
   "APP_MENU_LOGS": "Logi",
   "APP_MENU_API_RESULTS": "API Results",
   "APP_MENU_APP_SETTINGS": "Ustawienia aplikacji",
+  "APP_MENU_APP_SETTINGS_MAIN": "Główne ustawienia",
+  "APP_MENU_APP_SETTINGS_PASSWORD": "Złożoność hasła",
   "APP_MENU_USER_LOCATIONS": "Lokalizacje użytkowników",
   "APP_MENU_USER_LIST": "Lista użytkowników",
 

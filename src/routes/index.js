@@ -21,7 +21,7 @@ export default function Router() {
                 { path: RoutesPath.SEND_TO_ALL, element: <SendToAllView /> },
                 { path: RoutesPath.LOGS, element: <LogsView /> },
                 { path: RoutesPath.API_RESULTS, element: <ApiResultsView /> },
-                { path: RoutesPath.APP_CONFIG, element: <AppConfigView /> },
+                { path: `${RoutesPath.APP_CONFIG}/:typeParam`, element: <AppConfigView /> },
                 { path: RoutesPath.MAP_USERS_LOCATION, element: <MapUsersLocationView /> },
                 { path: RoutesPath.USER_LIST, element: <UserListView /> }
             ],

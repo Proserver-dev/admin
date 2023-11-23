@@ -76,11 +76,12 @@ function NavItem({ item, active }) {
                     <Iconify
                         icon={open ? 'eva:arrow-ios-downward-fill' : 'eva:arrow-ios-forward-fill'}
                         sx={{ width: 16, height: 16, ml: 1 }}
+                        style={{ paddingRight: '15px' }}
                     />
                 </ListItemStyle>
 
                 <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
+                    <List component="div" disablePadding style={{ backgroundColor: '#fafafa' }}>
                         {children.map((item) => {
                             const { title, path } = item;
                             const isActiveSub = active(path);
@@ -176,8 +177,17 @@ export default function NavSection({ ...other }) {
         },
         {
             title: t("APP_MENU_APP_SETTINGS"),
-            path: RoutesPath.APP_CONFIG,
             icon: getIcon('dashicons:admin-generic'),
+            children: [
+                {
+                    title: t("APP_MENU_APP_SETTINGS_MAIN"),
+                    path: RoutesPath.APP_CONFIG_MAIN
+                },
+                {
+                    title: t("APP_MENU_APP_SETTINGS_PASSWORD"),
+                    path: RoutesPath.APP_CONFIG_PASSWORD
+                },
+            ],
         },
         {
             title: t("APP_MENU_USER_LOCATIONS"),
