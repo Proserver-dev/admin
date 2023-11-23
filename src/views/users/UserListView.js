@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Table,
     TableBody,
@@ -13,27 +13,28 @@ import {
     Modal,
     Box, Container, Stack, Tooltip, TextField,
 } from '@mui/material';
-import { format } from 'date-fns';
+import {format} from 'date-fns';
 import {reqGetUsers} from "../../helpers/User";
 import {setSnackBar} from "../../redux/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {useLocation, useNavigate} from "react-router-dom";
-import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import {FaCheckCircle, FaTimesCircle} from 'react-icons/fa';
 import InfoIcon from '@mui/icons-material/Info';
 import PasswordIcon from '@mui/icons-material/Key';
 import HistoryIcon from '@mui/icons-material/History';
 import {useTranslation} from "react-i18next";
+import Label from "../../components/Label";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
 const UserListView = () => {
-    const { t, i18n } = useTranslation();
+    const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
     const currentUser = useSelector((state) => state.currentUser);
     const [page, setPage] = useState(1);
-    const [data, setData] = useState({ count: 0, rows: [] });
+    const [data, setData] = useState({count: 0, rows: []});
     const [selectedUser, setSelectedUser] = useState(null);
     const [isModalOpen, setModalOpen] = useState(false);
 
@@ -44,18 +45,18 @@ const UserListView = () => {
     }, [location.search]);
 
     useEffect(() => {
-        dispatch({ type: 'SHOW_SPINNER' });
-        reqGetUsers(itemsPerPage, itemsPerPage*(page-1))
+        dispatch({type: 'SHOW_SPINNER'});
+        reqGetUsers(itemsPerPage, itemsPerPage * (page - 1))
             .then(res => {
                 setData(res)
             })
             .catch(err => {
                 const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
             })
             .finally(() => {
                 setTimeout(() => {
-                    dispatch({ type: 'HIDE_SPINNER' });
+                    dispatch({type: 'HIDE_SPINNER'});
                 }, 250);
             })
     }, [page]);
@@ -82,7 +83,8 @@ const UserListView = () => {
                 <Typography variant="h4" gutterBottom className="page-title">
                     {t("APP_MENU_USER_LIST")}
                 </Typography>
-                <Button variant="contained" onClick={() => {}}>
+                <Button variant="contained" onClick={() => {
+                }}>
                     {t("APP_ADD_NEW_USER_BTN_LABEL")}
                 </Button>
             </Stack>
@@ -91,7 +93,8 @@ const UserListView = () => {
                 variant="outlined"
                 fullWidth
                 value=""
-                onChange={(e) => {}}
+                onChange={(e) => {
+                }}
                 sx={{marginBottom: 2}}
             />
             <TableContainer component={Paper}>
@@ -110,46 +113,67 @@ const UserListView = () => {
                     </TableHead>
                     <TableBody>
                         {data.rows.map((user) => (
-                            <TableRow key={user.id} style={currentUser.id === user.id ? {backgroundColor: '#edf5fd'} : {}}>
+                            <TableRow key={user.id}
+                                      style={currentUser.id === user.id ? {backgroundColor: '#edf5fd'} : {}}>
                                 <TableCell>{user.id}</TableCell>
                                 <TableCell>
                                     {user.isActivated ? (
-                                        <FaCheckCircle style={{ color: 'green' }} />
+                                        <FaCheckCircle style={{color: 'green'}}/>
                                     ) : (
-                                        <FaTimesCircle style={{ color: 'red' }} />
+                                        <FaTimesCircle style={{color: 'red'}}/>
                                     )}
                                 </TableCell>
                                 <TableCell>
                                     {user.isLoggedIn ? (
-                                        <FaCheckCircle style={{ color: 'green' }} />
+                                        <FaCheckCircle style={{color: 'green'}}/>
                                     ) : (
-                                        <FaTimesCircle style={{ color: 'red' }} />
+                                        <FaTimesCircle style={{color: 'red'}}/>
                                     )}
                                 </TableCell>
                                 <TableCell>{user.email}</TableCell>
                                 <TableCell>{user.userName}</TableCell>
                                 <TableCell>{user.nameLastname}</TableCell>
-                                <TableCell>{user.role?.short}</TableCell>
+                                <TableCell>
+                                    {user.role?.short === "admin" ? (
+                                        <Label variant="ghost" color="error">
+                                            {user.role?.short}
+                                        </Label>
+                                    ) : user.role?.short === "user" ? (
+                                        <Label variant="ghost" color="primary">
+                                            {user.role?.short}
+                                        </Label>
+                                    ) : user.role?.short === "blocked" ? (
+                                        <Label variant="ghost" color="secondary">
+                                            {user.role?.short}
+                                        </Label>
+                                    ) : (
+                                        <>
+                                            {user.role?.short}
+                                        </>
+                                    )}
+                                </TableCell>
                                 <TableCell>
                                     <Tooltip title={t("APP_SHOW_MORE_BTN_TOOLTIP")}>
                                         <InfoIcon
                                             color="primary"
                                             onClick={() => handleViewDetails(user)}
-                                            style={{ marginRight: '10px', cursor: 'pointer' }}
+                                            style={{marginRight: '10px', cursor: 'pointer'}}
                                         />
                                     </Tooltip>
                                     <Tooltip title={t("APP_CHANGE_PASSWORD_BTN_TOOLTIP")}>
                                         <PasswordIcon
                                             color="warning"
-                                            onClick={() => {}}
-                                            style={{ marginRight: '10px', cursor: 'pointer' }}
+                                            onClick={() => {
+                                            }}
+                                            style={{marginRight: '10px', cursor: 'pointer'}}
                                         />
                                     </Tooltip>
                                     <Tooltip title={t("APP_SHOW_AUTH_HISTORY_BTN_TOOLTIP")}>
                                         <HistoryIcon
                                             color="primary"
-                                            onClick={() => {}}
-                                            style={{ marginRight: '10px', cursor: 'pointer' }}
+                                            onClick={() => {
+                                            }}
+                                            style={{marginRight: '10px', cursor: 'pointer'}}
                                         />
                                     </Tooltip>
                                 </TableCell>
@@ -163,7 +187,7 @@ const UserListView = () => {
                 count={Math.ceil(data.count / itemsPerPage)}
                 page={page}
                 onChange={handlePageChange}
-                style={{ marginTop: '15px' }}
+                style={{marginTop: '15px'}}
             />
 
             <Modal open={isModalOpen} onClose={handleCloseModal}>
