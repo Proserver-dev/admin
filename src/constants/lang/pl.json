@@ -57,8 +57,11 @@
   "LOGIN_ENABLED": "Status logowania (włączone / wyłączone)",
   "LOGIN_DISABLED_REASON": "Powód wyłączenia logowania",
   "LOGIN_TOKEN_LIFE_TIME": "Czas życia Login-Tokena",
+  "LOGIN_TOKEN_LIFE_TIME_DESC": "np. 60000 = 60 sekund | 1h | 5d - 5 dni",
   "REFRESH_TOKEN_LIFE_TIME": "Czas życia Refresh-Tokena",
+  "REFRESH_TOKEN_LIFE_TIME_DESC": "np. 60000 = 60 sekund | 1h | 5d - 5 dni",
   "THROTTLE_TIME_SENDING_EMAILS": "Co ile czasu można wysłać maila (per user) w milisekundach",
+  "THROTTLE_TIME_SENDING_EMAILS_DESC": "domyślnie 60000 = 60 sekund",
 
   "PASSWORD_MIN_CHARS": "Minimalna ilość znaków hasła",
   "PASSWORD_MIN_SMALL_LETTERS": "Minimalna ilość małych liter w haśle",

@@ -152,7 +152,13 @@ const AppConfigView = () => {
                         <TableBody>
                             {configurations.map((config) => (
                                 <TableRow key={config.id}>
-                                    <TableCell>{t(config.key) || config.key}</TableCell>
+                                    <TableCell>
+                                        {t(config.key) || config.key}<br/>
+                                        <Typography variant="caption" color="textSecondary">
+                                            {(config.key === 'LOGIN_TOKEN_LIFE_TIME' || config.key === 'REFRESH_TOKEN_LIFE_TIME') && t(config.key+"_DESC")}
+                                            {config.key === 'THROTTLE_TIME_SENDING_EMAILS' && t(config.key+"_DESC")}
+                                        </Typography>
+                                    </TableCell>
                                     <TableCell>
                                         {config.key === 'REGISTRATION_ENABLED' ? (
                                             <Switch
