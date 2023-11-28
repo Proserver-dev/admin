@@ -20,6 +20,8 @@ const ApiEndpoints = {
     GET_API_RESULTS: '/api-results',
     GET_APP_CONFIG: '/admin/app-config',
     PUT_APP_CONFIG: '/admin/app-config',
+
+    GET_SEND_EMAIL_HISTORY: '/admin/get-email-send-history',
 }
 
 export default ApiEndpoints;

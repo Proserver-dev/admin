@@ -104,6 +104,7 @@
   "APP_MENU_APP_SETTINGS_PASSWORD": "Złożoność hasła",
   "APP_MENU_USER_LOCATIONS": "Lokalizacje użytkowników",
   "APP_MENU_USER_LIST": "Lista użytkowników",
+  "APP_MENU_SEND_EMAIL_HISTORY": "Historia wysłanych maili",
 
   "APP_LOGIN_SUBMIT_BTN_LABEL": "Logowanko",
   "APP_LOGOUT_BTN_LABEL": "Wylogowanko",

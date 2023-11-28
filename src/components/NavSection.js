@@ -198,6 +198,11 @@ export default function NavSection({ ...other }) {
             title: t("APP_MENU_USER_LIST"),
             path: RoutesPath.USER_LIST,
             icon: getIcon('dashicons:admin-users'),
+        },
+        {
+            title: t("APP_MENU_SEND_EMAIL_HISTORY"),
+            path: RoutesPath.SEND_EMAIL_HISTORY,
+            icon: getIcon('dashicons:email-alt2'),
         }
     ];
 
