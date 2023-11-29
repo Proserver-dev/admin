@@ -112,73 +112,81 @@ const UserListView = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.rows.map((user) => (
-                            <TableRow key={user.id}
-                                      style={currentUser.id === user.id ? {backgroundColor: '#edf5fd'} : {}}>
-                                <TableCell>{user.id}</TableCell>
-                                <TableCell>
-                                    {user.isActivated ? (
-                                        <FaCheckCircle style={{color: 'green'}}/>
-                                    ) : (
-                                        <FaTimesCircle style={{color: 'red'}}/>
-                                    )}
-                                </TableCell>
-                                <TableCell>
-                                    {user.isLoggedIn ? (
-                                        <FaCheckCircle style={{color: 'green'}}/>
-                                    ) : (
-                                        <FaTimesCircle style={{color: 'red'}}/>
-                                    )}
-                                </TableCell>
-                                <TableCell>{user.email}</TableCell>
-                                <TableCell>{user.userName}</TableCell>
-                                <TableCell>{user.nameLastname}</TableCell>
-                                <TableCell>
-                                    {user.role?.short === "admin" ? (
-                                        <Label variant="ghost" color="error">
-                                            {user.role?.short}
-                                        </Label>
-                                    ) : user.role?.short === "user" ? (
-                                        <Label variant="ghost" color="primary">
-                                            {user.role?.short}
-                                        </Label>
-                                    ) : user.role?.short === "blocked" ? (
-                                        <Label variant="ghost" color="secondary">
-                                            {user.role?.short}
-                                        </Label>
-                                    ) : (
-                                        <>
-                                            {user.role?.short}
-                                        </>
-                                    )}
-                                </TableCell>
-                                <TableCell>
-                                    <Tooltip title={t("APP_SHOW_MORE_BTN_TOOLTIP")}>
-                                        <InfoIcon
-                                            color="primary"
-                                            onClick={() => handleViewDetails(user)}
-                                            style={{marginRight: '10px', cursor: 'pointer'}}
-                                        />
-                                    </Tooltip>
-                                    <Tooltip title={t("APP_CHANGE_PASSWORD_BTN_TOOLTIP")}>
-                                        <PasswordIcon
-                                            color="warning"
-                                            onClick={() => {
-                                            }}
-                                            style={{marginRight: '10px', cursor: 'pointer'}}
-                                        />
-                                    </Tooltip>
-                                    <Tooltip title={t("APP_SHOW_AUTH_HISTORY_BTN_TOOLTIP")}>
-                                        <HistoryIcon
-                                            color="primary"
-                                            onClick={() => {
-                                            }}
-                                            style={{marginRight: '10px', cursor: 'pointer'}}
-                                        />
-                                    </Tooltip>
+                        {data.rows.length > 0 ? (
+                            data.rows.map((user) => (
+                                <TableRow key={user.id}
+                                          style={currentUser.id === user.id ? {backgroundColor: '#edf5fd'} : {}}>
+                                    <TableCell>{user.id}</TableCell>
+                                    <TableCell>
+                                        {user.isActivated ? (
+                                            <FaCheckCircle style={{color: 'green'}}/>
+                                        ) : (
+                                            <FaTimesCircle style={{color: 'red'}}/>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {user.isLoggedIn ? (
+                                            <FaCheckCircle style={{color: 'green'}}/>
+                                        ) : (
+                                            <FaTimesCircle style={{color: 'red'}}/>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>{user.email}</TableCell>
+                                    <TableCell>{user.userName}</TableCell>
+                                    <TableCell>{user.nameLastname}</TableCell>
+                                    <TableCell>
+                                        {user.role?.short === "admin" ? (
+                                            <Label variant="ghost" color="error">
+                                                {user.role?.short}
+                                            </Label>
+                                        ) : user.role?.short === "user" ? (
+                                            <Label variant="ghost" color="primary">
+                                                {user.role?.short}
+                                            </Label>
+                                        ) : user.role?.short === "blocked" ? (
+                                            <Label variant="ghost" color="secondary">
+                                                {user.role?.short}
+                                            </Label>
+                                        ) : (
+                                            <>
+                                                {user.role?.short}
+                                            </>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Tooltip title={t("APP_SHOW_MORE_BTN_TOOLTIP")}>
+                                            <InfoIcon
+                                                color="primary"
+                                                onClick={() => handleViewDetails(user)}
+                                                style={{marginRight: '10px', cursor: 'pointer'}}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip title={t("APP_CHANGE_PASSWORD_BTN_TOOLTIP")}>
+                                            <PasswordIcon
+                                                color="warning"
+                                                onClick={() => {
+                                                }}
+                                                style={{marginRight: '10px', cursor: 'pointer'}}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip title={t("APP_SHOW_AUTH_HISTORY_BTN_TOOLTIP")}>
+                                            <HistoryIcon
+                                                color="primary"
+                                                onClick={() => {
+                                                }}
+                                                style={{marginRight: '10px', cursor: 'pointer'}}
+                                            />
+                                        </Tooltip>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={8} style={{textAlign: 'center'}}>
+                                    {t('APP_NO_DATA')}
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>

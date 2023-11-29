@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Table,
     TableBody,
@@ -12,7 +12,7 @@ import {
     Container,
     Stack,
 } from '@mui/material';
-import { format } from 'date-fns';
+import {format} from 'date-fns';
 import {useLocation, useNavigate} from "react-router-dom";
 import {setSnackBar} from "../../redux/actions";
 import {useDispatch} from "react-redux";
@@ -22,7 +22,7 @@ import {getSendEmailHistory} from "../../helpers/SendEmailHistory";
 const itemsPerPage = 10; // Liczba elementów na stronę
 
 const SendEmailHistoryView = () => {
-    const { t, i18n } = useTranslation();
+    const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -56,9 +56,6 @@ const SendEmailHistoryView = () => {
         navigate(`?page=${value}`)
     };
 
-    const startItem = (page - 1) * itemsPerPage;
-    const endItem = page * itemsPerPage;
-
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
@@ -80,22 +77,30 @@ const SendEmailHistoryView = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.rows.slice(startItem, endItem).map((row) => (
-                            <TableRow key={row.id}>
-                                <TableCell>{row.id}</TableCell>
-                                <TableCell>{row.isRead.toString()}</TableCell>
-                                <TableCell>{row.from}</TableCell>
-                                <TableCell>{row.to}</TableCell>
-                                <TableCell>{row.subject}</TableCell>
-                                <TableCell>{row.html}</TableCell>
-                                <TableCell>{row.status}</TableCell>
-                                <TableCell>{row.errorLog.toString()}</TableCell>
-                                <TableCell>
-                                    {row.createdAt !== '' &&
-                                        format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                        {data.rows.length > 0 ? (
+                            data.rows.map((row) => (
+                                <TableRow key={row.id}>
+                                    <TableCell>{row.id}</TableCell>
+                                    <TableCell>{row.isRead.toString()}</TableCell>
+                                    <TableCell>{row.from}</TableCell>
+                                    <TableCell>{row.to}</TableCell>
+                                    <TableCell>{row.subject}</TableCell>
+                                    <TableCell>{row.html}</TableCell>
+                                    <TableCell>{row.status}</TableCell>
+                                    <TableCell>{row.errorLog.toString()}</TableCell>
+                                    <TableCell>
+                                        {row.createdAt !== '' &&
+                                            format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={9} style={{textAlign: 'center'}}>
+                                    {t('APP_NO_DATA')}
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -104,7 +109,7 @@ const SendEmailHistoryView = () => {
                 count={Math.ceil(data.count / itemsPerPage)}
                 page={page}
                 onChange={handlePageChange}
-                style={{ marginTop: '15px' }}
+                style={{marginTop: '15px'}}
             />
         </Container>
     );

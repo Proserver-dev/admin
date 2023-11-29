@@ -150,54 +150,62 @@ const AppConfigView = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {configurations.map((config) => (
-                                <TableRow key={config.id}>
-                                    <TableCell>
-                                        {t(config.key) || config.key}<br/>
-                                        <Typography variant="caption" color="textSecondary">
-                                            {(config.key === 'LOGIN_TOKEN_LIFE_TIME' || config.key === 'REFRESH_TOKEN_LIFE_TIME') && t(config.key+"_DESC")}
-                                            {config.key === 'THROTTLE_TIME_SENDING_EMAILS' && t(config.key+"_DESC")}
-                                        </Typography>
+                            {configurations.length > 0 ? (
+                                configurations.map((config) => (
+                                    <TableRow key={config.id}>
+                                        <TableCell>
+                                            {t(config.key) || config.key}<br/>
+                                            <Typography variant="caption" color="textSecondary">
+                                                {(config.key === 'LOGIN_TOKEN_LIFE_TIME' || config.key === 'REFRESH_TOKEN_LIFE_TIME') && t(config.key + "_DESC")}
+                                                {config.key === 'THROTTLE_TIME_SENDING_EMAILS' && t(config.key + "_DESC")}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            {config.key === 'REGISTRATION_ENABLED' ? (
+                                                <Switch
+                                                    checked={formData[config.key] === '1'}
+                                                    onChange={() => handleInputChange(config.key, formData[config.key] === '1' ? '0' : '1')}
+                                                />
+                                            ) : config.key === 'LOGIN_ENABLED' ? (
+                                                <Switch
+                                                    checked={formData[config.key] === '1'}
+                                                    onChange={() => handleInputChange(config.key, formData[config.key] === '1' ? '0' : '1')}
+                                                />
+                                            ) : config.key === 'REGISTRATION_DISABLED_REASON' || config.key === 'LOGIN_DISABLED_REASON' ? (
+                                                <TextareaAutosize
+                                                    value={formData[config.key]}
+                                                    onChange={(e) => handleInputChange(config.key, e.target.value)}
+                                                    disabled={
+                                                        (config.key === 'REGISTRATION_DISABLED_REASON' &&
+                                                            formData['REGISTRATION_ENABLED'] === '1') ||
+                                                        (config.key === 'LOGIN_DISABLED_REASON' && formData['LOGIN_ENABLED'] === '1')
+                                                    }
+                                                    style={{minWidth: '300px', maxWidth: '300px'}}
+                                                    minRows={4}
+                                                />
+                                            ) : (
+                                                <TextField
+                                                    type="text"
+                                                    value={formData[config.key]}
+                                                    onChange={(e) => handleInputChange(config.key, e.target.value)}
+                                                    disabled={
+                                                        (config.key === 'REGISTRATION_DISABLED_REASON' &&
+                                                            formData['REGISTRATION_ENABLED'] === '1') ||
+                                                        (config.key === 'LOGIN_DISABLED_REASON' && formData['LOGIN_ENABLED'] === '1')
+                                                    }
+                                                />
+                                            )}
+                                        </TableCell>
+                                        <TableCell>{config.updatedAt !== '' && format(new Date(config.updatedAt), 'yyyy-MM-dd HH:mm:ss')}</TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={3} style={{textAlign: 'center'}}>
+                                        {t('APP_NO_DATA')}
                                     </TableCell>
-                                    <TableCell>
-                                        {config.key === 'REGISTRATION_ENABLED' ? (
-                                            <Switch
-                                                checked={formData[config.key] === '1'}
-                                                onChange={() => handleInputChange(config.key, formData[config.key] === '1' ? '0' : '1')}
-                                            />
-                                        ) : config.key === 'LOGIN_ENABLED' ? (
-                                            <Switch
-                                                checked={formData[config.key] === '1'}
-                                                onChange={() => handleInputChange(config.key, formData[config.key] === '1' ? '0' : '1')}
-                                            />
-                                        ) : config.key === 'REGISTRATION_DISABLED_REASON' || config.key === 'LOGIN_DISABLED_REASON' ? (
-                                            <TextareaAutosize
-                                                value={formData[config.key]}
-                                                onChange={(e) => handleInputChange(config.key, e.target.value)}
-                                                disabled={
-                                                    (config.key === 'REGISTRATION_DISABLED_REASON' &&
-                                                        formData['REGISTRATION_ENABLED'] === '1') ||
-                                                    (config.key === 'LOGIN_DISABLED_REASON' && formData['LOGIN_ENABLED'] === '1')
-                                                }
-                                                style={{minWidth: '300px', maxWidth: '300px'}}
-                                                minRows={4}
-                                            />
-                                        ) : (
-                                            <TextField
-                                                type="text"
-                                                value={formData[config.key]}
-                                                onChange={(e) => handleInputChange(config.key, e.target.value)}
-                                                disabled={
-                                                    (config.key === 'REGISTRATION_DISABLED_REASON' &&
-                                                        formData['REGISTRATION_ENABLED'] === '1') ||
-                                                    (config.key === 'LOGIN_DISABLED_REASON' && formData['LOGIN_ENABLED'] === '1')
-                                                }
-                                            />
-                                        )}
-                                    </TableCell>
-                                    <TableCell>{config.updatedAt !== '' && format(new Date(config.updatedAt), 'yyyy-MM-dd HH:mm:ss')}</TableCell>
                                 </TableRow>
-                            ))}
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>

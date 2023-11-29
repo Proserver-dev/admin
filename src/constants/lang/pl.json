@@ -171,5 +171,6 @@
   "APP_NAME_TXT": "Nazwa",
   "APP_MESSAGE_TXT": "Wiadomość",
   "APP_TYPE_TXT": "Typ",
-  "APP_SEARCH_TXT": "Szukaj"
+  "APP_SEARCH_TXT": "Szukaj",
+  "APP_NO_DATA": "Brak danych"
 }

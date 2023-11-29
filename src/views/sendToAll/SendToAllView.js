@@ -28,7 +28,7 @@ const initialMessage = ''; // Domyślna wiadomość
 const itemsPerPage = 10; // Liczba elementów na stronę
 
 function SendToAllView() {
-    const { t, i18n } = useTranslation();
+    const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -63,7 +63,10 @@ function SendToAllView() {
 
     // TODO: może zrobić jeszcze jakiś event dodatkowy dla "messageToAll" np. "messageToAllError", nasłuchiwać na nim i jak przyjdzie error to wyświetlić snackbara
     const sendToAll = () => {
-        dispatch({type: 'EMIT_SOCKET_EVENT', payload: {event: SocketEvents.EMIT_MESSAGE_TO_ALL, data: {message: message, type: type}}})
+        dispatch({
+            type: 'EMIT_SOCKET_EVENT',
+            payload: {event: SocketEvents.EMIT_MESSAGE_TO_ALL, data: {message: message, type: type}}
+        })
         setData({
             count: data.count + 1,
             rows: [
@@ -110,9 +113,6 @@ function SendToAllView() {
         setOpenConfirmationDialog(false);
         sendToAll();
     };
-
-    const startItem = (page - 1) * itemsPerPage;
-    const endItem = page * itemsPerPage;
 
     return (
         <Container>
@@ -165,17 +165,25 @@ function SendToAllView() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.rows.map((row) => (
-                            <TableRow key={row.id}>
-                                <TableCell>{row.id}</TableCell>
-                                <TableCell>{row.sendBy.email}</TableCell>
-                                <TableCell>{row.message}</TableCell>
-                                <TableCell>{row.type}</TableCell>
-                                <TableCell>
-                                    {row.createdAt !== "" && format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                        {data.rows.length > 0 ? (
+                            data.rows.map((row) => (
+                                <TableRow key={row.id}>
+                                    <TableCell>{row.id}</TableCell>
+                                    <TableCell>{row.sendBy.email}</TableCell>
+                                    <TableCell>{row.message}</TableCell>
+                                    <TableCell>{row.type}</TableCell>
+                                    <TableCell>
+                                        {row.createdAt !== "" && format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={5} style={{textAlign: 'center'}}>
+                                    {t('APP_NO_DATA')}
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -196,7 +204,7 @@ function SendToAllView() {
                     <Button variant="contained" color="error" onClick={handleConfirmationDialogConfirm} autoFocus>
                         {t("APP_YES_BTN_LABEL")}
                     </Button>
-                    <Button variant="outlined" onClick={handleConfirmationDialogClose} >
+                    <Button variant="outlined" onClick={handleConfirmationDialogClose}>
                         {t("APP_NO_BTN_LABEL")}
                     </Button>
                 </DialogActions>

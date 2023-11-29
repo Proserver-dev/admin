@@ -143,7 +143,8 @@ const RolesView = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((item) => (
+                        {data.length > 0 ? (
+                            data.map((item) => (
                             <TableRow key={item.id}>
                                 <TableCell>{item.id}</TableCell>
                                 <TableCell>{item.name}</TableCell>
@@ -169,7 +170,14 @@ const RolesView = () => {
                                     )}
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={4} style={{textAlign: 'center'}}>
+                                    {t('APP_NO_DATA')}
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
