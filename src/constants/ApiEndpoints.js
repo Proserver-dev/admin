@@ -7,11 +7,7 @@ const ApiEndpoints = {
     GET_USERS: '/users',
     GET_AUTH_HISTORY: '/admin/users/get-auth-history',
 
-    GET_ROLES: '/roles',
-    GET_ROLE: '/roles/', // :id
-    POST_ROLE: '/roles',
-    PUT_ROLE: '/roles/', // :id
-    DELETE_ROLE: '/roles/', // :id
+    ROLES: '/roles', // GET, GET/:id, POST, PUT/:id, DELETE/:id
 
     GET_MESSAGES_TO_ALL: '/messages-to-all',
 
@@ -22,6 +18,7 @@ const ApiEndpoints = {
     PUT_APP_CONFIG: '/admin/app-config',
 
     GET_SEND_EMAIL_HISTORY: '/admin/get-email-send-history',
+    POST_CHANGE_USER_ROLE: '/admin/users/change-role', // POST/:userId
 }
 
 export default ApiEndpoints;

@@ -28,3 +28,16 @@ export const reqGetUsers = (limit, offset, searchTerm) => {
             .catch(err => reject(err))
     });
 }
+
+export const reqPostChangeUserRole = (userId, roleId) => {
+    return new Promise((resolve, reject) => {
+
+        const data = {
+            roleId: roleId
+        }
+
+        axiosWithToken.post(`${Settings.API}${ApiEndpoints.POST_CHANGE_USER_ROLE}/${userId}`, data)
+            .then(res => resolve(res.data))
+            .catch(err => reject(err))
+    });
+}

@@ -11,10 +11,10 @@ import {
     Pagination,
     Typography,
     Modal,
-    Box, Container, Stack, Tooltip, TextField,
+    Box, Container, Stack, Tooltip, TextField, Menu, IconButton,
 } from '@mui/material';
 import {format} from 'date-fns';
-import {reqGetUsers} from "../../helpers/User";
+import {reqGetUsers, reqPostChangeUserRole} from "../../helpers/User";
 import {setSnackBar} from "../../redux/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -25,6 +25,8 @@ import HistoryIcon from '@mui/icons-material/History';
 import SearchIcon from '@mui/icons-material/Search';
 import {useTranslation} from "react-i18next";
 import Label from "../../components/Label";
+import MenuItem from '@mui/material/MenuItem';
+import {reqGetRoles} from "../../helpers/Role";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
@@ -39,6 +41,25 @@ const UserListView = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isModalOpen, setModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedRole, setSelectedRole] = useState('');
+    const [contextMenuAnchor, setContextMenuAnchor] = useState(null);
+    const [selectedUserForMenu, setSelectedUserForMenu] = useState(null);
+    const [roles, setRoles] = useState([{}]);
+
+    useEffect(() => {
+        // Pobranie listy ról.
+        reqGetRoles()
+            .then(res => {
+                setRoles(res);
+            })
+            .catch(err => {
+                setRoles([
+                    {id: 1, name: 'Admin', short: 'admin'},
+                    {id: 2, name: 'User', short: 'user'},
+                    {id: 3, name: 'Blocked', short: 'blocked'},
+                ])
+            })
+    }, [])
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -95,6 +116,33 @@ const UserListView = () => {
         setModalOpen(false);
     };
 
+    const handleRoleChange = (role) => {
+        reqPostChangeUserRole(selectedUserForMenu.id, role?.id)
+            .then(res => {
+                dispatch(setSnackBar({type: 'success', message: t(res.success), show: true}));
+                getUsers();
+            })
+            .catch(err => {
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
+            })
+            .finally(() => {
+                handleContextMenuClose(); // Zamknięcie menu po wyborze roli.
+            })
+    };
+
+    const handleContextMenuClick = (event, user) => {
+        if (currentUser.id === user.id) return;
+
+        setContextMenuAnchor(event.currentTarget);
+        setSelectedUserForMenu(user);
+    };
+
+    const handleContextMenuClose = () => {
+        setContextMenuAnchor(null);
+        setSelectedUserForMenu(null);
+    };
+
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
@@ -106,9 +154,10 @@ const UserListView = () => {
                     {t("APP_ADD_NEW_USER_BTN_LABEL")}
                 </Button>
             </Stack>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5} gap={2} onSubmit={handleSearchSubmit}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5} gap={2}
+                   onSubmit={handleSearchSubmit}>
                 <TextField
-                    label="Search"
+                    label={t("APP_SEARCH_TXT")}
                     variant="outlined"
                     fullWidth
                     value={searchTerm}
@@ -139,63 +188,93 @@ const UserListView = () => {
                                     <TableCell>{user.id}</TableCell>
                                     <TableCell>
                                         {user.isActivated ? (
-                                            <FaCheckCircle style={{color: 'green'}}/>
+                                            <Tooltip title="Dezaktywuj">
+                                                <IconButton onClick={() => {
+                                                }} disabled={currentUser.id === user.id}>
+                                                    <FaCheckCircle style={{color: 'green', fontSize: 14}}/>
+                                                </IconButton>
+                                            </Tooltip>
                                         ) : (
-                                            <FaTimesCircle style={{color: 'red'}}/>
+                                            <Tooltip title="Aktywuj">
+                                                <IconButton onClick={() => {
+                                                }} disabled={currentUser.id === user.id}>
+                                                    <FaTimesCircle style={{color: 'red', fontSize: 14}}/>
+                                                </IconButton>
+                                            </Tooltip>
                                         )}
                                     </TableCell>
                                     <TableCell>
                                         {user.isLoggedIn ? (
-                                            <FaCheckCircle style={{color: 'green'}}/>
+                                            <Tooltip title="Wyloguj">
+                                                <IconButton onClick={() => {
+                                                }} disabled={currentUser.id === user.id}>
+                                                    <FaCheckCircle style={{color: 'green', fontSize: 14}}/>
+                                                </IconButton>
+                                            </Tooltip>
                                         ) : (
-                                            <FaTimesCircle style={{color: 'red'}}/>
+                                            <IconButton onClick={() => {
+                                            }} disabled={true}>
+                                                <FaTimesCircle style={{color: 'red', fontSize: 14}}/>
+                                            </IconButton>
                                         )}
                                     </TableCell>
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell>{user.userName}</TableCell>
                                     <TableCell>{user.nameLastname}</TableCell>
                                     <TableCell>
-                                        {user.role?.short === "admin" ? (
-                                            <Label variant="ghost" color="error">
-                                                {user.role?.short}
-                                            </Label>
-                                        ) : user.role?.short === "user" ? (
-                                            <Label variant="ghost" color="primary">
-                                                {user.role?.short}
-                                            </Label>
-                                        ) : user.role?.short === "blocked" ? (
-                                            <Label variant="ghost" color="secondary">
-                                                {user.role?.short}
-                                            </Label>
-                                        ) : (
-                                            <>
-                                                {user.role?.short}
-                                            </>
-                                        )}
+                                        <div onClick={(event) => handleContextMenuClick(event, user)}>
+                                            {user.role?.short === "admin" ? (
+                                                <Label variant="ghost" color="error" style={{ cursor: 'pointer' }}>
+                                                    {user.role?.short}
+                                                </Label>
+                                            ) : user.role?.short === "user" ? (
+                                                <Label variant="ghost" color="primary" style={{ cursor: 'pointer' }}>
+                                                    {user.role?.short}
+                                                </Label>
+                                            ) : user.role?.short === "blocked" ? (
+                                                <Label variant="ghost" color="secondary" style={{ cursor: 'pointer' }}>
+                                                    {user.role?.short}
+                                                </Label>
+                                            ) : (
+                                                <span style={{ cursor: 'pointer' }}>
+                                                    {user.role?.short}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <Menu anchorEl={contextMenuAnchor} open={Boolean(contextMenuAnchor)}
+                                              onClose={handleContextMenuClose}>
+                                            {roles.map((roleItem) => (
+                                                <MenuItem
+                                                    key={roleItem?.id}
+                                                    onClick={() => handleRoleChange(roleItem)}
+                                                    style={{
+                                                        fontWeight: selectedUserForMenu?.role?.short === roleItem?.short ? 'bold' : 'normal', // Zaznaczenie
+                                                        pointerEvents: selectedUserForMenu?.role?.short === roleItem?.short ? 'none' : 'auto', // Blokowanie interakcji
+                                                        color: selectedUserForMenu?.role?.short === roleItem?.short ? '#aaa' : 'inherit', // Kolor dla zablokowanego elementu
+                                                    }}
+                                                >
+                                                    {roleItem?.short}
+                                                </MenuItem>
+                                            ))}
+                                        </Menu>
                                     </TableCell>
                                     <TableCell>
                                         <Tooltip title={t("APP_SHOW_MORE_BTN_TOOLTIP")}>
-                                            <InfoIcon
-                                                color="primary"
-                                                onClick={() => handleViewDetails(user)}
-                                                style={{marginRight: '10px', cursor: 'pointer'}}
-                                            />
+                                            <IconButton onClick={() => handleViewDetails(user)}>
+                                                <InfoIcon color="primary"/>
+                                            </IconButton>
                                         </Tooltip>
                                         <Tooltip title={t("APP_CHANGE_PASSWORD_BTN_TOOLTIP")}>
-                                            <PasswordIcon
-                                                color="warning"
-                                                onClick={() => {
-                                                }}
-                                                style={{marginRight: '10px', cursor: 'pointer'}}
-                                            />
+                                            <IconButton onClick={() => {
+                                            }}>
+                                                <PasswordIcon color="warning"/>
+                                            </IconButton>
                                         </Tooltip>
                                         <Tooltip title={t("APP_SHOW_AUTH_HISTORY_BTN_TOOLTIP")}>
-                                            <HistoryIcon
-                                                color="primary"
-                                                onClick={() => {
-                                                }}
-                                                style={{marginRight: '10px', cursor: 'pointer'}}
-                                            />
+                                            <IconButton onClick={() => {
+                                            }}>
+                                                <HistoryIcon color="primary"/>
+                                            </IconButton>
                                         </Tooltip>
                                     </TableCell>
                                 </TableRow>

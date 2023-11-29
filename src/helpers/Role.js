@@ -4,7 +4,7 @@ import axios from "axios";
 import axiosWithToken from "./axiosWithToken";
 
 export const reqGetRoles = () => {
-    return axiosWithToken.get(`${Settings.API}${ApiEndpoints.GET_ROLES}`)
+    return axiosWithToken.get(`${Settings.API}${ApiEndpoints.ROLES}`)
         .then(res => res.data)
         .catch(err => Promise.reject(err));
 }
@@ -14,7 +14,7 @@ export const reqAddRole = (data) => {
         return Promise.reject({ response: { data: { error: "APP_ERR_PROVIDE_NAME_ROLE" }}});
     }
 
-    return axiosWithToken.post(`${Settings.API}${ApiEndpoints.POST_ROLE}`, data)
+    return axiosWithToken.post(`${Settings.API}${ApiEndpoints.ROLES}`, data)
         .then(res => res.data)
         .catch(err => Promise.reject(err));
 }
@@ -26,7 +26,7 @@ export const reqUpdateRole = (roleId, data) => {
 
     const queryParams = new URLSearchParams({ name: data.name });
 
-    return axiosWithToken.put(`${Settings.API}${ApiEndpoints.PUT_ROLE}/${roleId}?${queryParams.toString()}`)
+    return axiosWithToken.put(`${Settings.API}${ApiEndpoints.ROLES}/${roleId}?${queryParams.toString()}`)
         .then(res => res.data)
         .catch(err => Promise.reject(err));
 }
@@ -36,7 +36,7 @@ export const reqDeleteRole = (roleId) => {
         return Promise.reject({ response: { data: { error: "APP_ERR_PROVIDE_ID_ROLE_TO_DELETE" }}});
     }
 
-    return axiosWithToken.delete(`${Settings.API}${ApiEndpoints.DELETE_ROLE}/${roleId}`)
+    return axiosWithToken.delete(`${Settings.API}${ApiEndpoints.ROLES}/${roleId}`)
         .then(res => res.data)
         .catch(err => Promise.reject(err));
 }

@@ -12,7 +12,7 @@ import {
     TextField,
     Stack,
     Typography,
-    Container,
+    Container, IconButton,
 } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -23,14 +23,14 @@ import {reqAddRole, reqDeleteRole, reqGetRoles, reqUpdateRole} from "../../helpe
 import {useTranslation} from "react-i18next";
 
 const RolesView = () => {
-    const { t, i18n } = useTranslation();
+    const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newItem, setNewItem] = useState({name: ''});
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
-    const [selectedRole, setSelectedRole] = useState({ id: '', name: '', short: '' });
+    const [selectedRole, setSelectedRole] = useState({id: '', name: '', short: ''});
 
     useEffect(() => {
         dispatch({type: 'SHOW_SPINNER'});
@@ -40,7 +40,7 @@ const RolesView = () => {
             })
             .catch(err => {
                 const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -60,7 +60,7 @@ const RolesView = () => {
             })
             .catch(err => {
                 const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -75,20 +75,20 @@ const RolesView = () => {
     };
 
     const handleUpdateItem = () => {
-        dispatch({ type: 'SHOW_SPINNER' });
+        dispatch({type: 'SHOW_SPINNER'});
         reqUpdateRole(selectedRole.id, selectedRole)
             .then((res) => {
                 setIsEditModalOpen(false);
-                setData(data.map(item => (item.id === selectedRole.id ? { ...res.role } : item)));
-                dispatch(setSnackBar({ type: 'success', message: t("APP_SUCCESS_EDITED_ROLE"), show: true }));
+                setData(data.map(item => (item.id === selectedRole.id ? {...res.role} : item)));
+                dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_EDITED_ROLE"), show: true}));
             })
             .catch(err => {
                 const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
             })
             .finally(() => {
                 setTimeout(() => {
-                    dispatch({ type: 'HIDE_SPINNER' });
+                    dispatch({type: 'HIDE_SPINNER'});
                 }, 250);
             });
     };
@@ -99,20 +99,20 @@ const RolesView = () => {
     };
 
     const handleConfirmDelete = () => {
-        dispatch({ type: 'SHOW_SPINNER' });
+        dispatch({type: 'SHOW_SPINNER'});
         reqDeleteRole(selectedRole.id)
             .then(() => {
                 setIsDeleteConfirmationOpen(false);
                 setData(data.filter(item => item.id !== selectedRole.id));
-                dispatch(setSnackBar({ type: 'success', message: t("APP_SUCCESS_DELETED_ROLE"), show: true }));
+                dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_DELETED_ROLE"), show: true}));
             })
             .catch(err => {
                 const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
             })
             .finally(() => {
                 setTimeout(() => {
-                    dispatch({ type: 'HIDE_SPINNER' });
+                    dispatch({type: 'HIDE_SPINNER'});
                 }, 250);
             });
     };
@@ -145,32 +145,28 @@ const RolesView = () => {
                     <TableBody>
                         {data.length > 0 ? (
                             data.map((item) => (
-                            <TableRow key={item.id}>
-                                <TableCell>{item.id}</TableCell>
-                                <TableCell>{item.name}</TableCell>
-                                <TableCell>{item.short}</TableCell>
-                                <TableCell>
-                                    {item.short !== 'admin' && item.short !== 'user' && item.short !== 'blocked' && (
-                                        <>
-                                            <Tooltip title={t("APP_EDIT_BTN_TOOLTIP")}>
-                                                <EditIcon
-                                                    color="primary"
-                                                    onClick={() => handleEdit(item)}
-                                                    style={{ marginRight: '10px', cursor: 'pointer' }}
-                                                />
-                                            </Tooltip>
-                                            <Tooltip title={t("APP_DELETE_BTN_TOOLTIP")}>
-                                                <DeleteIcon
-                                                    color="error"
-                                                    onClick={() => handleDelete(item)}
-                                                    style={{ marginRight: '10px', cursor: 'pointer' }}
-                                                />
-                                            </Tooltip>
-                                        </>
-                                    )}
-                                </TableCell>
-                            </TableRow>
-                        ))
+                                <TableRow key={item.id}>
+                                    <TableCell>{item.id}</TableCell>
+                                    <TableCell>{item.name}</TableCell>
+                                    <TableCell>{item.short}</TableCell>
+                                    <TableCell>
+                                        {item.short !== 'admin' && item.short !== 'user' && item.short !== 'blocked' && (
+                                            <>
+                                                <Tooltip title={t("APP_EDIT_BTN_TOOLTIP")}>
+                                                    <IconButton onClick={() => handleEdit(item)}>
+                                                        <EditIcon color="primary"/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title={t("APP_DELETE_BTN_TOOLTIP")}>
+                                                    <IconButton onClick={() => handleDelete(item)}>
+                                                        <DeleteIcon color="error"/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </>
+                                        )}
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={4} style={{textAlign: 'center'}}>
@@ -203,7 +199,7 @@ const RolesView = () => {
 
             <Modal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}
                    style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <Container style={{ background: 'white', padding: '20px', borderRadius: '4px', maxWidth: '300px' }}>
+                <Container style={{background: 'white', padding: '20px', borderRadius: '4px', maxWidth: '300px'}}>
                     <Stack direction="column" spacing={2}>
                         <Typography variant="h6" gutterBottom>
                             {t("APP_TITLE_EDIT_USER_ROLE")}
@@ -211,7 +207,7 @@ const RolesView = () => {
                         <TextField
                             label={t("APP_NAME_TXT")}
                             value={selectedRole.name}
-                            onChange={(e) => setSelectedRole({ ...selectedRole, name: e.target.value })}
+                            onChange={(e) => setSelectedRole({...selectedRole, name: e.target.value})}
                         />
                         <Button variant="contained" color="primary" onClick={handleUpdateItem}>
                             {t("APP_SAVE_BTN_LABEL")}
@@ -222,7 +218,7 @@ const RolesView = () => {
 
             <Modal open={isDeleteConfirmationOpen} onClose={handleCancelDelete}
                    style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <Container style={{ background: 'white', padding: '20px', borderRadius: '4px', maxWidth: '300px' }}>
+                <Container style={{background: 'white', padding: '20px', borderRadius: '4px', maxWidth: '300px'}}>
                     <Stack direction="column" spacing={2}>
                         <Typography variant="h6" gutterBottom>
                             {t("APP_ARE_YOU_SURE_YOU_WANT_TO_DELETE")}

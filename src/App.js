@@ -140,7 +140,7 @@ const App = () => {
 
     return (
         <>
-            <Box sx={{ position: 'fixed', top: '10px', right: '10px', zIndex: 999 }}>
+            <Box sx={{ position: 'fixed', top: '10px', right: '10px', zIndex: 999999 }}>
                 <Button color="primary" onClick={handleLanguageMenuOpen} sx={{ textTransform: 'none' }}>
                     <img
                         src={Countries[currentLang].flag}

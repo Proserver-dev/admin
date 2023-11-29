@@ -31,7 +31,7 @@ const MapUsersLocationView = () => {
     const { t, i18n } = useTranslation();
     const center = [52.0692, 19.4807]; // Współrzędne na środku Polski
     const mapRef = useRef(null);
-    const [containerHeight, setContainerHeight] = useState(875);
+    const [containerHeight, setContainerHeight] = useState(825);
     const [markers, setMarkers] = useState([
         { id: 1, position: [52.0692, 19.4807], email: 'user1@example.com' },
         { id: 2, position: [51.566827, 16.241078], email: 'user2@example.com' },
@@ -69,7 +69,7 @@ const MapUsersLocationView = () => {
     };
 
     return (
-        <div style={{ height: containerHeight, width: '100%' }}>
+        <div style={{ height: containerHeight, width: '100%', marginTop: '40px' }}>
             <MapContainer ref={mapRef} center={center} zoom={6} style={{ height: '100%', width: '100%' }}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='' />
                 {markers.map((marker) => (

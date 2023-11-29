@@ -73,8 +73,8 @@ Label.propTypes = {
     sx: PropTypes.object,
 };
 
-export default function Label({ children, color = 'default', variant = 'ghost', startIcon, endIcon, sx }) {
-    const style = {
+export default function Label({ children, color = 'default', variant = 'ghost', startIcon, endIcon, sx, style }) {
+    const styleIco = {
         width: 16,
         height: 16,
         '& svg, img': { width: 1, height: 1, objectFit: 'cover' },
@@ -88,12 +88,13 @@ export default function Label({ children, color = 'default', variant = 'ghost', 
                 ...(endIcon && { pr: 0.75 }),
                 ...sx,
             }}
+            style={style}
         >
-            {startIcon && <Box sx={{ mr: 0.75, ...style }}>{startIcon}</Box>}
+            {startIcon && <Box sx={{ mr: 0.75, ...styleIco }}>{startIcon}</Box>}
 
             {children}
 
-            {endIcon && <Box sx={{ ml: 0.75, ...style }}>{endIcon}</Box>}
+            {endIcon && <Box sx={{ ml: 0.75, ...styleIco }}>{endIcon}</Box>}
         </RootStyle>
     );
 }
