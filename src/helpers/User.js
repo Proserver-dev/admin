@@ -12,13 +12,14 @@ export const getMe = () => {
     });
 }
 
-export const reqGetUsers = (limit, offset) => {
+export const reqGetUsers = (limit, offset, searchTerm) => {
     return new Promise((resolve, reject) => {
 
         const config = {
             params: {
                 limit: limit,
-                offset: offset
+                offset: offset,
+                keywords: searchTerm
             }
         }
 

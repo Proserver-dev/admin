@@ -22,6 +22,7 @@ import {FaCheckCircle, FaTimesCircle} from 'react-icons/fa';
 import InfoIcon from '@mui/icons-material/Info';
 import PasswordIcon from '@mui/icons-material/Key';
 import HistoryIcon from '@mui/icons-material/History';
+import SearchIcon from '@mui/icons-material/Search';
 import {useTranslation} from "react-i18next";
 import Label from "../../components/Label";
 
@@ -37,6 +38,7 @@ const UserListView = () => {
     const [data, setData] = useState({count: 0, rows: []});
     const [selectedUser, setSelectedUser] = useState(null);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -45,8 +47,12 @@ const UserListView = () => {
     }, [location.search]);
 
     useEffect(() => {
+        getUsers()
+    }, [page]);
+
+    const getUsers = () => {
         dispatch({type: 'SHOW_SPINNER'});
-        reqGetUsers(itemsPerPage, itemsPerPage * (page - 1))
+        reqGetUsers(itemsPerPage, itemsPerPage * (page - 1), searchTerm)
             .then(res => {
                 setData(res)
             })
@@ -59,7 +65,22 @@ const UserListView = () => {
                     dispatch({type: 'HIDE_SPINNER'});
                 }, 250);
             })
-    }, [page]);
+    }
+
+    const handleEnterKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            getUsers();
+        }
+    };
+
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const handleSearchSubmit = (event) => {
+        event.preventDefault();
+        getUsers()
+    };
 
     const handlePageChange = (event, value) => {
         navigate(`?page=${value}`)
@@ -74,9 +95,6 @@ const UserListView = () => {
         setModalOpen(false);
     };
 
-    const startItem = (page - 1) * itemsPerPage;
-    const endItem = page * itemsPerPage;
-
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
@@ -88,15 +106,17 @@ const UserListView = () => {
                     {t("APP_ADD_NEW_USER_BTN_LABEL")}
                 </Button>
             </Stack>
-            <TextField
-                label="Search"
-                variant="outlined"
-                fullWidth
-                value=""
-                onChange={(e) => {
-                }}
-                sx={{marginBottom: 2}}
-            />
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5} gap={2} onSubmit={handleSearchSubmit}>
+                <TextField
+                    label="Search"
+                    variant="outlined"
+                    fullWidth
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    onKeyPress={handleEnterKeyPress}
+                />
+                <Button type="submit" variant="contained" startIcon={<SearchIcon/>} onClick={handleSearchSubmit}/>
+            </Stack>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
