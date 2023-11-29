@@ -47,7 +47,6 @@ const LoginView = () => {
                 dispatch({type: 'SET_CURRENT_USER', payload: res.user})
                 dispatch({type: 'CONNECT_SOCKET'});
                 navigate(Routes.HOME);
-                dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_LOGIN"), show: true}))
             })
             .catch(err => {
                 const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")

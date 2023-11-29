@@ -69,7 +69,6 @@ export default function DashboardSidebar({isOpenSidebar, onCloseSidebar}) {
                 navigate(RoutesPath.HOME)
                 dispatch({type: 'DISCONNECT_SOCKET'});
                 dispatch({type: 'LOGOUT_CURRENT_USER'});
-                dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_LOGOUT"), show: true}))
             })
             .catch(err => {
                 const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
