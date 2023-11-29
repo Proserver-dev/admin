@@ -1,7 +1,7 @@
-import Settings from "../constants/Settings";
-import ApiEndpoints from "../constants/ApiEndpoints";
+import Settings from "../../constants/Settings";
+import ApiEndpoints from "../../constants/ApiEndpoints";
 import axios from "axios";
-import axiosWithToken from "./axiosWithToken";
+import axiosWithToken from "../axiosWithToken";
 
 export const reqGetRoles = () => {
     return axiosWithToken.get(`${Settings.API}${ApiEndpoints.ROLES}`)

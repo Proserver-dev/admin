@@ -12,7 +12,7 @@ import NavSection from '../../components/NavSection';
 import Label from "../../components/Label";
 import LogoutIcon from '@mui/icons-material/Logout';
 import Settings from "../../constants/Settings";
-import {reqUserLogout} from "../../helpers/Auth";
+import {reqUserLogout} from "../../helpers/API/Auth";
 import {useDispatch, useSelector} from "react-redux";
 import {setSnackBar} from "../../redux/actions";
 import RoutesPath from "../../constants/RoutesPath";

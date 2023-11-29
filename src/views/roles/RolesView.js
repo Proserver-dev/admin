@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
 import {setSnackBar} from "../../redux/actions";
 import {useDispatch} from "react-redux";
-import {reqAddRole, reqDeleteRole, reqGetRoles, reqUpdateRole} from "../../helpers/Role";
+import {reqAddRole, reqDeleteRole, reqGetRoles, reqUpdateRole} from "../../helpers/API/Role";
 import {useTranslation} from "react-i18next";
 
 const RolesView = () => {

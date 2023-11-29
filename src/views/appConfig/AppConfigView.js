@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import {useDispatch} from 'react-redux';
 import {setSnackBar} from '../../redux/actions';
-import {reqGetAppConfigs, reqPutAppConfigs} from '../../helpers/AppConfig';
+import {reqGetAppConfigs, reqPutAppConfigs} from '../../helpers/API/AppConfig';
 import {format} from 'date-fns';
 import {useTranslation} from "react-i18next";
 import {useParams} from 'react-router-dom';

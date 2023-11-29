@@ -6,7 +6,6 @@ import { alpha, useTheme, styled } from '@mui/material/styles';
 import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
 //
 import Iconify from './Iconify';
-import {translate} from "../helpers/i18n";
 import RoutesPath from "../constants/RoutesPath";
 import {useTranslation} from "react-i18next";
 

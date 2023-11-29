@@ -17,7 +17,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {setSnackBar} from "../../redux/actions";
 import {useDispatch} from "react-redux";
 import {useTranslation} from "react-i18next";
-import {getSendEmailHistory} from "../../helpers/SendEmailHistory";
+import {getSendEmailHistory} from "../../helpers/API/SendEmailHistory";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 

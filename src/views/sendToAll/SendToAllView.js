@@ -16,7 +16,7 @@ import {
     Select,
     MenuItem, Container, Grid, Stack, Dialog, DialogTitle, DialogActions,
 } from '@mui/material';
-import {getMessagesToAll} from "../../helpers/MessagesToAll";
+import {getMessagesToAll} from "../../helpers/API/MessagesToAll";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useLocation} from "react-router-dom";
 import {format} from "date-fns";

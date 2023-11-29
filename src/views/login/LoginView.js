@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import Settings from "../../constants/Settings"
-import {reqAuthenticate} from "../../helpers/Auth";
+import {reqAuthenticate} from "../../helpers/API/Auth";
 import Routes from "../../constants/RoutesPath";
 import {useDispatch} from "react-redux";
 import {setSnackBar} from "../../redux/actions";

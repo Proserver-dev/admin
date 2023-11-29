@@ -15,7 +15,7 @@ import {
 import {useTable, useSortBy, useFilters, useGlobalFilter} from 'react-table';
 import {setSnackBar} from '../../redux/actions';
 import {useDispatch} from 'react-redux';
-import {reqGetApiResults} from '../../helpers/AppConfig';
+import {reqGetApiResults} from '../../helpers/API/AppConfig';
 import {
     faChevronUp,
     faChevronDown,

@@ -1,6 +1,6 @@
-import axiosWithToken from "./axiosWithToken";
-import Settings from "../constants/Settings";
-import ApiEndpoints from "../constants/ApiEndpoints";
+import axiosWithToken from "../axiosWithToken";
+import Settings from "../../constants/Settings";
+import ApiEndpoints from "../../constants/ApiEndpoints";
 
 export const getSendEmailHistory = (limit, offset) => {
     return new Promise((resolve, reject) => {

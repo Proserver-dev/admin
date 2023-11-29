@@ -14,7 +14,7 @@ import {
     Box, Container, Stack, Tooltip, TextField, Menu, IconButton,
 } from '@mui/material';
 import {format} from 'date-fns';
-import {reqGetUsers, reqPostChangeUserRole} from "../../helpers/User";
+import {reqGetUsers, reqPostChangeUserRole} from "../../helpers/API/User";
 import {setSnackBar} from "../../redux/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -26,7 +26,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import {useTranslation} from "react-i18next";
 import Label from "../../components/Label";
 import MenuItem from '@mui/material/MenuItem';
-import {reqGetRoles} from "../../helpers/Role";
+import {reqGetRoles} from "../../helpers/API/Role";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
@@ -224,7 +224,7 @@ const UserListView = () => {
                                     <TableCell>
                                         <div onClick={(event) => handleContextMenuClick(event, user)}>
                                             {user.role?.short === "admin" ? (
-                                                <Label variant="ghost" color="error" style={{ cursor: 'pointer' }}>
+                                                <Label variant="ghost" color="error" style={currentUser.id !== user.id ? { cursor: 'pointer' } : {}}>
                                                     {user.role?.short}
                                                 </Label>
                                             ) : user.role?.short === "user" ? (
