@@ -68,3 +68,16 @@ export const reqGetAuthHistory = (userId, limit, offset, type = '') => {
             .catch(err => reject(err))
     });
 }
+
+export const reqPostChangePasswordUser = (userId, password) => {
+    return new Promise((resolve, reject) => {
+
+        const data = {
+            password: password
+        }
+
+        axiosWithToken.post(`${Settings.API}${ApiEndpoints.POST_CHANGE_PASSWORD_USER}/${userId}`, data)
+            .then(res => resolve(res.data))
+            .catch(err => reject(err))
+    });
+}

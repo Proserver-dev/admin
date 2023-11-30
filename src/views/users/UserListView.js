@@ -32,6 +32,8 @@ import Label from "../../components/Label";
 import MenuItem from '@mui/material/MenuItem';
 import {reqGetRoles} from "../../helpers/API/Role";
 import RoutesPath from "../../constants/RoutesPath";
+import ModalUserInfo from "./modals/ModalUserInfo";
+import ModalChangePasswordUser from "./modals/ModalChangePasswordUser";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
@@ -44,11 +46,13 @@ const UserListView = () => {
     const [page, setPage] = useState(1);
     const [data, setData] = useState({count: 0, rows: []});
     const [selectedUser, setSelectedUser] = useState(null);
-    const [isModalOpen, setModalOpen] = useState(false);
+
+    const [isModalInfoOpen, setModalInfoOpen] = useState(false);
+    const [isModalChangePasswordOpen, setModalChangePasswordOpen] = useState(false);
+
     const [searchTerm, setSearchTerm] = useState('');
     const [contextMenuRolesAnchor, setContextMenuRolesAnchor] = useState(null);
     const [contextMenuMoreAnchor, setContextMenuMoreAnchor] = useState(null);
-    const [selectedUserForMenu, setSelectedUserForMenu] = useState(null);
     const [roles, setRoles] = useState([{}]);
 
     useEffect(() => {
@@ -111,17 +115,8 @@ const UserListView = () => {
         navigate(`?page=${value}`)
     };
 
-    const handleViewDetails = (user) => {
-        setSelectedUser(user);
-        setModalOpen(true);
-    };
-
-    const handleCloseModal = () => {
-        setModalOpen(false);
-    };
-
     const handleRoleChange = (role) => {
-        reqPostChangeUserRole(selectedUserForMenu.id, role?.id)
+        reqPostChangeUserRole(selectedUser.id, role?.id)
             .then(res => {
                 dispatch(setSnackBar({type: 'success', message: t(res.success), show: true}));
                 getUsers();
@@ -139,22 +134,22 @@ const UserListView = () => {
         if (currentUser.id === user.id) return;
 
         setContextMenuRolesAnchor(event.currentTarget);
-        setSelectedUserForMenu(user);
+        setSelectedUser(user);
     };
 
     const handleContextMenuRolesClose = () => {
         setContextMenuRolesAnchor(null);
-        setSelectedUserForMenu(null);
+        setSelectedUser(null);
     };
 
     const handleContextMenuMoreClick = (event, user) => {
         setContextMenuMoreAnchor(event.currentTarget);
-        setSelectedUserForMenu(user);
+        setSelectedUser(user);
     }
 
     const handleContextMenuMoreClose = () => {
         setContextMenuMoreAnchor(null);
-        setSelectedUserForMenu(null);
+        setSelectedUser(null);
     };
 
     return (
@@ -271,9 +266,9 @@ const UserListView = () => {
                                                     key={roleItem?.id}
                                                     onClick={() => handleRoleChange(roleItem)}
                                                     style={{
-                                                        fontWeight: selectedUserForMenu?.role?.short === roleItem?.short ? 'normal' : 'normal', // Zaznaczenie
-                                                        pointerEvents: selectedUserForMenu?.role?.short === roleItem?.short ? 'none' : 'auto', // Blokowanie interakcji
-                                                        color: selectedUserForMenu?.role?.short === roleItem?.short ? '#aaa' : 'inherit', // Kolor dla zablokowanego elementu
+                                                        fontWeight: selectedUser?.role?.short === roleItem?.short ? 'normal' : 'normal', // Zaznaczenie
+                                                        pointerEvents: selectedUser?.role?.short === roleItem?.short ? 'none' : 'auto', // Blokowanie interakcji
+                                                        color: selectedUser?.role?.short === roleItem?.short ? '#aaa' : 'inherit', // Kolor dla zablokowanego elementu
                                                     }}
                                                 >
                                                     {roleItem?.short}
@@ -283,12 +278,17 @@ const UserListView = () => {
                                     </TableCell>
                                     <TableCell>
                                         <Tooltip title={t("APP_SHOW_MORE_BTN_TOOLTIP")}>
-                                            <IconButton onClick={() => handleViewDetails(user)}>
+                                            <IconButton onClick={() => {
+                                                setSelectedUser(user);
+                                                setModalInfoOpen(true);
+                                            }}>
                                                 <InfoIcon color="primary"/>
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title={t("APP_CHANGE_PASSWORD_BTN_TOOLTIP")}>
                                             <IconButton onClick={() => {
+                                                setSelectedUser(user);
+                                                setModalChangePasswordOpen(true)
                                             }}>
                                                 <PasswordIcon color="warning"/>
                                             </IconButton>
@@ -373,34 +373,8 @@ const UserListView = () => {
                 style={{marginTop: '15px'}}
             />
 
-            <Modal open={isModalOpen} onClose={handleCloseModal}>
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,
-                    }}
-                >
-                    <Typography variant="h6">{t("APP_TITLE_USER_DETAILS")}</Typography>
-                    {selectedUser && (
-                        <div>
-                            <p>{t("APP_TABLE_COL_ID")}: {selectedUser.id}</p>
-                            <p>{t("APP_TABLE_COL_EMAIL")}: {selectedUser.email}</p>
-                            <p>{t("APP_TABLE_COL_USER_NAME")}: {selectedUser.userName}</p>
-                            <p>{t("APP_TABLE_COL_NAME_LASTNAME")}: {selectedUser.nameLastname}</p>
-                            <p>{t("APP_TABLE_COL_ROLE")}: {selectedUser.role?.name} ({selectedUser.role?.short})</p>
-                            <p>{t("APP_TABLE_COL_UPDATED_AT")}: {format(new Date(selectedUser.updatedAt), 'yyyy-MM-dd HH:mm:ss')}</p>
-                            <p>{t("APP_TABLE_COL_CREATED_AT")}: {format(new Date(selectedUser.createdAt), 'yyyy-MM-dd HH:mm:ss')}</p>
-                        </div>
-                    )}
-                </Box>
-            </Modal>
+            <ModalUserInfo isModalOpen={isModalInfoOpen} setModalOpen={setModalInfoOpen} selectedUser={selectedUser}/>
+            <ModalChangePasswordUser isModalOpen={isModalChangePasswordOpen} setModalOpen={setModalChangePasswordOpen} selectedUser={selectedUser}/>
         </Container>
     );
 };

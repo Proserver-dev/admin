@@ -51,6 +51,8 @@
   "SUCCESS_USER_REGISTERED": "Pomyślnie zarejestrowano użytkownika",
   "SUCCESS_LOGOUT": "Pomyślnie wylogowano",
   "ERR_UNKNOWN": "Wystąpił nieznany błąd",
+  "ERR_WEAK_PASSWORD": "Hasło jest zbyt proste",
+  "ERR_BAD_CREDENTIALS": "Nieprawidłowe dane logowania",
 
   "REGISTRATION_ENABLED": "Status rejestracji (włączona / wyłączona)",
   "REGISTRATION_DISABLED_REASON": "Powód wyłączenia rejestracji",
@@ -75,6 +77,7 @@
   "APP_SUCCESS_EDITED_ROLE": "Pomyślnie zaktualizowano rolę",
   "APP_SUCCESS_DELETED_ROLE": "Pomyślnie usunięto rolę",
   "APP_SUCCESS_SAVE_CHANGES": "Pomyślnie zapisano zmiany",
+  "APP_SUCCESS_CHANGE_PASSWORD": "Pomyślnie zmieniono hasło",
 
   "APP_ERR_PROVIDE_NAME_ROLE": "Musisz wprowadzić nazwę roli",
   "APP_ERR_PROVIDE_ID_AND_NEW_NAME_ROLE": "Musisz podać identyfikator i wprowadzić nową nazwę roli",
