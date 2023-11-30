@@ -123,7 +123,7 @@ function SendToAllView() {
                 <Grid item xs={3}>
                     <FormControl fullWidth>
                         <InputLabel>{t("APP_TYPE_TXT")}</InputLabel>
-                        <Select value={type} onChange={handleChangeType}>
+                        <Select label={t("APP_TYPE_TXT")} value={type} onChange={handleChangeType}>
                             <MenuItem value="forceLogout">{t("APP_TYPE_MESSAGE_FORCE_LOGOUT_ALL")}</MenuItem>
                             <MenuItem value="info">{t("APP_TYPE_MESSAGE_INFO")}</MenuItem>
                             <MenuItem value="warning">{t("APP_TYPE_MESSAGE_WARNING")}</MenuItem>

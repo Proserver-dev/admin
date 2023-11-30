@@ -10,7 +10,7 @@ import {
     Pagination,
     Typography,
     Container,
-    Stack, Link, Skeleton,
+    Stack, Link, Skeleton, InputLabel, Select, MenuItem, FormControl,
 } from '@mui/material';
 import {format} from 'date-fns';
 import {useLocation, useNavigate} from "react-router-dom";
@@ -28,14 +28,20 @@ const AuthHistoryView = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    const currentUser = useSelector((state) => state.currentUser);
     const [data, setData] = useState({count: 0, rows: []});
     const [page, setPage] = useState(1);
     const [user, setUser] = useState({});
+    const [type, setType] = useState('');
 
     useEffect(() => {
         handleGetUserById()
     }, [])
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const pageParam = parseInt(searchParams.get('page'), 10) || 1;
+        handleGetAuthHistory(pageParam)
+    }, [type])
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -54,7 +60,7 @@ const AuthHistoryView = () => {
         }
 
         dispatch({type: 'SHOW_SPINNER'});
-        reqGetAuthHistory(userIdParam, itemsPerPage, itemsPerPage * (page - 1))
+        reqGetAuthHistory(userIdParam, itemsPerPage, itemsPerPage * (page - 1), type)
             .then((res) => {
                 setData(res)
             })
@@ -103,6 +109,18 @@ const AuthHistoryView = () => {
         navigate(RoutesPath.USER_LIST);
     };
 
+    const handleChangeType = (event) => {
+        const searchParams = new URLSearchParams(location.search);
+        const userIdParam = parseInt(searchParams.get('userId'), 10) || 0;
+
+        if(userIdParam === 0) {
+            handleGoBack()
+        }
+
+        setType(event.target.value);
+        navigate(`?userId=${userIdParam}&page=1`)
+    };
+
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
@@ -117,6 +135,17 @@ const AuthHistoryView = () => {
                 <Link onClick={handleGoBack} component="button" variant="body2" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
                     <ChevronLeft/> Wróć do listy użytkowników
                 </Link>
+                <FormControl style={{ maxWidth: '300px', width: '100%' }}>
+                    <InputLabel>{t("APP_TYPE_TXT")}</InputLabel>
+                    <Select label={t("APP_TYPE_TXT")} value={type} onChange={handleChangeType}>
+                        <MenuItem value="">Wszystkie</MenuItem>
+                        <MenuItem value="register">Rejestracja</MenuItem>
+                        <MenuItem value="login">Logowanie</MenuItem>
+                        <MenuItem value="logout">Wylogowanie</MenuItem>
+                        <MenuItem value="activate">Aktywacja</MenuItem>
+                        <MenuItem value="resend">Ponowna wysyłka</MenuItem>
+                    </Select>
+                </FormControl>
             </Stack>
             <TableContainer component={Paper}>
                 <Table>
