@@ -41,3 +41,21 @@ export const reqPostChangeUserRole = (userId, roleId) => {
             .catch(err => reject(err))
     });
 }
+
+export const reqGetAuthHistory = (userId, limit, offset, type = '') => {
+    return new Promise((resolve, reject) => {
+
+        const config = {
+            params: {
+                userId: userId,
+                limit: limit,
+                offset: offset,
+                type: type
+            }
+        }
+
+        axiosWithToken.get(`${Settings.API}${ApiEndpoints.GET_AUTH_HISTORY}`, config)
+            .then(res => resolve(res.data))
+            .catch(err => reject(err))
+    });
+}

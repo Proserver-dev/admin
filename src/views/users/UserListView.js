@@ -27,6 +27,7 @@ import {useTranslation} from "react-i18next";
 import Label from "../../components/Label";
 import MenuItem from '@mui/material/MenuItem';
 import {reqGetRoles} from "../../helpers/API/Role";
+import RoutesPath from "../../constants/RoutesPath";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
@@ -279,6 +280,7 @@ const UserListView = () => {
                                         </Tooltip>
                                         <Tooltip title={t("APP_SHOW_AUTH_HISTORY_BTN_TOOLTIP")}>
                                             <IconButton onClick={() => {
+                                                navigate(`${RoutesPath.AUTH_HISTORY}?userId=${user.id}`)
                                             }}>
                                                 <HistoryIcon color="primary"/>
                                             </IconButton>

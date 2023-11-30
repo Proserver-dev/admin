@@ -1,0 +1,137 @@
+import React, {useEffect, useState} from 'react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Pagination,
+    Typography,
+    Container,
+    Stack, Link,
+} from '@mui/material';
+import {format} from 'date-fns';
+import {useLocation, useNavigate} from "react-router-dom";
+import {setSnackBar} from "../../redux/actions";
+import {useDispatch, useSelector} from "react-redux";
+import {useTranslation} from "react-i18next";
+import RoutesPath from "../../constants/RoutesPath";
+import {reqGetAuthHistory} from "../../helpers/API/User";
+
+const itemsPerPage = 10; // Liczba elementów na stronę
+
+const SendEmailHistoryView = () => {
+    const {t, i18n} = useTranslation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const currentUser = useSelector((state) => state.currentUser);
+    const [data, setData] = useState({count: 0, rows: []});
+    const [page, setPage] = useState(1);
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const pageParam = parseInt(searchParams.get('page'), 10) || 1;
+        setPage(pageParam);
+    }, [location.search]);
+
+    useEffect(() => {
+        handleGetAuthHistory()
+    }, [page])
+
+    const handleGetAuthHistory = () => {
+        const searchParams = new URLSearchParams(location.search);
+        const userIdParam = parseInt(searchParams.get('userId'), 10) || 0;
+
+        if(userIdParam === 0) {
+            handleGoBack()
+        }
+
+        dispatch({type: 'SHOW_SPINNER'});
+        reqGetAuthHistory(userIdParam, itemsPerPage, itemsPerPage * (page - 1))
+            .then((res) => {
+                setData(res)
+            })
+            .catch((err) => {
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    dispatch({type: 'HIDE_SPINNER'});
+                }, 250);
+            })
+    }
+
+    const handlePageChange = (event, value) => {
+        const searchParams = new URLSearchParams(location.search);
+        const userIdParam = parseInt(searchParams.get('userId'), 10) || 0;
+
+        if(userIdParam === 0) {
+            handleGoBack()
+        }
+
+        navigate(`?userId=${userIdParam}&page=${value}`)
+    };
+
+    const handleGoBack = () => {
+        navigate(RoutesPath.USER_LIST);
+    };
+
+    return (
+        <Container>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
+                <Typography variant="h4" className="page-title">{t("APP_MENU_AUTH_HISTORY")}</Typography>
+            </Stack>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
+                <Link onClick={handleGoBack} component="button" variant="body2">
+                    Wróć do listy użytkowników
+                </Link>
+            </Stack>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>ID</TableCell>
+                            <TableCell>Type</TableCell>
+                            <TableCell>Content</TableCell>
+                            <TableCell>Created At</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {data.rows.length > 0 ? (
+                            data.rows.map((row) => (
+                                <TableRow key={row.id}>
+                                    <TableCell>{row.id}</TableCell>
+                                    <TableCell>{row.type}</TableCell>
+                                    <TableCell>{row.content}</TableCell>
+                                    <TableCell>
+                                        {row.createdAt !== '' &&
+                                            format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={9} style={{textAlign: 'center'}}>
+                                    {t('APP_NO_DATA')}
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            <Pagination
+                count={Math.ceil(data.count / itemsPerPage)}
+                page={page}
+                onChange={handlePageChange}
+                style={{marginTop: '15px'}}
+            />
+        </Container>
+    );
+};
+
+export default SendEmailHistoryView;
