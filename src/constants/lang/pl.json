@@ -105,6 +105,8 @@
   "APP_MENU_USER_LOCATIONS": "Lokalizacje użytkowników",
   "APP_MENU_USER_LIST": "Lista użytkowników",
   "APP_MENU_SEND_EMAIL_HISTORY": "Historia wysłanych maili",
+  "APP_MENU_DEBUG_SECTION": "Debugowanie",
+  "APP_MENU_USERS_SECTION": "Użytkownicy",
 
   "APP_LOGIN_SUBMIT_BTN_LABEL": "Logowanko",
   "APP_LOGOUT_BTN_LABEL": "Wylogowanko",
