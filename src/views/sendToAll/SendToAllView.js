@@ -67,16 +67,14 @@ function SendToAllView() {
             type: 'EMIT_SOCKET_EVENT',
             payload: {event: SocketEvents.EMIT_MESSAGE_TO_ALL, data: {message: message, type: type}}
         })
-        setData({
-            count: data.count + 1,
-            rows: [
-                {id: '', sendBy: currentUser, message: message, type: type, createdAt: ''},
-                ...data.rows
-            ]
-        })
+        handlerGetMessagesToAll()
     }
 
     useEffect(() => {
+        handlerGetMessagesToAll()
+    }, [page])
+
+    const handlerGetMessagesToAll = () => {
         dispatch({type: 'SHOW_SPINNER'});
         getMessagesToAll(itemsPerPage, itemsPerPage * (page - 1))
             .then((res) => {
@@ -91,7 +89,7 @@ function SendToAllView() {
                     dispatch({type: 'HIDE_SPINNER'});
                 }, 250);
             })
-    }, [page])
+    }
 
     const handleChangeMessage = (event) => {
         setMessage(event.target.value);

@@ -10,7 +10,7 @@ import MuiAlert from "@mui/material/Alert";
 import {Backdrop, Box, Button, CircularProgress, Menu, MenuItem} from "@mui/material";
 import {useSelector, useDispatch} from 'react-redux';
 import {setCurrentUser, setSnackBar} from "./redux/actions";
-import {getMe} from "./helpers/API/User";
+import {reqGetMe} from "./helpers/API/User";
 import {getLoginToken} from "./helpers/API/Auth";
 import {useNavigate} from "react-router-dom";
 import RoutesPath from "./constants/RoutesPath";
@@ -92,7 +92,7 @@ const App = () => {
     useEffect(() => {
         if(getLoginToken() !== null) {
             dispatch({type: 'SHOW_SPINNER'});
-            getMe()
+            reqGetMe()
                 .then(res => {
                     dispatch(setCurrentUser(res));
                     dispatch({type: 'CONNECT_SOCKET'});

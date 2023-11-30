@@ -3,7 +3,7 @@ import ApiEndpoints from "../../constants/ApiEndpoints";
 import axios from "axios";
 import axiosWithToken from "../axiosWithToken";
 
-export const getMe = () => {
+export const reqGetMe = () => {
     return new Promise((resolve, reject) => {
 
         axiosWithToken.get(Settings.API + ApiEndpoints.GET_USERS_ME)

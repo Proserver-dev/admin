@@ -11,7 +11,7 @@ import {
     Pagination,
     Typography,
     Modal,
-    Box, Container, Stack, Tooltip, TextField, Menu, IconButton, MenuList,
+    Box, Container, Stack, Tooltip, TextField, Menu, IconButton, MenuList, ListItemText, ListItemIcon,
 } from '@mui/material';
 import {format} from 'date-fns';
 import {reqGetUsers, reqPostChangeUserRole} from "../../helpers/API/User";
@@ -23,6 +23,10 @@ import InfoIcon from '@mui/icons-material/Info';
 import PasswordIcon from '@mui/icons-material/Key';
 import HistoryIcon from '@mui/icons-material/History';
 import SearchIcon from '@mui/icons-material/Search';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ChatIcon from '@mui/icons-material/Chat';
+import UploadIcon from '@mui/icons-material/Upload';
 import {useTranslation} from "react-i18next";
 import Label from "../../components/Label";
 import MenuItem from '@mui/material/MenuItem';
@@ -43,7 +47,8 @@ const UserListView = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [contextMenuRolesAnchor, setContextMenuRolesAnchor] = useState(null);
-    const [selectedUserForMenuRoles, setSelectedUserForMenuRoles] = useState(null);
+    const [contextMenuMoreAnchor, setContextMenuMoreAnchor] = useState(null);
+    const [selectedUserForMenu, setSelectedUserForMenu] = useState(null);
     const [roles, setRoles] = useState([{}]);
 
     useEffect(() => {
@@ -116,7 +121,7 @@ const UserListView = () => {
     };
 
     const handleRoleChange = (role) => {
-        reqPostChangeUserRole(selectedUserForMenuRoles.id, role?.id)
+        reqPostChangeUserRole(selectedUserForMenu.id, role?.id)
             .then(res => {
                 dispatch(setSnackBar({type: 'success', message: t(res.success), show: true}));
                 getUsers();
@@ -134,12 +139,22 @@ const UserListView = () => {
         if (currentUser.id === user.id) return;
 
         setContextMenuRolesAnchor(event.currentTarget);
-        setSelectedUserForMenuRoles(user);
+        setSelectedUserForMenu(user);
     };
 
     const handleContextMenuRolesClose = () => {
         setContextMenuRolesAnchor(null);
-        setSelectedUserForMenuRoles(null);
+        setSelectedUserForMenu(null);
+    };
+
+    const handleContextMenuMoreClick = (event, user) => {
+        setContextMenuMoreAnchor(event.currentTarget);
+        setSelectedUserForMenu(user);
+    }
+
+    const handleContextMenuMoreClose = () => {
+        setContextMenuMoreAnchor(null);
+        setSelectedUserForMenu(null);
     };
 
     return (
@@ -247,7 +262,7 @@ const UserListView = () => {
                                             onClose={handleContextMenuRolesClose}
                                             PaperProps={{
                                                 style: {
-                                                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', // Dostosuj kolor cienia
+                                                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
                                                 },
                                             }}
                                         >
@@ -256,9 +271,9 @@ const UserListView = () => {
                                                     key={roleItem?.id}
                                                     onClick={() => handleRoleChange(roleItem)}
                                                     style={{
-                                                        fontWeight: selectedUserForMenuRoles?.role?.short === roleItem?.short ? 'normal' : 'normal', // Zaznaczenie
-                                                        pointerEvents: selectedUserForMenuRoles?.role?.short === roleItem?.short ? 'none' : 'auto', // Blokowanie interakcji
-                                                        color: selectedUserForMenuRoles?.role?.short === roleItem?.short ? '#aaa' : 'inherit', // Kolor dla zablokowanego elementu
+                                                        fontWeight: selectedUserForMenu?.role?.short === roleItem?.short ? 'normal' : 'normal', // Zaznaczenie
+                                                        pointerEvents: selectedUserForMenu?.role?.short === roleItem?.short ? 'none' : 'auto', // Blokowanie interakcji
+                                                        color: selectedUserForMenu?.role?.short === roleItem?.short ? '#aaa' : 'inherit', // Kolor dla zablokowanego elementu
                                                     }}
                                                 >
                                                     {roleItem?.short}
@@ -285,6 +300,58 @@ const UserListView = () => {
                                                 <HistoryIcon color="primary"/>
                                             </IconButton>
                                         </Tooltip>
+                                        <IconButton onClick={(event) => handleContextMenuMoreClick(event, user)}>
+                                            <MoreVertIcon color="primary"/>
+                                        </IconButton>
+                                        <Menu
+                                            anchorEl={contextMenuMoreAnchor}
+                                            open={Boolean(contextMenuMoreAnchor)}
+                                            onClose={handleContextMenuMoreClose}
+                                            anchorOrigin={{
+                                                vertical: 'bottom',
+                                                horizontal: 'right',
+                                            }}
+                                            transformOrigin={{
+                                                vertical: 'top',
+                                                horizontal: 'right',
+                                            }}
+                                            PaperProps={{
+                                                style: {
+                                                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+                                                },
+                                            }}
+                                        >
+                                            <MenuItem
+                                                key="option1"
+                                                onClick={() => {
+                                                }}
+                                            >
+                                                <ListItemIcon>
+                                                    <UploadIcon fontSize="small" />
+                                                </ListItemIcon>
+                                                <ListItemText>Wyślij wiadomość serwerową</ListItemText>
+                                            </MenuItem>
+                                            <MenuItem
+                                                key="option2"
+                                                onClick={() => {
+                                                }}
+                                            >
+                                                <ListItemIcon>
+                                                    <ChatIcon fontSize="small" />
+                                                </ListItemIcon>
+                                                <ListItemText>Przejdź do czatu</ListItemText>
+                                            </MenuItem>
+                                            <MenuItem
+                                                key="option3"
+                                                onClick={() => {
+                                                }}
+                                            >
+                                                <ListItemIcon>
+                                                    <DeleteIcon fontSize="small" />
+                                                </ListItemIcon>
+                                                <ListItemText>Usuń użytkownika</ListItemText>
+                                            </MenuItem>
+                                        </Menu>
                                     </TableCell>
                                 </TableRow>
                             ))
