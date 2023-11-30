@@ -11,7 +11,7 @@ import {
     Pagination,
     Typography,
     Modal,
-    Box, Container, Stack, Tooltip, TextField, Menu, IconButton,
+    Box, Container, Stack, Tooltip, TextField, Menu, IconButton, MenuList,
 } from '@mui/material';
 import {format} from 'date-fns';
 import {reqGetUsers, reqPostChangeUserRole} from "../../helpers/API/User";
@@ -41,13 +41,11 @@ const UserListView = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isModalOpen, setModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedRole, setSelectedRole] = useState('');
-    const [contextMenuAnchor, setContextMenuAnchor] = useState(null);
-    const [selectedUserForMenu, setSelectedUserForMenu] = useState(null);
+    const [contextMenuRolesAnchor, setContextMenuRolesAnchor] = useState(null);
+    const [selectedUserForMenuRoles, setSelectedUserForMenuRoles] = useState(null);
     const [roles, setRoles] = useState([{}]);
 
     useEffect(() => {
-        // Pobranie listy ról.
         reqGetRoles()
             .then(res => {
                 setRoles(res);
@@ -117,7 +115,7 @@ const UserListView = () => {
     };
 
     const handleRoleChange = (role) => {
-        reqPostChangeUserRole(selectedUserForMenu.id, role?.id)
+        reqPostChangeUserRole(selectedUserForMenuRoles.id, role?.id)
             .then(res => {
                 dispatch(setSnackBar({type: 'success', message: t(res.success), show: true}));
                 getUsers();
@@ -127,20 +125,20 @@ const UserListView = () => {
                 dispatch(setSnackBar({type: 'error', message: message, show: true}));
             })
             .finally(() => {
-                handleContextMenuClose(); // Zamknięcie menu po wyborze roli.
+                handleContextMenuRolesClose(); // Zamknięcie menu po wyborze roli.
             })
     };
 
-    const handleContextMenuClick = (event, user) => {
+    const handleContextMenuRolesClick = (event, user) => {
         if (currentUser.id === user.id) return;
 
-        setContextMenuAnchor(event.currentTarget);
-        setSelectedUserForMenu(user);
+        setContextMenuRolesAnchor(event.currentTarget);
+        setSelectedUserForMenuRoles(user);
     };
 
-    const handleContextMenuClose = () => {
-        setContextMenuAnchor(null);
-        setSelectedUserForMenu(null);
+    const handleContextMenuRolesClose = () => {
+        setContextMenuRolesAnchor(null);
+        setSelectedUserForMenuRoles(null);
     };
 
     return (
@@ -222,35 +220,44 @@ const UserListView = () => {
                                     <TableCell>{user.userName}</TableCell>
                                     <TableCell>{user.nameLastname}</TableCell>
                                     <TableCell>
-                                        <div onClick={(event) => handleContextMenuClick(event, user)}>
+                                        <div onClick={(event) => handleContextMenuRolesClick(event, user)}>
                                             {user.role?.short === "admin" ? (
-                                                <Label variant="ghost" color="error" style={currentUser.id !== user.id ? { cursor: 'pointer' } : {}}>
+                                                <Label variant="ghost" color="error"
+                                                       style={currentUser.id !== user.id ? {cursor: 'pointer'} : {}}>
                                                     {user.role?.short}
                                                 </Label>
                                             ) : user.role?.short === "user" ? (
-                                                <Label variant="ghost" color="primary" style={{ cursor: 'pointer' }}>
+                                                <Label variant="ghost" color="primary" style={{cursor: 'pointer'}}>
                                                     {user.role?.short}
                                                 </Label>
                                             ) : user.role?.short === "blocked" ? (
-                                                <Label variant="ghost" color="secondary" style={{ cursor: 'pointer' }}>
+                                                <Label variant="ghost" color="secondary" style={{cursor: 'pointer'}}>
                                                     {user.role?.short}
                                                 </Label>
                                             ) : (
-                                                <span style={{ cursor: 'pointer' }}>
+                                                <span style={{cursor: 'pointer'}}>
                                                     {user.role?.short}
                                                 </span>
                                             )}
                                         </div>
-                                        <Menu anchorEl={contextMenuAnchor} open={Boolean(contextMenuAnchor)}
-                                              onClose={handleContextMenuClose}>
+                                        <Menu
+                                            anchorEl={contextMenuRolesAnchor}
+                                            open={Boolean(contextMenuRolesAnchor)}
+                                            onClose={handleContextMenuRolesClose}
+                                            PaperProps={{
+                                                style: {
+                                                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', // Dostosuj kolor cienia
+                                                },
+                                            }}
+                                        >
                                             {roles.map((roleItem) => (
                                                 <MenuItem
                                                     key={roleItem?.id}
                                                     onClick={() => handleRoleChange(roleItem)}
                                                     style={{
-                                                        fontWeight: selectedUserForMenu?.role?.short === roleItem?.short ? 'bold' : 'normal', // Zaznaczenie
-                                                        pointerEvents: selectedUserForMenu?.role?.short === roleItem?.short ? 'none' : 'auto', // Blokowanie interakcji
-                                                        color: selectedUserForMenu?.role?.short === roleItem?.short ? '#aaa' : 'inherit', // Kolor dla zablokowanego elementu
+                                                        fontWeight: selectedUserForMenuRoles?.role?.short === roleItem?.short ? 'normal' : 'normal', // Zaznaczenie
+                                                        pointerEvents: selectedUserForMenuRoles?.role?.short === roleItem?.short ? 'none' : 'auto', // Blokowanie interakcji
+                                                        color: selectedUserForMenuRoles?.role?.short === roleItem?.short ? '#aaa' : 'inherit', // Kolor dla zablokowanego elementu
                                                     }}
                                                 >
                                                     {roleItem?.short}
