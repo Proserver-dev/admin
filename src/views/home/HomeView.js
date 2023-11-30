@@ -43,15 +43,19 @@ const HomeView = () => {
                                     </Typography>
                                     <Typography variant="caption" paragraph={true}
                                                 style={{marginBottom: 0}}><strong>{t("APP_TABLE_COL_ROLE")}</strong>: {currentUser.role?.name} ({currentUser.role?.short})</Typography>
-                                    <Typography variant="caption" paragraph={true}
-                                                style={{marginBottom: 0}}><strong>{t("APP_TABLE_COL_UPDATED_AT")}</strong>: {format(new Date(currentUser.updatedAt), 'yyyy-MM-dd HH:mm:ss')}
-                                    </Typography>
-                                    <Typography variant="caption" paragraph={true}
-                                                style={{marginBottom: 0}}><strong>{t("APP_TABLE_COL_CREATED_AT")}</strong>: {format(new Date(currentUser.createdAt), 'yyyy-MM-dd HH:mm:ss')}
-                                    </Typography>
+                                    {currentUser.updatedAt && (
+                                        <Typography variant="caption" paragraph={true}
+                                                    style={{marginBottom: 0}}><strong>{t("APP_TABLE_COL_UPDATED_AT")}</strong>: {format(new Date(currentUser?.updatedAt), 'yyyy-MM-dd HH:mm:ss')}
+                                        </Typography>
+                                    )}
+                                    {currentUser.createdAt && (
+                                        <Typography variant="caption" paragraph={true}
+                                                    style={{marginBottom: 0}}><strong>{t("APP_TABLE_COL_CREATED_AT")}</strong>: {format(new Date(currentUser?.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                                        </Typography>
+                                    )}
                                 </>
                             ) : (
-                                <Skeleton animation="wave" height={40}/>
+                                <Skeleton animation="wave" height={90}/>
                             )}
                         </CardContent>
                     </Card>
