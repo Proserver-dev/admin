@@ -29,6 +29,15 @@ export const reqGetUsers = (limit, offset, searchTerm) => {
     });
 }
 
+export const reqGetOneUser = (userId) => {
+    return new Promise((resolve, reject) => {
+
+        axiosWithToken.get(Settings.API + `${ApiEndpoints.GET_USERS}/${userId}`, {})
+            .then(res => resolve(res.data))
+            .catch(err => reject(err))
+    });
+}
+
 export const reqPostChangeUserRole = (userId, roleId) => {
     return new Promise((resolve, reject) => {
 

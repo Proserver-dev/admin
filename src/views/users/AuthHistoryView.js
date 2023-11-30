@@ -10,7 +10,7 @@ import {
     Pagination,
     Typography,
     Container,
-    Stack, Link,
+    Stack, Link, Skeleton,
 } from '@mui/material';
 import {format} from 'date-fns';
 import {useLocation, useNavigate} from "react-router-dom";
@@ -18,11 +18,12 @@ import {setSnackBar} from "../../redux/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {useTranslation} from "react-i18next";
 import RoutesPath from "../../constants/RoutesPath";
-import {reqGetAuthHistory} from "../../helpers/API/User";
+import {reqGetAuthHistory, reqGetOneUser} from "../../helpers/API/User";
+import ChevronLeft from '@mui/icons-material/ChevronLeft';
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
-const SendEmailHistoryView = () => {
+const AuthHistoryView = () => {
     const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -30,18 +31,21 @@ const SendEmailHistoryView = () => {
     const currentUser = useSelector((state) => state.currentUser);
     const [data, setData] = useState({count: 0, rows: []});
     const [page, setPage] = useState(1);
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        handleGetUserById()
+    }, [])
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const pageParam = parseInt(searchParams.get('page'), 10) || 1;
         setPage(pageParam);
+        handleGetUserById()
+        handleGetAuthHistory(pageParam)
     }, [location.search]);
 
-    useEffect(() => {
-        handleGetAuthHistory()
-    }, [page])
-
-    const handleGetAuthHistory = () => {
+    const handleGetAuthHistory = (page) => {
         const searchParams = new URLSearchParams(location.search);
         const userIdParam = parseInt(searchParams.get('userId'), 10) || 0;
 
@@ -65,6 +69,25 @@ const SendEmailHistoryView = () => {
             })
     }
 
+    const handleGetUserById = () => {
+        const searchParams = new URLSearchParams(location.search);
+        const userIdParam = parseInt(searchParams.get('userId'), 10) || 0;
+
+        if(userIdParam === 0) {
+            handleGoBack()
+        }
+
+        reqGetOneUser(userIdParam)
+            .then(res => {
+                setUser(res)
+            })
+            .catch(err => {
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
+                handleGoBack()
+            })
+    }
+
     const handlePageChange = (event, value) => {
         const searchParams = new URLSearchParams(location.search);
         const userIdParam = parseInt(searchParams.get('userId'), 10) || 0;
@@ -84,10 +107,15 @@ const SendEmailHistoryView = () => {
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
                 <Typography variant="h4" className="page-title">{t("APP_MENU_AUTH_HISTORY")}</Typography>
+                {user.id ? (
+                    <Typography variant="caption" paragraph={true} style={{marginBottom: 0}}>#{user.id} {user.email}</Typography>
+                ) : (
+                    <Skeleton animation="wave" height={10}/>
+                )}
             </Stack>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
-                <Link onClick={handleGoBack} component="button" variant="body2">
-                    Wróć do listy użytkowników
+                <Link onClick={handleGoBack} component="button" variant="body2" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                    <ChevronLeft/> Wróć do listy użytkowników
                 </Link>
             </Stack>
             <TableContainer component={Paper}>
@@ -134,4 +162,4 @@ const SendEmailHistoryView = () => {
     );
 };
 
-export default SendEmailHistoryView;
+export default AuthHistoryView;
