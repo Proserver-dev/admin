@@ -42,7 +42,7 @@ const passwordWeaknessValidationResultsDefault = {
     PASSWORD_MIN_SPECIAL_CHARS: true
 }
 
-const ModalChangePasswordUser = ({isModalOpen = false, setModalOpen = {}, selectedUser = {}}) => {
+const ModalChangePasswordUser = ({open = false, setModalOpen = {}, selectedUser = {}}) => {
     const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const [password, setPassword] = useState('')
@@ -55,7 +55,7 @@ const ModalChangePasswordUser = ({isModalOpen = false, setModalOpen = {}, select
         setShowPassword(false)
         setPasswordWeaknessValidation(passwordWeaknessValidationDefault)
         setPasswordWeaknessValidationResults(passwordWeaknessValidationResultsDefault)
-    }, [isModalOpen])
+    }, [open])
 
     useEffect(() => {
         if (passwordWeaknessValidation.run) {
@@ -159,7 +159,7 @@ const ModalChangePasswordUser = ({isModalOpen = false, setModalOpen = {}, select
     }
 
     return (
-        <CustomModal open={isModalOpen} onClose={() => setModalOpen(false)}>
+        <CustomModal open={open} onClose={() => setModalOpen(false)}>
             <Stack direction="column" spacing={2}>
                 <Typography variant="h6" gutterBottom>
                     Wprowadź nowe hasło

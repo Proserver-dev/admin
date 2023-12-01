@@ -373,8 +373,8 @@ const UserListView = () => {
                 style={{marginTop: '15px'}}
             />
 
-            <ModalUserInfo isModalOpen={isModalInfoOpen} setModalOpen={setModalInfoOpen} selectedUser={selectedUser}/>
-            <ModalChangePasswordUser isModalOpen={isModalChangePasswordOpen} setModalOpen={setModalChangePasswordOpen} selectedUser={selectedUser}/>
+            <ModalUserInfo open={isModalInfoOpen} setModalOpen={setModalInfoOpen} selectedUser={selectedUser}/>
+            <ModalChangePasswordUser open={isModalChangePasswordOpen} setModalOpen={setModalChangePasswordOpen} selectedUser={selectedUser}/>
         </Container>
     );
 };

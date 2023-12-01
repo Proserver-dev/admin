@@ -21,15 +21,19 @@ import {setSnackBar} from "../../redux/actions";
 import {useDispatch} from "react-redux";
 import {reqAddRole, reqDeleteRole, reqGetRoles, reqUpdateRole} from "../../helpers/API/Role";
 import {useTranslation} from "react-i18next";
+import ModalAddNewRole from "./modals/ModalAddNewRole";
+import ModalEditRole from "./modals/ModalEditRole";
+import ModalPreventDeleteRole from "./modals/ModalPreventDeleteRole";
 
 const RolesView = () => {
     const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const [data, setData] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [newItem, setNewItem] = useState({name: ''});
+
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+
     const [selectedRole, setSelectedRole] = useState({id: '', name: '', short: ''});
 
     useEffect(() => {
@@ -49,48 +53,9 @@ const RolesView = () => {
             })
     }, [])
 
-    const handleAddItem = () => {
-        dispatch({type: 'SHOW_SPINNER'});
-        reqAddRole(newItem)
-            .then(res => {
-                setNewItem({name: ''});
-                setData([...data, res.role]);
-                setIsModalOpen(false);
-                dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_CREATE_NEW_ROLE"), show: true}))
-            })
-            .catch(err => {
-                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({type: 'error', message: message, show: true}));
-            })
-            .finally(() => {
-                setTimeout(() => {
-                    dispatch({type: 'HIDE_SPINNER'});
-                }, 250);
-            })
-    };
-
     const handleEdit = (role) => {
         setSelectedRole(role);
         setIsEditModalOpen(true);
-    };
-
-    const handleUpdateItem = () => {
-        dispatch({type: 'SHOW_SPINNER'});
-        reqUpdateRole(selectedRole.id, selectedRole)
-            .then((res) => {
-                setIsEditModalOpen(false);
-                setData(data.map(item => (item.id === selectedRole.id ? {...res.role} : item)));
-                dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_EDITED_ROLE"), show: true}));
-            })
-            .catch(err => {
-                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({type: 'error', message: message, show: true}));
-            })
-            .finally(() => {
-                setTimeout(() => {
-                    dispatch({type: 'HIDE_SPINNER'});
-                }, 250);
-            });
     };
 
     const handleDelete = (role) => {
@@ -98,37 +63,13 @@ const RolesView = () => {
         setIsDeleteConfirmationOpen(true);
     };
 
-    const handleConfirmDelete = () => {
-        dispatch({type: 'SHOW_SPINNER'});
-        reqDeleteRole(selectedRole.id)
-            .then(() => {
-                setIsDeleteConfirmationOpen(false);
-                setData(data.filter(item => item.id !== selectedRole.id));
-                dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_DELETED_ROLE"), show: true}));
-            })
-            .catch(err => {
-                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({type: 'error', message: message, show: true}));
-            })
-            .finally(() => {
-                setTimeout(() => {
-                    dispatch({type: 'HIDE_SPINNER'});
-                }, 250);
-            });
-    };
-
-    const handleCancelDelete = () => {
-        setIsDeleteConfirmationOpen(false);
-    };
-
-
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
                 <Typography variant="h4" gutterBottom className="page-title">
                     {t("APP_MENU_USER_ROLES")}
                 </Typography>
-                <Button variant="contained" onClick={() => setIsModalOpen(true)}>
+                <Button variant="contained" onClick={() => setIsCreateModalOpen(true)}>
                     {t("APP_ADD_NEW_USER_ROLE_BTN_LABEL")}
                 </Button>
             </Stack>
@@ -178,62 +119,10 @@ const RolesView = () => {
                 </Table>
             </TableContainer>
 
-            <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}
-                   style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <Container style={{background: 'white', padding: '20px', borderRadius: '4px', maxWidth: '300px'}}>
-                    <Stack direction="column" spacing={2}>
-                        <Typography variant="h6" gutterBottom>
-                            {t("APP_TITLE_ADD_NEW_USER_ROLE")}
-                        </Typography>
-                        <TextField
-                            label={t("APP_NAME_TXT")}
-                            value={newItem.name}
-                            onChange={(e) => setNewItem({...newItem, name: e.target.value})}
-                        />
-                        <Button variant="contained" color="primary" onClick={handleAddItem}>
-                            {t("APP_ADD_BTN_LABEL")}
-                        </Button>
-                    </Stack>
-                </Container>
-            </Modal>
+            <ModalAddNewRole open={isCreateModalOpen} setModalOpen={setIsCreateModalOpen} data={data} setData={setData} />
+            <ModalEditRole open={isEditModalOpen} setModalOpen={setIsEditModalOpen} data={data} setData={setData} selectedRole={selectedRole} />
+            <ModalPreventDeleteRole open={isDeleteConfirmationOpen} setModalOpen={setIsDeleteConfirmationOpen} data={data} setData={setData} selectedRole={selectedRole} />
 
-            <Modal open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}
-                   style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <Container style={{background: 'white', padding: '20px', borderRadius: '4px', maxWidth: '300px'}}>
-                    <Stack direction="column" spacing={2}>
-                        <Typography variant="h6" gutterBottom>
-                            {t("APP_TITLE_EDIT_USER_ROLE")}
-                        </Typography>
-                        <TextField
-                            label={t("APP_NAME_TXT")}
-                            value={selectedRole.name}
-                            onChange={(e) => setSelectedRole({...selectedRole, name: e.target.value})}
-                        />
-                        <Button variant="contained" color="primary" onClick={handleUpdateItem}>
-                            {t("APP_SAVE_BTN_LABEL")}
-                        </Button>
-                    </Stack>
-                </Container>
-            </Modal>
-
-            <Modal open={isDeleteConfirmationOpen} onClose={handleCancelDelete}
-                   style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <Container style={{background: 'white', padding: '20px', borderRadius: '4px', maxWidth: '300px'}}>
-                    <Stack direction="column" spacing={2}>
-                        <Typography variant="h6" gutterBottom>
-                            {t("APP_ARE_YOU_SURE_YOU_WANT_TO_DELETE")}
-                        </Typography>
-                        <Stack direction="row" spacing={2} justifyContent="flex-end">
-                            <Button variant="contained" color="error" onClick={handleConfirmDelete}>
-                                {t("APP_YES_BTN_LABEL")}
-                            </Button>
-                            <Button variant="outlined" onClick={handleCancelDelete}>
-                                {t("APP_NO_BTN_LABEL")}
-                            </Button>
-                        </Stack>
-                    </Stack>
-                </Container>
-            </Modal>
         </Container>
     );
 };

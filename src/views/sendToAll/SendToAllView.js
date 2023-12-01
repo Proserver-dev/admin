@@ -23,6 +23,7 @@ import {format} from "date-fns";
 import {setSnackBar} from "../../redux/actions";
 import {useTranslation} from "react-i18next";
 import SocketEvents from "../../constants/SocketEvents";
+import ModalPreventForceLogoutAll from "./modals/ModalPreventForceLogoutAll";
 
 const initialMessage = ''; // Domyślna wiadomość
 const itemsPerPage = 10; // Liczba elementów na stronę
@@ -32,12 +33,15 @@ function SendToAllView() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    const currentUser = useSelector((state) => state.currentUser);
     const [message, setMessage] = useState(initialMessage);
     const [type, setType] = useState('info');
     const [page, setPage] = useState(1);
     const [data, setData] = useState({count: 0, rows: []})
     const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+
+    useEffect(() => {
+        setMessage(initialMessage)
+    }, [type])
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -101,15 +105,6 @@ function SendToAllView() {
 
     const handlePageChange = (event, value) => {
         navigate(`?page=${value}`)
-    };
-
-    const handleConfirmationDialogClose = () => {
-        setOpenConfirmationDialog(false);
-    };
-
-    const handleConfirmationDialogConfirm = () => {
-        setOpenConfirmationDialog(false);
-        sendToAll();
     };
 
     return (
@@ -192,21 +187,8 @@ function SendToAllView() {
                 onChange={handlePageChange}
                 style={{marginTop: '15px'}}
             />
-            <Dialog
-                open={openConfirmationDialog}
-                onClose={handleConfirmationDialogClose}
-                aria-labelledby="confirmation-dialog-title"
-            >
-                <DialogTitle>{t("APP_ARE_YOU_SURE_YOU_WANT_TO_LOGOUT_ALL")}</DialogTitle>
-                <DialogActions>
-                    <Button variant="contained" color="error" onClick={handleConfirmationDialogConfirm} autoFocus>
-                        {t("APP_YES_BTN_LABEL")}
-                    </Button>
-                    <Button variant="outlined" onClick={handleConfirmationDialogClose}>
-                        {t("APP_NO_BTN_LABEL")}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+
+            <ModalPreventForceLogoutAll open={openConfirmationDialog} setModalOpen={setOpenConfirmationDialog} sendToAll={sendToAll} />
         </Container>
     );
 }
