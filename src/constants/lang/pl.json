@@ -53,6 +53,8 @@
   "ERR_UNKNOWN": "Wystąpił nieznany błąd",
   "ERR_WEAK_PASSWORD": "Hasło jest zbyt proste",
   "ERR_BAD_CREDENTIALS": "Nieprawidłowe dane logowania",
+  "SUCCESS_USER_DEACTIVATED": "Pomyślnie dezaktywowano użytkownika",
+  "SUCCESS_USER_ACTIVATED": "Pomyślnie aktywowano użytkownika",
 
   "REGISTRATION_ENABLED": "Status rejestracji (włączona / wyłączona)",
   "REGISTRATION_DISABLED_REASON": "Powód wyłączenia rejestracji",

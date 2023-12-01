@@ -22,7 +22,8 @@ const ApiEndpoints = {
     POST_CHANGE_PASSWORD_USER: '/admin/users/change-password', // POST/:userId
 
     DELETE_USER: '/admin/users', // DELETE/:userId
-    POST_CREATE_NEW_ACCOUNT: '/admin/users/create-new-account'
+    POST_CREATE_NEW_ACCOUNT: '/admin/users/create-new-account',
+    PUT_CHANGE_USER_IS_ACTIVATED: '/admin/users/change-is-activated', // PUT/:userId
 }
 
 export default ApiEndpoints;

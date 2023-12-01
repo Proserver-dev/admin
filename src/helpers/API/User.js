@@ -99,3 +99,12 @@ export const reqPostCreateNewAccount = (data) => {
             .catch(err => reject(err))
     });
 }
+
+export const reqPutChangeUserIsActivated = (userId) => {
+    return new Promise((resolve, reject) => {
+
+        axiosWithToken.put(`${Settings.API}${ApiEndpoints.PUT_CHANGE_USER_IS_ACTIVATED}/${userId}`)
+            .then(res => resolve(res.data))
+            .catch(err => reject(err))
+    });
+}

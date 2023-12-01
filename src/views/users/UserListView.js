@@ -14,7 +14,7 @@ import {
     Box, Container, Stack, Tooltip, TextField, Menu, IconButton, MenuList, ListItemText, ListItemIcon, InputAdornment,
 } from '@mui/material';
 import {format} from 'date-fns';
-import {reqGetUsers, reqPostChangeUserRole} from "../../helpers/API/User";
+import {reqGetUsers, reqPostChangeUserRole, reqPutChangeUserIsActivated} from "../../helpers/API/User";
 import {setSnackBar} from "../../redux/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -160,6 +160,18 @@ const UserListView = () => {
         }, 250);
     };
 
+    const handleChangeUserActivation = (userId) => {
+        reqPutChangeUserIsActivated(userId)
+            .then(res => {
+                dispatch(setSnackBar({type: 'success', message: t(res.success), show: true}));
+                getUsers()
+            })
+            .catch(err => {
+                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
+            })
+    }
+
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
@@ -214,6 +226,7 @@ const UserListView = () => {
                                         {user.isActivated ? (
                                             <Tooltip title="Dezaktywuj">
                                                 <IconButton onClick={() => {
+                                                    handleChangeUserActivation(user.id)
                                                 }} disabled={currentUser.id === user.id}>
                                                     <FaCheckCircle style={{color: 'green', fontSize: 14}}/>
                                                 </IconButton>
@@ -221,6 +234,7 @@ const UserListView = () => {
                                         ) : (
                                             <Tooltip title="Aktywuj">
                                                 <IconButton onClick={() => {
+                                                    handleChangeUserActivation(user.id)
                                                 }} disabled={currentUser.id === user.id}>
                                                     <FaTimesCircle style={{color: 'red', fontSize: 14}}/>
                                                 </IconButton>
