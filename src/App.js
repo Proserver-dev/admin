@@ -53,7 +53,7 @@ const App = () => {
     useEffect(() => {
         if (socket) {
             socket.on(SocketEvents.LISTEN_MESSAGE_FROM_SERVER, (data) => {
-                if (data && data.message && data.type) {
+                if (data && data.type) {
                     let messageType = 'info';
 
                     if (data.type !== 'forceLogout') {
@@ -70,7 +70,13 @@ const App = () => {
                         }, 250);
                     }
 
-                    dispatch(setSnackBar({type: messageType, message: `Socket - ${data.message} | ${data.type}`, show: true}));
+                    if(data.message) {
+                        dispatch(setSnackBar({
+                            type: messageType,
+                            message: `Socket - ${data.message} | ${data.type}`,
+                            show: true
+                        }));
+                    }
                 }
             });
 
