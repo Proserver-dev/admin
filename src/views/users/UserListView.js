@@ -139,7 +139,9 @@ const UserListView = () => {
 
     const handleContextMenuRolesClose = () => {
         setContextMenuRolesAnchor(null);
-        setSelectedUser(null);
+        setTimeout(() => {
+            setSelectedUser(null);
+        }, 250);
     };
 
     const handleContextMenuMoreClick = (event, user) => {
@@ -149,7 +151,9 @@ const UserListView = () => {
 
     const handleContextMenuMoreClose = () => {
         setContextMenuMoreAnchor(null);
-        setSelectedUser(null);
+        setTimeout(() => {
+            setSelectedUser(null);
+        }, 250);
     };
 
     return (
@@ -327,30 +331,34 @@ const UserListView = () => {
                                                 }}
                                             >
                                                 <ListItemIcon>
-                                                    <UploadIcon fontSize="small" />
+                                                    <UploadIcon fontSize="small"/>
                                                 </ListItemIcon>
                                                 <ListItemText>Wyślij wiadomość serwerową</ListItemText>
                                             </MenuItem>
-                                            <MenuItem
-                                                key="option2"
-                                                onClick={() => {
-                                                }}
-                                            >
-                                                <ListItemIcon>
-                                                    <ChatIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                <ListItemText>Przejdź do czatu</ListItemText>
-                                            </MenuItem>
-                                            <MenuItem
-                                                key="option3"
-                                                onClick={() => {
-                                                }}
-                                            >
-                                                <ListItemIcon>
-                                                    <DeleteIcon fontSize="small" />
-                                                </ListItemIcon>
-                                                <ListItemText>Usuń użytkownika</ListItemText>
-                                            </MenuItem>
+                                            {currentUser.id !== selectedUser?.id && (
+                                                <>
+                                                    <MenuItem
+                                                        key="option2"
+                                                        onClick={() => {
+                                                        }}
+                                                    >
+                                                        <ListItemIcon>
+                                                            <ChatIcon fontSize="small"/>
+                                                        </ListItemIcon>
+                                                        <ListItemText>Przejdź do czatu</ListItemText>
+                                                    </MenuItem>
+                                                    <MenuItem
+                                                        key="option3"
+                                                        onClick={() => {
+                                                        }}
+                                                    >
+                                                        <ListItemIcon>
+                                                            <DeleteIcon fontSize="small"/>
+                                                        </ListItemIcon>
+                                                        <ListItemText>Usuń użytkownika</ListItemText>
+                                                    </MenuItem>
+                                                </>
+                                            )}
                                         </Menu>
                                     </TableCell>
                                 </TableRow>
@@ -374,7 +382,8 @@ const UserListView = () => {
             />
 
             <ModalUserInfo open={isModalInfoOpen} setModalOpen={setModalInfoOpen} selectedUser={selectedUser}/>
-            <ModalChangePasswordUser open={isModalChangePasswordOpen} setModalOpen={setModalChangePasswordOpen} selectedUser={selectedUser}/>
+            <ModalChangePasswordUser open={isModalChangePasswordOpen} setModalOpen={setModalChangePasswordOpen}
+                                     selectedUser={selectedUser}/>
         </Container>
     );
 };
