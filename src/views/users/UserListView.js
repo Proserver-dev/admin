@@ -27,6 +27,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ChatIcon from '@mui/icons-material/Chat';
 import UploadIcon from '@mui/icons-material/Upload';
+import SocketIcon from '@mui/icons-material/NetworkCheck';
 import {useTranslation} from "react-i18next";
 import Label from "../../components/Label";
 import MenuItem from '@mui/material/MenuItem';
@@ -68,11 +69,27 @@ const UserListView = () => {
             socket.on(SocketEvents.LISTEN_CONNECTION_ACTION, (dataSocket) => {
                 const userId = dataSocket?.userId;
                 setData((prevData) => {
-                    const updatedRows = prevData.rows.map((row) =>
-                        row.id === userId ? { ...row, isLoggedIn: dataSocket.action === "connected" } : row
-                    );
+                    if(dataSocket.action === "connected") {
+                        const updatedRows = prevData.rows.map((row) =>
+                            row.id === userId ? {
+                                ...row,
+                                isLoggedIn: true,
+                                socketId: dataSocket.socketId
+                            } : row
+                        );
+                        return { ...prevData, rows: updatedRows };
+                    }
 
-                    return { ...prevData, rows: updatedRows };
+                    if(dataSocket.action === "disconnected") {
+                        const updatedRows = prevData.rows.map((row) =>
+                            row.id === userId ? {
+                                ...row,
+                                isLoggedIn: false,
+                                socketId: null
+                            } : row
+                        );
+                        return { ...prevData, rows: updatedRows };
+                    }
                 });
             });
 
@@ -281,6 +298,11 @@ const UserListView = () => {
                                             }} disabled={true}>
                                                 <FaTimesCircle style={{color: 'red', fontSize: 14}}/>
                                             </IconButton>
+                                        )}
+                                        {user.socketId && (
+                                            <Tooltip title={"Socket ID: "+user.socketId}>
+                                                <SocketIcon style={{color: 'orange', fontSize: 14}} alt="socketIo"/>
+                                            </Tooltip>
                                         )}
                                     </TableCell>
                                     <TableCell>{user.email}</TableCell>

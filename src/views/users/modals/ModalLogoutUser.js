@@ -16,7 +16,7 @@ const ModalLogoutUser = ({open = false, setModalOpen = {}, selectedUser = {}, ge
             type: 'EMIT_SOCKET_EVENT',
             payload: {event: SocketEvents.EMIT_MESSAGE_TO_ONE_USER, data: {message: message, type: 'forceLogout', targetUserId: selectedUser.id}}
         })
-        
+
         setModalOpen(false);
     }
 
