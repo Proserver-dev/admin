@@ -52,7 +52,7 @@ const App = () => {
 
     useEffect(() => {
         if (socket) {
-            socket.on(SocketEvents.LISTEN_MESSAGE_TO_ALL, (data) => {
+            socket.on(SocketEvents.LISTEN_MESSAGE_FROM_SERVER, (data) => {
                 if (data && data.message && data.type) {
                     let messageType = 'info';
 
@@ -60,8 +60,17 @@ const App = () => {
                         messageType = data.type
                     }
 
-                    // nasłuchuje na messageToAll i jak coś przyjdzie, to pokazuje wszystkim zalogowanym adminom snackbara
-                    dispatch(setSnackBar({type: messageType, message: data.message + " | " + data.type, show: true}));
+                    if(data.type === 'forceLogout') {
+                        navigate(RoutesPath.HOME)
+                        dispatch({type: 'SHOW_SPINNER'});
+                        dispatch({type: 'DISCONNECT_SOCKET'});
+                        dispatch({type: 'LOGOUT_CURRENT_USER'});
+                        setTimeout(() => {
+                            dispatch({type: 'HIDE_SPINNER'});
+                        }, 250);
+                    }
+
+                    dispatch(setSnackBar({type: messageType, message: `Socket - ${data.message} | ${data.type}`, show: true}));
                 }
             });
 
@@ -76,6 +85,13 @@ const App = () => {
                         dispatch({type: 'HIDE_SPINNER'});
                     }, 250);
                     dispatch(setSnackBar({type: 'warning', message: t("APP_SOMEONE_LOGGED_INTO_YOUR_ACCOUNT"), show: true}))
+                }
+            });
+
+            socket.on(SocketEvents.LISTEN_RESPONSE_FROM_SOCKET, (data) => {
+                if (data && data.message && data.type) {
+                    // Odpowiedź z socketa
+                    dispatch(setSnackBar({type: data.type, message: `Socket - ${data.message} | ${data.type}`, show: true}));
                 }
             });
         }

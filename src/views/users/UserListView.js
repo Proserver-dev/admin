@@ -36,6 +36,7 @@ import ModalUserInfo from "./modals/ModalUserInfo";
 import ModalChangePasswordUser from "./modals/ModalChangePasswordUser";
 import ModalCreateUser from "./modals/ModalCreateUser";
 import ModalDeleteUser from "./modals/ModalDeleteUser";
+import ModalLogoutUser from "./modals/ModalLogoutUser";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
@@ -53,6 +54,7 @@ const UserListView = () => {
     const [isModalChangePasswordOpen, setModalChangePasswordOpen] = useState(false);
     const [isModalCreateUserOpen, setModalCreateUserOpen] = useState(false);
     const [isModalDeleteUserOpen, setModalDeleteUserOpen] = useState(false);
+    const [isModalLogoutUserOpen, setModalLogoutUserOpen] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [contextMenuRolesAnchor, setContextMenuRolesAnchor] = useState(null);
@@ -245,6 +247,8 @@ const UserListView = () => {
                                         {user.isLoggedIn ? (
                                             <Tooltip title="Wyloguj">
                                                 <IconButton onClick={() => {
+                                                    setSelectedUser(user);
+                                                    setModalLogoutUserOpen(true)
                                                 }} disabled={currentUser.id === user.id}>
                                                     <FaCheckCircle style={{color: 'green', fontSize: 14}}/>
                                                 </IconButton>
@@ -416,6 +420,7 @@ const UserListView = () => {
             <ModalCreateUser open={isModalCreateUserOpen} setModalOpen={setModalCreateUserOpen} getUsers={getUsers}/>
             <ModalDeleteUser open={isModalDeleteUserOpen} setModalOpen={setModalDeleteUserOpen}
                              selectedUser={selectedUser} getUsers={getUsers}/>
+            <ModalLogoutUser open={isModalLogoutUserOpen} setModalOpen={setModalLogoutUserOpen} selectedUser={selectedUser} getUsers={getUsers}/>
 
         </Container>
     );
