@@ -90,3 +90,12 @@ export const reqDeleteUser = (userId) => {
             .catch(err => reject(err))
     });
 }
+
+export const reqPostCreateNewAccount = (data) => {
+    return new Promise((resolve, reject) => {
+
+        axiosWithToken.post(`${Settings.API}${ApiEndpoints.POST_CREATE_NEW_ACCOUNT}`, data)
+            .then(res => resolve(res.data))
+            .catch(err => reject(err))
+    });
+}

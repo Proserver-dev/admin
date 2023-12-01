@@ -11,7 +11,7 @@ import {
     Pagination,
     Typography,
     Modal,
-    Box, Container, Stack, Tooltip, TextField, Menu, IconButton, MenuList, ListItemText, ListItemIcon,
+    Box, Container, Stack, Tooltip, TextField, Menu, IconButton, MenuList, ListItemText, ListItemIcon, InputAdornment,
 } from '@mui/material';
 import {format} from 'date-fns';
 import {reqGetUsers, reqPostChangeUserRole} from "../../helpers/API/User";
@@ -172,18 +172,24 @@ const UserListView = () => {
                     {t("APP_ADD_NEW_USER_BTN_LABEL")}
                 </Button>
             </Stack>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5} gap={2}
-                   onSubmit={handleSearchSubmit}>
-                <TextField
-                    label={t("APP_SEARCH_TXT")}
-                    variant="outlined"
-                    fullWidth
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    onKeyPress={handleEnterKeyPress}
-                />
-                <Button type="submit" variant="contained" startIcon={<SearchIcon/>} onClick={handleSearchSubmit}/>
-            </Stack>
+            <TextField
+                label={t("APP_SEARCH_TXT")}
+                variant="outlined"
+                fullWidth
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onKeyPress={handleEnterKeyPress}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton onClick={handleSearchSubmit}>
+                                <SearchIcon/>
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }}
+                style={{ marginBottom: '15px' }}
+            />
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -393,8 +399,9 @@ const UserListView = () => {
             <ModalUserInfo open={isModalInfoOpen} setModalOpen={setModalInfoOpen} selectedUser={selectedUser}/>
             <ModalChangePasswordUser open={isModalChangePasswordOpen} setModalOpen={setModalChangePasswordOpen}
                                      selectedUser={selectedUser}/>
-            <ModalCreateUser open={isModalCreateUserOpen} setModalOpen={setModalCreateUserOpen}/>
-            <ModalDeleteUser open={isModalDeleteUserOpen} setModalOpen={setModalDeleteUserOpen} selectedUser={selectedUser} getUsers={getUsers}/>
+            <ModalCreateUser open={isModalCreateUserOpen} setModalOpen={setModalCreateUserOpen} getUsers={getUsers}/>
+            <ModalDeleteUser open={isModalDeleteUserOpen} setModalOpen={setModalDeleteUserOpen}
+                             selectedUser={selectedUser} getUsers={getUsers}/>
 
         </Container>
     );

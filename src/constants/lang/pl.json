@@ -182,5 +182,7 @@
   "APP_MESSAGE_TXT": "Wiadomość",
   "APP_TYPE_TXT": "Typ",
   "APP_SEARCH_TXT": "Szukaj",
-  "APP_NO_DATA": "Brak danych"
+  "APP_NO_DATA": "Brak danych",
+  "APP_SEND_EMAIL_TXT": "Wyślij e-mail",
+  "APP_CREATE_USER_TXT": "Utwórz użytkownika"
 }
