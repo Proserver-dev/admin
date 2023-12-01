@@ -6,7 +6,7 @@ import {useDispatch} from "react-redux";
 import SocketEvents from "../../../constants/SocketEvents";
 
 
-const ModalLogoutUser = ({open = false, setModalOpen = {}, selectedUser = {}, getUsers = {}}) => {
+const ModalLogoutUser = ({open = false, setModalOpen = {}, selectedUser = {}}) => {
     const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const [message, setMessage] = useState('');

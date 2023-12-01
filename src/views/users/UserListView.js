@@ -39,6 +39,7 @@ import ModalCreateUser from "./modals/ModalCreateUser";
 import ModalDeleteUser from "./modals/ModalDeleteUser";
 import ModalLogoutUser from "./modals/ModalLogoutUser";
 import SocketEvents from "../../constants/SocketEvents";
+import ModalSendServerMessage from "./modals/ModalSendServerMessage";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
@@ -58,6 +59,7 @@ const UserListView = () => {
     const [isModalCreateUserOpen, setModalCreateUserOpen] = useState(false);
     const [isModalDeleteUserOpen, setModalDeleteUserOpen] = useState(false);
     const [isModalLogoutUserOpen, setModalLogoutUserOpen] = useState(false);
+    const [isModalSendServerMessageOpen, setModalSendServerMessageOpen] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [contextMenuRolesAnchor, setContextMenuRolesAnchor] = useState(null);
@@ -403,6 +405,7 @@ const UserListView = () => {
                                                 key="option1"
                                                 onClick={() => {
                                                     setContextMenuMoreAnchor(null);
+                                                    setModalSendServerMessageOpen(true)
                                                 }}
                                             >
                                                 <ListItemIcon>
@@ -466,6 +469,8 @@ const UserListView = () => {
             <ModalDeleteUser open={isModalDeleteUserOpen} setModalOpen={setModalDeleteUserOpen}
                              selectedUser={selectedUser} getUsers={getUsers}/>
             <ModalLogoutUser open={isModalLogoutUserOpen} setModalOpen={setModalLogoutUserOpen} selectedUser={selectedUser} getUsers={getUsers}/>
+            <ModalSendServerMessage open={isModalSendServerMessageOpen} setModalOpen={setModalSendServerMessageOpen}
+                                    selectedUser={selectedUser} />
 
         </Container>
     );
