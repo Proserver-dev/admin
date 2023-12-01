@@ -1,7 +1,8 @@
 import React from "react";
 import {animated, useSpring} from "@react-spring/web";
 import PropTypes from "prop-types";
-import {Backdrop, Box, Modal} from "@mui/material";
+import {Backdrop, Box, IconButton, Modal} from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 
 const Fade = React.forwardRef(function Fade(props, ref) {
     const {
@@ -68,6 +69,17 @@ const CustomModal = ({children, open, onClose}) => {
         >
             <Fade in={open}>
                 <Box sx={style}>
+                    <IconButton
+                        style={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                            zIndex: 1,
+                        }}
+                        onClick={onClose}
+                    >
+                        <CloseIcon />
+                    </IconButton>
                     {children}
                 </Box>
             </Fade>
