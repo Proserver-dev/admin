@@ -11,6 +11,8 @@ const RoutesPath = {
     USER_LIST: '/user-list',
     AUTH_HISTORY: '/auth-history',
     SEND_EMAIL_HISTORY: '/send-email-history',
+    ACTIVE_CONTACTS: '/active-contacts',
+    CHAT: '/chat', // /:userId
 }
 
 export default RoutesPath;

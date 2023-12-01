@@ -183,6 +183,11 @@ export default function NavSection({...other}) {
                     path: RoutesPath.MAP_USERS_LOCATION,
                     icon: getIcon('dashicons:location-alt'),
                 },
+                {
+                    title: t("APP_MENU_ACTIVE_CONTACTS"),
+                    path: RoutesPath.ACTIVE_CONTACTS,
+                    icon: getIcon('dashicons:format-chat'),
+                },
             ]
         },
         {

@@ -117,6 +117,7 @@
   "APP_MENU_DEBUG_SECTION": "Debugowanie",
   "APP_MENU_USERS_SECTION": "Użytkownicy",
   "APP_MENU_AUTH_HISTORY": "Auth History",
+  "APP_MENU_ACTIVE_CONTACTS": "Aktywne kontakty",
 
   "APP_LOGIN_SUBMIT_BTN_LABEL": "Logowanko",
   "APP_LOGOUT_BTN_LABEL": "Wylogowanko",
