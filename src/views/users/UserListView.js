@@ -35,6 +35,7 @@ import RoutesPath from "../../constants/RoutesPath";
 import ModalUserInfo from "./modals/ModalUserInfo";
 import ModalChangePasswordUser from "./modals/ModalChangePasswordUser";
 import ModalCreateUser from "./modals/ModalCreateUser";
+import ModalDeleteUser from "./modals/ModalDeleteUser";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
@@ -51,6 +52,7 @@ const UserListView = () => {
     const [isModalInfoOpen, setModalInfoOpen] = useState(false);
     const [isModalChangePasswordOpen, setModalChangePasswordOpen] = useState(false);
     const [isModalCreateUserOpen, setModalCreateUserOpen] = useState(false);
+    const [isModalDeleteUserOpen, setModalDeleteUserOpen] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [contextMenuRolesAnchor, setContextMenuRolesAnchor] = useState(null);
@@ -331,6 +333,7 @@ const UserListView = () => {
                                             <MenuItem
                                                 key="option1"
                                                 onClick={() => {
+                                                    setContextMenuMoreAnchor(null);
                                                 }}
                                             >
                                                 <ListItemIcon>
@@ -343,6 +346,7 @@ const UserListView = () => {
                                                     <MenuItem
                                                         key="option2"
                                                         onClick={() => {
+                                                            setContextMenuMoreAnchor(null);
                                                         }}
                                                     >
                                                         <ListItemIcon>
@@ -353,6 +357,8 @@ const UserListView = () => {
                                                     <MenuItem
                                                         key="option3"
                                                         onClick={() => {
+                                                            setContextMenuMoreAnchor(null);
+                                                            setModalDeleteUserOpen(true);
                                                         }}
                                                     >
                                                         <ListItemIcon>
@@ -388,6 +394,7 @@ const UserListView = () => {
             <ModalChangePasswordUser open={isModalChangePasswordOpen} setModalOpen={setModalChangePasswordOpen}
                                      selectedUser={selectedUser}/>
             <ModalCreateUser open={isModalCreateUserOpen} setModalOpen={setModalCreateUserOpen}/>
+            <ModalDeleteUser open={isModalDeleteUserOpen} setModalOpen={setModalDeleteUserOpen} selectedUser={selectedUser} getUsers={getUsers}/>
 
         </Container>
     );

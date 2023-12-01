@@ -24,8 +24,8 @@ const ModalPreventDeleteRole = ({open = false, setModalOpen = {}, data = [], set
                 dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_DELETED_ROLE"), show: true}));
             })
             .catch(err => {
-                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({type: 'error', message: message, show: true}));
+                setModalOpen(false)
+                dispatch(setSnackBar({type: 'error', message: t("APP_ERR_CANNOT_DELETE_ROLE"), show: true}));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -40,9 +40,11 @@ const ModalPreventDeleteRole = ({open = false, setModalOpen = {}, data = [], set
                 <Typography variant="h6" gutterBottom>
                     {t("APP_ARE_YOU_SURE_YOU_WANT_TO_DELETE")}
                 </Typography>
-                <Typography variant="caption" paragraph={true}
-                            style={{marginBottom: 0}}>Rola o nazwie "{selectedRole.name}" zostanie trwale usunięta.
-                </Typography>
+                {selectedRole && (
+                    <Typography variant="caption" paragraph={true}
+                                style={{marginBottom: 0}}>Rola o nazwie "{selectedRole.name}" zostanie trwale usunięta.
+                    </Typography>
+                )}
                 <Stack direction="row" spacing={2} justifyContent="flex-end">
                     <Button variant="contained" color="error" onClick={handleConfirmDelete}>
                         {t("APP_YES_BTN_LABEL")}

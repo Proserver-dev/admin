@@ -78,11 +78,14 @@
   "APP_SUCCESS_DELETED_ROLE": "Pomyślnie usunięto rolę",
   "APP_SUCCESS_SAVE_CHANGES": "Pomyślnie zapisano zmiany",
   "APP_SUCCESS_CHANGE_PASSWORD": "Pomyślnie zmieniono hasło",
+  "APP_SUCCESS_DELETE_USER": "Pomyślnie usunięto użytkownika",
 
   "APP_ERR_PROVIDE_NAME_ROLE": "Musisz wprowadzić nazwę roli",
   "APP_ERR_PROVIDE_ID_AND_NEW_NAME_ROLE": "Musisz podać identyfikator i wprowadzić nową nazwę roli",
   "APP_ERR_PROVIDE_ID_ROLE_TO_DELETE": "Musisz podać identyfikator roli do usunięcia",
   "APP_ERR_PASSWORD_MIN_CHARS": "Suma minimalnych wartości poszczególnych znaków dla hasła musi być większa lub równa minimalnej ilości wszystkich znaków hasła",
+  "APP_ERR_CANNOT_DELETE_USER": "Nie możesz usunąć tego użytkownika",
+  "APP_ERR_CANNOT_DELETE_ROLE": "Nie możesz usunąć tej roli",
 
   "APP_INFO_NO_CHANGES_TO_SAVE": "Brak zmian do zapisania",
 

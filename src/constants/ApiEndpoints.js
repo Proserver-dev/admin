@@ -19,7 +19,9 @@ const ApiEndpoints = {
 
     GET_SEND_EMAIL_HISTORY: '/admin/get-email-send-history',
     POST_CHANGE_USER_ROLE: '/admin/users/change-role', // POST/:userId
-    POST_CHANGE_PASSWORD_USER: '/admin/users/change-password' // POST/:userId
+    POST_CHANGE_PASSWORD_USER: '/admin/users/change-password', // POST/:userId
+
+    DELETE_USER: '/admin/users', // DELETE/:userId
 }
 
 export default ApiEndpoints;

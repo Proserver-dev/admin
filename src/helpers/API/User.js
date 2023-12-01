@@ -81,3 +81,12 @@ export const reqPostChangePasswordUser = (userId, password) => {
             .catch(err => reject(err))
     });
 }
+
+export const reqDeleteUser = (userId) => {
+    return new Promise((resolve, reject) => {
+
+        axiosWithToken.delete(`${Settings.API}${ApiEndpoints.DELETE_USER}/${userId}`)
+            .then(res => resolve(res.data))
+            .catch(err => reject(err))
+    });
+}
