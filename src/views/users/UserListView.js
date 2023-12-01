@@ -37,6 +37,7 @@ import ModalChangePasswordUser from "./modals/ModalChangePasswordUser";
 import ModalCreateUser from "./modals/ModalCreateUser";
 import ModalDeleteUser from "./modals/ModalDeleteUser";
 import ModalLogoutUser from "./modals/ModalLogoutUser";
+import SocketEvents from "../../constants/SocketEvents";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
@@ -46,6 +47,7 @@ const UserListView = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const currentUser = useSelector((state) => state.currentUser);
+    const socket = useSelector((state) => state.socket);
     const [page, setPage] = useState(1);
     const [data, setData] = useState({count: 0, rows: []});
     const [selectedUser, setSelectedUser] = useState(null);
@@ -60,6 +62,27 @@ const UserListView = () => {
     const [contextMenuRolesAnchor, setContextMenuRolesAnchor] = useState(null);
     const [contextMenuMoreAnchor, setContextMenuMoreAnchor] = useState(null);
     const [roles, setRoles] = useState([{}]);
+
+    useEffect(() => {
+        if (socket) {
+            socket.on(SocketEvents.LISTEN_CONNECTION_ACTION, (dataSocket) => {
+                const userId = dataSocket?.userId;
+                setData((prevData) => {
+                    const updatedRows = prevData.rows.map((row) =>
+                        row.id === userId ? { ...row, isLoggedIn: dataSocket.action === "connected" } : row
+                    );
+
+                    return { ...prevData, rows: updatedRows };
+                });
+            });
+
+            return () => {
+                if (socket) {
+                    socket.off(SocketEvents.LISTEN_CONNECTION_ACTION);
+                }
+            };
+        }
+    }, [socket, dispatch])
 
     useEffect(() => {
         reqGetRoles()
@@ -219,7 +242,7 @@ const UserListView = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.rows.length > 0 ? (
+                        {data?.rows.length > 0 ? (
                             data.rows.map((user) => (
                                 <TableRow key={user.id}
                                           style={currentUser.id === user.id ? {backgroundColor: '#edf5fd'} : {}}>

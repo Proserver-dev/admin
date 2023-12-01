@@ -104,8 +104,9 @@ const App = () => {
 
         return () => {
             if (socket) {
-                socket.off('messageToAll');
-                socket.off('newSocketConnection');
+                socket.off(SocketEvents.LISTEN_MESSAGE_FROM_SERVER);
+                socket.off(SocketEvents.LISTEN_NEW_SOCKET_CONNECTION);
+                socket.off(SocketEvents.LISTEN_RESPONSE_FROM_SOCKET);
                 dispatch({ type: 'DISCONNECT_SOCKET' });
             }
         };
