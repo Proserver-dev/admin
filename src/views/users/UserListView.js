@@ -34,6 +34,7 @@ import {reqGetRoles} from "../../helpers/API/Role";
 import RoutesPath from "../../constants/RoutesPath";
 import ModalUserInfo from "./modals/ModalUserInfo";
 import ModalChangePasswordUser from "./modals/ModalChangePasswordUser";
+import ModalCreateUser from "./modals/ModalCreateUser";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
@@ -49,6 +50,7 @@ const UserListView = () => {
 
     const [isModalInfoOpen, setModalInfoOpen] = useState(false);
     const [isModalChangePasswordOpen, setModalChangePasswordOpen] = useState(false);
+    const [isModalCreateUserOpen, setModalCreateUserOpen] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [contextMenuRolesAnchor, setContextMenuRolesAnchor] = useState(null);
@@ -163,6 +165,7 @@ const UserListView = () => {
                     {t("APP_MENU_USER_LIST")}
                 </Typography>
                 <Button variant="contained" onClick={() => {
+                    setModalCreateUserOpen(true)
                 }}>
                     {t("APP_ADD_NEW_USER_BTN_LABEL")}
                 </Button>
@@ -384,6 +387,8 @@ const UserListView = () => {
             <ModalUserInfo open={isModalInfoOpen} setModalOpen={setModalInfoOpen} selectedUser={selectedUser}/>
             <ModalChangePasswordUser open={isModalChangePasswordOpen} setModalOpen={setModalChangePasswordOpen}
                                      selectedUser={selectedUser}/>
+            <ModalCreateUser open={isModalCreateUserOpen} setModalOpen={setModalCreateUserOpen}/>
+
         </Container>
     );
 };
