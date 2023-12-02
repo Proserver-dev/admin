@@ -9,7 +9,7 @@ const ModalHTML = ({open = false, setModalOpen = {}, selectedRow = {}}) => {
         <CustomModal open={open} onClose={() => setModalOpen(false)}>
             <Stack direction="column" spacing={2}>
                 <Typography variant="h6">Treść HTML</Typography>
-                <div dangerouslySetInnerHTML={{ __html: selectedRow.html }} style={{ marginTop: '25px' }}/>
+                <div dangerouslySetInnerHTML={{ __html: selectedRow?.html }} style={{ marginTop: '25px' }}/>
             </Stack>
         </CustomModal>
     )
