@@ -8,6 +8,7 @@ const SocketEvents = {
     LISTEN_RESPONSE_FROM_SOCKET: 'responseFromSocket',
     LISTEN_CONNECTION_ACTION: 'connectionAction',
     LISTEN_PRIVATE_MESSAGE: 'privateMessage',
+    LISTEN_CHANGE_LOCATION: 'changeLocation',
 }
 
 export default SocketEvents;
