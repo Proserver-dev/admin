@@ -1,14 +1,16 @@
-import axiosWithToken from "./axiosWithToken";
-import Settings from "../constants/Settings";
-import ApiEndpoints from "../constants/ApiEndpoints";
+import axiosWithToken from "../axiosWithToken";
+import Settings from "../../constants/Settings";
+import ApiEndpoints from "../../constants/ApiEndpoints";
 
 export const reqGetApiResults = () => {
     return axiosWithToken.get(`${Settings.API}${ApiEndpoints.GET_API_RESULTS}`)
         .then(res => res.data)
         .catch(err => Promise.reject(err));
 }
-export const reqGetAppConfigs = () => {
-    return axiosWithToken.get(`${Settings.API}${ApiEndpoints.GET_APP_CONFIG}`)
+export const reqGetAppConfigs = (type = "main") => {
+    const queryParams = new URLSearchParams({type: type})
+
+    return axiosWithToken.get(`${Settings.API}${ApiEndpoints.GET_APP_CONFIG}?${queryParams.toString()}`)
         .then(res => res.data)
         .catch(err => Promise.reject(err));
 }

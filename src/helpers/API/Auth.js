@@ -1,11 +1,11 @@
 import axios from "axios";
-import store from '../redux/store';
-import Settings from "../constants/Settings";
-import validateEmail from "./validateEmail";
-import ApiEndpoints from "../constants/ApiEndpoints";
-import LocalStorageKeys from "../constants/LocalStorageKeys";
-import {setSnackBar} from "../redux/actions";
-import axiosWithToken from "./axiosWithToken";
+import store from '../../redux/store';
+import Settings from "../../constants/Settings";
+import validateEmail from "../functions/validateEmail";
+import ApiEndpoints from "../../constants/ApiEndpoints";
+import LocalStorageKeys from "../../constants/LocalStorageKeys";
+import {setSnackBar} from "../../redux/actions";
+import axiosWithToken from "../axiosWithToken";
 
 export const getLoginToken = () => {
     return localStorage.getItem(LocalStorageKeys.LOGIN_TOKEN);

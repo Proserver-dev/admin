@@ -3,7 +3,7 @@ import { Container, Stack, Typography, TextField, Button } from "@mui/material";
 import {useDispatch} from "react-redux";
 import {useNavigate, useParams} from 'react-router-dom';
 import {setSnackBar} from "../../redux/actions";
-import {reqGetLogs} from "../../helpers/Logs";
+import {reqGetLogs} from "../../helpers/API/Logs";
 import {useTranslation} from "react-i18next";
 
 const LogsView = () => {

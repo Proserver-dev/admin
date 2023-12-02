@@ -1,18 +1,17 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import PropTypes from 'prop-types';
-import { NavLink as RouterLink, matchPath, useLocation } from 'react-router-dom';
+import {NavLink as RouterLink, matchPath, useLocation} from 'react-router-dom';
 // material
-import { alpha, useTheme, styled } from '@mui/material/styles';
-import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
+import {alpha, useTheme, styled} from '@mui/material/styles';
+import {Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton} from '@mui/material';
 //
 import Iconify from './Iconify';
-import {translate} from "../helpers/i18n";
 import RoutesPath from "../constants/RoutesPath";
 import {useTranslation} from "react-i18next";
 
 // ----------------------------------------------------------------------
 
-const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(({ theme }) => ({
+const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(({theme}) => ({
     ...theme.typography.body2,
     height: 48,
     position: 'relative',
@@ -37,12 +36,12 @@ NavItem.propTypes = {
     active: PropTypes.func,
 };
 
-function NavItem({ item, active }) {
+function NavItem({item, active}) {
     const theme = useTheme();
 
     const isActiveRoot = active(item.path);
 
-    const { title, path, icon, info, children } = item;
+    const {title, path, icon, info, children} = item;
 
     const [open, setOpen] = useState(isActiveRoot);
 
@@ -57,8 +56,9 @@ function NavItem({ item, active }) {
     };
 
     const activeSubStyle = {
-        color: 'text.primary',
+        color: 'primary.main',
         fontWeight: 'fontWeightMedium',
+        bgcolor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
     };
 
     if (children) {
@@ -71,18 +71,19 @@ function NavItem({ item, active }) {
                     }}
                 >
                     <ListItemIconStyle>{icon && icon}</ListItemIconStyle>
-                    <ListItemText disableTypography primary={title} />
+                    <ListItemText disableTypography primary={title}/>
                     {info && info}
                     <Iconify
                         icon={open ? 'eva:arrow-ios-downward-fill' : 'eva:arrow-ios-forward-fill'}
-                        sx={{ width: 16, height: 16, ml: 1 }}
+                        sx={{width: 16, height: 16, ml: 1}}
+                        style={{paddingRight: '15px'}}
                     />
                 </ListItemStyle>
 
                 <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
+                    <List component="div" disablePadding style={{backgroundColor: '#fafafa'}}>
                         {children.map((item) => {
-                            const { title, path } = item;
+                            const {title, path} = item;
                             const isActiveSub = active(path);
 
                             return (
@@ -94,26 +95,30 @@ function NavItem({ item, active }) {
                                         ...(isActiveSub && activeSubStyle),
                                     }}
                                 >
-                                    <ListItemIconStyle>
-                                        <Box
-                                            component="span"
-                                            sx={{
-                                                width: 4,
-                                                height: 4,
-                                                display: 'flex',
-                                                borderRadius: '50%',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                bgcolor: 'text.disabled',
-                                                transition: (theme) => theme.transitions.create('transform'),
-                                                ...(isActiveSub && {
-                                                    transform: 'scale(2)',
-                                                    bgcolor: 'primary.main',
-                                                }),
-                                            }}
-                                        />
-                                    </ListItemIconStyle>
-                                    <ListItemText disableTypography primary={title} />
+                                    {item.icon ? (
+                                        <ListItemIconStyle style={{ paddingLeft: '15px' }}>{item.icon && item.icon}</ListItemIconStyle>
+                                    ) : (
+                                        <ListItemIconStyle style={{ paddingLeft: '15px' }}>
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    width: 4,
+                                                    height: 4,
+                                                    display: 'flex',
+                                                    borderRadius: '50%',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    bgcolor: 'text.disabled',
+                                                    transition: (theme) => theme.transitions.create('transform'),
+                                                    ...(isActiveSub && {
+                                                        transform: 'scale(2)',
+                                                        bgcolor: 'primary.main',
+                                                    }),
+                                                }}
+                                            />
+                                        </ListItemIconStyle>
+                                    )}
+                                    <ListItemText disableTypography primary={title}/>
                                 </ListItemStyle>
                             );
                         })}
@@ -132,7 +137,7 @@ function NavItem({ item, active }) {
             }}
         >
             <ListItemIconStyle>{icon && icon}</ListItemIconStyle>
-            <ListItemText disableTypography primary={title} />
+            <ListItemText disableTypography primary={title}/>
             {info && info}
         </ListItemStyle>
     );
@@ -142,11 +147,11 @@ NavSection.propTypes = {
     navConfig: PropTypes.array,
 };
 
-export default function NavSection({ ...other }) {
-    const { pathname } = useLocation();
-    const { t, i18n } = useTranslation();
+export default function NavSection({...other}) {
+    const {pathname} = useLocation();
+    const {t, i18n} = useTranslation();
 
-    const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
+    const getIcon = (name) => <Iconify icon={name} width={22} height={22}/>;
 
     const navConfig = [
         {
@@ -155,49 +160,80 @@ export default function NavSection({ ...other }) {
             icon: getIcon('dashicons:admin-home'),
         },
         {
-            title: t("APP_MENU_USER_ROLES"),
-            path: RoutesPath.ROLES,
-            icon: getIcon('dashicons:shield'),
-        },
-        {
             title: t("APP_MENU_MESSAGES_TO_ALL"),
             path: RoutesPath.SEND_TO_ALL,
             icon: getIcon('dashicons:upload'),
         },
         {
-            title: t("APP_MENU_LOGS"),
-            path: RoutesPath.LOGS,
-            icon: getIcon('dashicons:list-view'),
-        },
-        {
-            title: t("APP_MENU_API_RESULTS"),
-            path: RoutesPath.API_RESULTS,
-            icon: getIcon('dashicons:rest-api'),
+            title: t("APP_MENU_USERS_SECTION"),
+            icon: getIcon('dashicons:admin-users'),
+            children: [
+                {
+                    title: t("APP_MENU_USER_LIST"),
+                    path: RoutesPath.USER_LIST,
+                    icon: getIcon('dashicons:list-view'),
+                },
+                {
+                    title: t("APP_MENU_USER_ROLES"),
+                    path: RoutesPath.ROLES,
+                    icon: getIcon('dashicons:shield'),
+                },
+                {
+                    title: t("APP_MENU_USER_LOCATIONS"),
+                    path: RoutesPath.MAP_USERS_LOCATION,
+                    icon: getIcon('dashicons:location-alt'),
+                },
+                {
+                    title: t("APP_MENU_ACTIVE_CONTACTS"),
+                    path: RoutesPath.ACTIVE_CONTACTS,
+                    icon: getIcon('dashicons:format-chat'),
+                },
+            ]
         },
         {
             title: t("APP_MENU_APP_SETTINGS"),
-            path: RoutesPath.APP_CONFIG,
             icon: getIcon('dashicons:admin-generic'),
+            children: [
+                {
+                    title: t("APP_MENU_APP_SETTINGS_MAIN"),
+                    path: RoutesPath.APP_CONFIG_MAIN
+                },
+                {
+                    title: t("APP_MENU_APP_SETTINGS_PASSWORD"),
+                    path: RoutesPath.APP_CONFIG_PASSWORD
+                },
+            ],
         },
         {
-            title: t("APP_MENU_USER_LOCATIONS"),
-            path: RoutesPath.MAP_USERS_LOCATION,
-            icon: getIcon('dashicons:location-alt'),
+            title: t("APP_MENU_DEBUG_SECTION"),
+            icon: getIcon('dashicons:admin-tools'),
+            children: [
+                {
+                    title: t("APP_MENU_LOGS"),
+                    path: RoutesPath.LOGS,
+                    icon: getIcon('dashicons:list-view'),
+                },
+                {
+                    title: t("APP_MENU_API_RESULTS"),
+                    path: RoutesPath.API_RESULTS,
+                    icon: getIcon('dashicons:rest-api'),
+                },
+                {
+                    title: t("APP_MENU_SEND_EMAIL_HISTORY"),
+                    path: RoutesPath.SEND_EMAIL_HISTORY,
+                    icon: getIcon('dashicons:email-alt2'),
+                },
+            ],
         },
-        {
-            title: t("APP_MENU_USER_LIST"),
-            path: RoutesPath.USER_LIST,
-            icon: getIcon('dashicons:admin-users'),
-        }
     ];
 
     const match = (path) => (path ? path === pathname : false);
 
     return (
         <Box {...other}>
-            <List disablePadding sx={{ p: 1 }}>
+            <List disablePadding sx={{p: 1}}>
                 {navConfig.map((item) => (
-                    <NavItem key={item.title} item={item} active={match} />
+                    <NavItem key={item.title} item={item} active={match}/>
                 ))}
             </List>
         </Box>

@@ -15,7 +15,7 @@ import {
 import {useTable, useSortBy, useFilters, useGlobalFilter} from 'react-table';
 import {setSnackBar} from '../../redux/actions';
 import {useDispatch} from 'react-redux';
-import {reqGetApiResults} from '../../helpers/AppConfig';
+import {reqGetApiResults} from '../../helpers/API/AppConfig';
 import {
     faChevronUp,
     faChevronDown,
@@ -24,7 +24,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {useTranslation} from "react-i18next";
 
 const ApiResultsView = () => {
-    const { t, i18n } = useTranslation();
+    const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const [filterText, setFilterText] = useState('');
     const [data, setData] = useState([]);
@@ -37,7 +37,7 @@ const ApiResultsView = () => {
             })
             .catch((err) => {
                 const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({ type: 'error', message: message, show: true }));
+                dispatch(setSnackBar({type: 'error', message: message, show: true}));
             })
             .finally(() => {
                 setTimeout(() => {
@@ -143,18 +143,26 @@ const ApiResultsView = () => {
                         ))}
                     </TableHead>
                     <TableBody {...getTableBodyProps()}>
-                        {Object.values(rows).map((row) => {
-                            prepareRow(row);
-                            return (
-                                <TableRow {...row.getRowProps()}>
-                                    {Object.values(row.cells).map((cell) => (
-                                        <TableCell {...cell.getCellProps()} style={{padding: '8px'}}>
-                                            {cell.render('Cell')}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            );
-                        })}
+                        {Object.values(rows).length > 0 ? (
+                            Object.values(rows).map((row) => {
+                                prepareRow(row);
+                                return (
+                                    <TableRow {...row.getRowProps()}>
+                                        {Object.values(row.cells).map((cell) => (
+                                            <TableCell {...cell.getCellProps()} style={{padding: '8px'}}>
+                                                {cell.render('Cell')}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                );
+                            })
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={3} style={{textAlign: 'center'}}>
+                                    {t('APP_NO_DATA')}
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </Paper>

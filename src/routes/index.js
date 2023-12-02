@@ -9,6 +9,10 @@ import ApiResultsView from "../views/apiResults/ApiResultsView";
 import AppConfigView from "../views/appConfig/AppConfigView";
 import MapUsersLocationView from "../views/mapUsersLocation/MapUsersLocationView";
 import UserListView from "../views/users/UserListView";
+import SendEmailHistoryView from "../views/sendEmailHistory/SendEmailHistoryView";
+import AuthHistoryView from "../views/users/AuthHistoryView";
+import ActiveContactsView from "../views/activeContacts/ActiveContactsView";
+import ChatView from "../views/chat/ChatView";
 
 export default function Router() {
     return useRoutes([
@@ -21,9 +25,13 @@ export default function Router() {
                 { path: RoutesPath.SEND_TO_ALL, element: <SendToAllView /> },
                 { path: RoutesPath.LOGS, element: <LogsView /> },
                 { path: RoutesPath.API_RESULTS, element: <ApiResultsView /> },
-                { path: RoutesPath.APP_CONFIG, element: <AppConfigView /> },
+                { path: `${RoutesPath.APP_CONFIG}/:typeParam`, element: <AppConfigView /> },
                 { path: RoutesPath.MAP_USERS_LOCATION, element: <MapUsersLocationView /> },
-                { path: RoutesPath.USER_LIST, element: <UserListView /> }
+                { path: RoutesPath.USER_LIST, element: <UserListView /> },
+                { path: RoutesPath.AUTH_HISTORY, element: <AuthHistoryView /> },
+                { path: RoutesPath.SEND_EMAIL_HISTORY, element: <SendEmailHistoryView /> },
+                { path: RoutesPath.ACTIVE_CONTACTS, element: <ActiveContactsView /> },
+                { path: `${RoutesPath.CHAT}/:userId`, element: <ChatView /> },
             ],
         },
         { path: '*', element: <Navigate to={RoutesPath.HOME} replace /> },

@@ -10,8 +10,8 @@ import MuiAlert from "@mui/material/Alert";
 import {Backdrop, Box, Button, CircularProgress, Menu, MenuItem} from "@mui/material";
 import {useSelector, useDispatch} from 'react-redux';
 import {setCurrentUser, setSnackBar} from "./redux/actions";
-import {getMe} from "./helpers/User";
-import {getLoginToken} from "./helpers/Auth";
+import {reqGetMe} from "./helpers/API/User";
+import {getLoginToken} from "./helpers/API/Auth";
 import {useNavigate} from "react-router-dom";
 import RoutesPath from "./constants/RoutesPath";
 import Cookies from 'js-cookie';
@@ -52,16 +52,31 @@ const App = () => {
 
     useEffect(() => {
         if (socket) {
-            socket.on(SocketEvents.LISTEN_MESSAGE_TO_ALL, (data) => {
-                if (data && data.message && data.type) {
+            socket.on(SocketEvents.LISTEN_MESSAGE_FROM_SERVER, (data) => {
+                if (data && data.type) {
                     let messageType = 'info';
 
                     if (data.type !== 'forceLogout') {
                         messageType = data.type
                     }
 
-                    // nasłuchuje na messageToAll i jak coś przyjdzie, to pokazuje wszystkim zalogowanym adminom snackbara
-                    dispatch(setSnackBar({type: messageType, message: data.message + " | " + data.type, show: true}));
+                    if(data.type === 'forceLogout') {
+                        navigate(RoutesPath.HOME)
+                        dispatch({type: 'SHOW_SPINNER'});
+                        dispatch({type: 'DISCONNECT_SOCKET'});
+                        dispatch({type: 'LOGOUT_CURRENT_USER'});
+                        setTimeout(() => {
+                            dispatch({type: 'HIDE_SPINNER'});
+                        }, 250);
+                    }
+
+                    if(data.message) {
+                        dispatch(setSnackBar({
+                            type: messageType,
+                            message: `Socket - ${data.message} | ${data.type}`,
+                            show: true
+                        }));
+                    }
                 }
             });
 
@@ -78,12 +93,20 @@ const App = () => {
                     dispatch(setSnackBar({type: 'warning', message: t("APP_SOMEONE_LOGGED_INTO_YOUR_ACCOUNT"), show: true}))
                 }
             });
+
+            socket.on(SocketEvents.LISTEN_RESPONSE_FROM_SOCKET, (data) => {
+                if (data && data.message && data.type) {
+                    // Odpowiedź z socketa
+                    dispatch(setSnackBar({type: data.type, message: `Socket - ${data.message} | ${data.type}`, show: true}));
+                }
+            });
         }
 
         return () => {
             if (socket) {
-                socket.off('messageToAll');
-                socket.off('newSocketConnection');
+                socket.off(SocketEvents.LISTEN_MESSAGE_FROM_SERVER);
+                socket.off(SocketEvents.LISTEN_NEW_SOCKET_CONNECTION);
+                socket.off(SocketEvents.LISTEN_RESPONSE_FROM_SOCKET);
                 dispatch({ type: 'DISCONNECT_SOCKET' });
             }
         };
@@ -92,7 +115,7 @@ const App = () => {
     useEffect(() => {
         if(getLoginToken() !== null) {
             dispatch({type: 'SHOW_SPINNER'});
-            getMe()
+            reqGetMe()
                 .then(res => {
                     dispatch(setCurrentUser(res));
                     dispatch({type: 'CONNECT_SOCKET'});
@@ -140,7 +163,7 @@ const App = () => {
 
     return (
         <>
-            <Box sx={{ position: 'fixed', top: '10px', right: '10px', zIndex: 999 }}>
+            <Box sx={{ position: 'fixed', top: '10px', right: '10px', zIndex: 999999 }}>
                 <Button color="primary" onClick={handleLanguageMenuOpen} sx={{ textTransform: 'none' }}>
                     <img
                         src={Countries[currentLang].flag}

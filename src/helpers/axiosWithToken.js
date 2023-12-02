@@ -1,5 +1,5 @@
 import axios from "axios";
-import {getLoginToken, handleTokenRefreshError, reqRefreshLoginToken} from "./Auth";
+import {getLoginToken, handleTokenRefreshError, reqRefreshLoginToken} from "./API/Auth";
 import LocalStorageKeys from "../constants/LocalStorageKeys";
 import RoutesPath from "../constants/RoutesPath";
 

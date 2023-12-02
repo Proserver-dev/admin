@@ -2,7 +2,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import socketIOClient from 'socket.io-client';
 import thunk from 'redux-thunk';
-import { getLoginToken } from '../helpers/Auth';
+import { getLoginToken } from '../helpers/API/Auth';
 import Settings from "../constants/Settings";
 import LocalStorageKeys from "../constants/LocalStorageKeys";
 
@@ -22,6 +22,8 @@ const reducer = (state = initialState, action) => {
             return { ...state, currentUser: { id: null }};
         case 'SET_SNACK_BAR':
             return { ...state, snackBar: action.payload };
+        case 'HIDE_SNACK_BAR':
+            return { ...state, snackBar: initialState.snackBar };
         case 'SHOW_SPINNER':
             return { ...state, showSpinner: true };
         case 'HIDE_SPINNER':

@@ -14,29 +14,35 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem, Container, Grid, Stack,
+    MenuItem, Container, Grid, Stack, Dialog, DialogTitle, DialogActions,
 } from '@mui/material';
-import {getMessagesToAll} from "../../helpers/MessagesToAll";
+import {getMessagesToAll} from "../../helpers/API/MessagesToAll";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useLocation} from "react-router-dom";
 import {format} from "date-fns";
 import {setSnackBar} from "../../redux/actions";
 import {useTranslation} from "react-i18next";
 import SocketEvents from "../../constants/SocketEvents";
+import ModalPreventForceLogoutAll from "./modals/ModalPreventForceLogoutAll";
+import Label from "../../components/Label";
 
 const initialMessage = ''; // Domyślna wiadomość
 const itemsPerPage = 10; // Liczba elementów na stronę
 
 function SendToAllView() {
-    const { t, i18n } = useTranslation();
+    const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    const currentUser = useSelector((state) => state.currentUser);
     const [message, setMessage] = useState(initialMessage);
-    const [type, setType] = useState('forceLogout');
+    const [type, setType] = useState('info');
     const [page, setPage] = useState(1);
     const [data, setData] = useState({count: 0, rows: []})
+    const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+
+    useEffect(() => {
+        setMessage(initialMessage)
+    }, [type])
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -44,7 +50,6 @@ function SendToAllView() {
         setPage(pageParam);
     }, [location.search]);
 
-    // TODO: może zrobić jeszcze jakiś event dodatkowy dla "messageToAll" np. "messageToAllError", nasłuchiwać na nim i jak przyjdzie error to wyświetlić snackbara
     const handleSend = () => {
         if (type !== 'forceLogout' && message === '') {
             dispatch({
@@ -54,17 +59,27 @@ function SendToAllView() {
             return;
         }
 
-        dispatch({type: 'EMIT_SOCKET_EVENT', payload: {event: SocketEvents.EMIT_MESSAGE_TO_ALL, data: {message: message, type: type}}})
-        setData({
-            count: data.count + 1,
-            rows: [
-                {id: '', sendBy: currentUser, message: message, type: type, createdAt: ''},
-                ...data.rows
-            ]
+        if (type === 'forceLogout') {
+            setOpenConfirmationDialog(true);
+        } else {
+            sendToAll();
+        }
+    };
+
+    // TODO: może zrobić jeszcze jakiś event dodatkowy dla "messageToAll" np. "messageToAllError", nasłuchiwać na nim i jak przyjdzie error to wyświetlić snackbara
+    const sendToAll = () => {
+        dispatch({
+            type: 'EMIT_SOCKET_EVENT',
+            payload: {event: SocketEvents.EMIT_MESSAGE_TO_ALL, data: {message: message, type: type}}
         })
+        handlerGetMessagesToAll()
     }
 
     useEffect(() => {
+        handlerGetMessagesToAll()
+    }, [page])
+
+    const handlerGetMessagesToAll = () => {
         dispatch({type: 'SHOW_SPINNER'});
         getMessagesToAll(itemsPerPage, itemsPerPage * (page - 1))
             .then((res) => {
@@ -79,7 +94,7 @@ function SendToAllView() {
                     dispatch({type: 'HIDE_SPINNER'});
                 }, 250);
             })
-    }, [page])
+    }
 
     const handleChangeMessage = (event) => {
         setMessage(event.target.value);
@@ -93,19 +108,16 @@ function SendToAllView() {
         navigate(`?page=${value}`)
     };
 
-    const startItem = (page - 1) * itemsPerPage;
-    const endItem = page * itemsPerPage;
-
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
                 <Typography variant="h4" className="page-title">{t("APP_MENU_MESSAGES_TO_ALL")}</Typography>
             </Stack>
             <Grid container spacing={2} style={{marginTop: '15px', marginBottom: '15px'}}>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <FormControl fullWidth>
                         <InputLabel>{t("APP_TYPE_TXT")}</InputLabel>
-                        <Select value={type} onChange={handleChangeType}>
+                        <Select label={t("APP_TYPE_TXT")} value={type} onChange={handleChangeType}>
                             <MenuItem value="forceLogout">{t("APP_TYPE_MESSAGE_FORCE_LOGOUT_ALL")}</MenuItem>
                             <MenuItem value="info">{t("APP_TYPE_MESSAGE_INFO")}</MenuItem>
                             <MenuItem value="warning">{t("APP_TYPE_MESSAGE_WARNING")}</MenuItem>
@@ -123,7 +135,7 @@ function SendToAllView() {
                         onChange={handleChangeMessage}
                     />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -147,17 +159,51 @@ function SendToAllView() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.rows.map((row) => (
-                            <TableRow key={row.id}>
-                                <TableCell>{row.id}</TableCell>
-                                <TableCell>{row.sendBy.email}</TableCell>
-                                <TableCell>{row.message}</TableCell>
-                                <TableCell>{row.type}</TableCell>
-                                <TableCell>
-                                    {row.createdAt !== "" && format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                        {data.rows.length > 0 ? (
+                            data.rows.map((row) => (
+                                <TableRow key={row.id}>
+                                    <TableCell>{row.id}</TableCell>
+                                    <TableCell>{row.sendBy.email}</TableCell>
+                                    <TableCell>{row.message}</TableCell>
+                                    <TableCell>
+                                        {row.type === 'info' ? (
+                                            <Label variant="ghost" color="info">
+                                                {row.type}
+                                            </Label>
+                                        ) : row.type === 'error' ? (
+                                            <Label variant="ghost" color="error">
+                                                {row.type}
+                                            </Label>
+                                        ) : row.type === 'success' ? (
+                                            <Label variant="ghost" color="success">
+                                                {row.type}
+                                            </Label>
+                                        ) : row.type === 'warning' ? (
+                                            <Label variant="ghost" color="warning">
+                                                {row.type}
+                                            </Label>
+                                        ) : row.type === 'forceLogout' ? (
+                                            <Label variant="ghost" color="secondary">
+                                                {row.type}
+                                            </Label>
+                                        ) : (
+                                            <span>
+                                                {row.type}
+                                            </span>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {row.createdAt !== "" && format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={5} style={{textAlign: 'center'}}>
+                                    {t('APP_NO_DATA')}
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -168,6 +214,9 @@ function SendToAllView() {
                 onChange={handlePageChange}
                 style={{marginTop: '15px'}}
             />
+
+            <ModalPreventForceLogoutAll open={openConfirmationDialog} setModalOpen={setOpenConfirmationDialog}
+                                        sendToAll={sendToAll}/>
         </Container>
     );
 }

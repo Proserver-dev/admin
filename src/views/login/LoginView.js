@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import Settings from "../../constants/Settings"
-import {reqAuthenticate} from "../../helpers/Auth";
+import {reqAuthenticate} from "../../helpers/API/Auth";
 import Routes from "../../constants/RoutesPath";
 import {useDispatch} from "react-redux";
 import {setSnackBar} from "../../redux/actions";
@@ -47,7 +47,6 @@ const LoginView = () => {
                 dispatch({type: 'SET_CURRENT_USER', payload: res.user})
                 dispatch({type: 'CONNECT_SOCKET'});
                 navigate(Routes.HOME);
-                dispatch(setSnackBar({type: 'success', message: t("APP_SUCCESS_LOGIN"), show: true}))
             })
             .catch(err => {
                 const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
