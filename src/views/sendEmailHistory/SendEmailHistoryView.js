@@ -10,7 +10,7 @@ import {
     Pagination,
     Typography,
     Container,
-    Stack,
+    Stack, IconButton,
 } from '@mui/material';
 import {format} from 'date-fns';
 import {useLocation, useNavigate} from "react-router-dom";
@@ -18,6 +18,8 @@ import {setSnackBar} from "../../redux/actions";
 import {useDispatch} from "react-redux";
 import {useTranslation} from "react-i18next";
 import {getSendEmailHistory} from "../../helpers/API/SendEmailHistory";
+import InfoIcon from '@mui/icons-material/Info';
+import ModalHTML from "./modals/ModalHTML";
 
 const itemsPerPage = 10; // Liczba elementów na stronę
 
@@ -28,6 +30,9 @@ const SendEmailHistoryView = () => {
     const location = useLocation();
     const [data, setData] = useState({count: 0, rows: []});
     const [page, setPage] = useState(1);
+    const [selectedRow, setSelectedRow] = useState(null);
+
+    const [isModalHTMLOpen, setIsModalHTMLOpen] = useState(false);
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -85,7 +90,16 @@ const SendEmailHistoryView = () => {
                                     <TableCell>{row.from}</TableCell>
                                     <TableCell>{row.to}</TableCell>
                                     <TableCell>{row.subject}</TableCell>
-                                    <TableCell>{row.html}</TableCell>
+                                    <TableCell>
+                                        <IconButton
+                                            onClick={() => {
+                                                setSelectedRow(row)
+                                                setIsModalHTMLOpen(true)
+                                            }}
+                                        >
+                                            <InfoIcon color="primary"/>
+                                        </IconButton>
+                                    </TableCell>
                                     <TableCell>{row.status}</TableCell>
                                     <TableCell>{row.errorLog.toString()}</TableCell>
                                     <TableCell>
@@ -111,6 +125,8 @@ const SendEmailHistoryView = () => {
                 onChange={handlePageChange}
                 style={{marginTop: '15px'}}
             />
+
+            <ModalHTML open={isModalHTMLOpen} setModalOpen={setIsModalHTMLOpen} selectedRow={selectedRow} />
         </Container>
     );
 };
