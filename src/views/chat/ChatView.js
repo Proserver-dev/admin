@@ -14,7 +14,8 @@ import {reqGetPrivateMessages, reqPostPrivateMessage} from "../../helpers/API/Pr
 import {setSnackBar} from "../../redux/actions";
 import SocketEvents from "../../constants/SocketEvents";
 
-const itemsPerPage = 25; // Liczba elementów na stronę
+const itemsPerPage = 20; // Liczba elementów na stronę
+const messagesInit = {count: 0, rows: []}
 
 const ChatView = () => {
     const {t, i18n} = useTranslation();
@@ -24,7 +25,7 @@ const ChatView = () => {
     const {userId} = useParams();
 
     const [messageInput, setMessageInput] = useState("");
-    const [messages, setMessages] = useState({count: 0, rows: []})
+    const [messages, setMessages] = useState(messagesInit)
 
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(false);
@@ -57,24 +58,17 @@ const ChatView = () => {
         }
     };
 
+    // załadowanie pierwszej porcji wiadomości
     useEffect(() => {
-        dispatch({type: 'SHOW_SPINNER'});
-        reqGetPrivateMessages(userId, itemsPerPage, itemsPerPage * (page - 1))
-            .then(res => {
-                const sortedMessages = res.rows.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-                setMessages({count: res.count, rows: sortedMessages});
-                setHasMore(res.count > (page * itemsPerPage));
-                setPage((prevPage) => prevPage + 1);
-            })
-            .catch(err => {
-                const message = t(err?.response?.data?.error) || err?.response?.data?.error || t("ERR_UNKNOWN")
-                dispatch(setSnackBar({type: 'error', message: message, show: true}));
-            })
-            .finally(() => {
-                dispatch({type: 'HIDE_SPINNER'});
-            });
+        setMessages(messagesInit)
+        setInitLoad(true)
+        setPage(1)
+        loadMoreData()
+            .then(() => {})
+            .catch(() => {})
     }, [userId]);
 
+    // przescrolowanie do samego dołu po przejściu do widoku chatu (tylko raz, na początku)
     useEffect(() => {
         if (initLoad && messages.count > 0) {
             paperRef.current.scrollTo({
@@ -86,13 +80,20 @@ const ChatView = () => {
     }, [messages])
 
     useEffect(() => {
-        const handleScroll = () => {
+        const handleScroll = async () => {
             if (!loading && hasMore && messages.count > ((page - 1) * itemsPerPage)) {
-                const {scrollTop} = paperRef?.current;
-                console.log("scrollTop: ", scrollTop)
-                console.log("lastScrollTop: ", lastScrollTop)
+                const container = paperRef?.current;
+                const {scrollTop} = container;
                 if (scrollTop < 50 && scrollTop <= lastScrollTop) {
+                    // const distanceFromBottom = container.scrollHeight - (container.scrollTop + container.clientHeight);
+
                     loadMoreData();
+
+                    await new Promise((resolve) => setTimeout(resolve, 0));
+                    container.scrollTo({
+                        top: container.scrollTop + container.clientHeight,
+                        behavior: 'smooth',
+                    });
                 }
                 if (scrollTop > 50) {
                     setLastScrollTop(scrollTop);
@@ -275,10 +276,6 @@ const ChatView = () => {
                         {t("Send")}
                     </Button>
                 </Stack>
-                {loading && <Typography variant="caption">Loading...</Typography>}
-                {lastScrollTop}
-                <p>Page: {page}</p>
-                <p>Loaded messages: {messages.rows.length}</p>
             </Stack>
         </Container>
     );
