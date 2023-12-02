@@ -24,6 +24,7 @@ import {setSnackBar} from "../../redux/actions";
 import {useTranslation} from "react-i18next";
 import SocketEvents from "../../constants/SocketEvents";
 import ModalPreventForceLogoutAll from "./modals/ModalPreventForceLogoutAll";
+import Label from "../../components/Label";
 
 const initialMessage = ''; // Domyślna wiadomość
 const itemsPerPage = 10; // Liczba elementów na stronę
@@ -164,7 +165,33 @@ function SendToAllView() {
                                     <TableCell>{row.id}</TableCell>
                                     <TableCell>{row.sendBy.email}</TableCell>
                                     <TableCell>{row.message}</TableCell>
-                                    <TableCell>{row.type}</TableCell>
+                                    <TableCell>
+                                        {row.type === 'info' ? (
+                                            <Label variant="ghost" color="info">
+                                                {row.type}
+                                            </Label>
+                                        ) : row.type === 'error' ? (
+                                            <Label variant="ghost" color="error">
+                                                {row.type}
+                                            </Label>
+                                        ) : row.type === 'success' ? (
+                                            <Label variant="ghost" color="success">
+                                                {row.type}
+                                            </Label>
+                                        ) : row.type === 'warning' ? (
+                                            <Label variant="ghost" color="warning">
+                                                {row.type}
+                                            </Label>
+                                        ) : row.type === 'forceLogout' ? (
+                                            <Label variant="ghost" color="secondary">
+                                                {row.type}
+                                            </Label>
+                                        ) : (
+                                            <span>
+                                                {row.type}
+                                            </span>
+                                        )}
+                                    </TableCell>
                                     <TableCell>
                                         {row.createdAt !== "" && format(new Date(row.createdAt), 'yyyy-MM-dd HH:mm:ss')}
                                     </TableCell>
@@ -188,7 +215,8 @@ function SendToAllView() {
                 style={{marginTop: '15px'}}
             />
 
-            <ModalPreventForceLogoutAll open={openConfirmationDialog} setModalOpen={setOpenConfirmationDialog} sendToAll={sendToAll} />
+            <ModalPreventForceLogoutAll open={openConfirmationDialog} setModalOpen={setOpenConfirmationDialog}
+                                        sendToAll={sendToAll}/>
         </Container>
     );
 }
