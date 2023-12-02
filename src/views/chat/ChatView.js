@@ -35,14 +35,22 @@ const ChatView = () => {
     const paperRef = useRef(null);
     const [initLoad, setInitLoad] = useState(true);
     const [lastScrollTop, setLastScrollTop] = useState(0);
+    const [idleOffset, setIdleOffset] = useState(0);
+    const [lastOffset, setLastOffset] = useState(0);
 
     const loadMoreData = async (page) => {
+        const offset = (itemsPerPage * (page - 1)) + idleOffset
+
         if (loading)
+            return;
+
+        if(lastOffset === offset && offset !== 0)
             return;
 
         try {
             setLoading(true);
-            const res = await reqGetPrivateMessages(userId, itemsPerPage, itemsPerPage * (page - 1));
+            const res = await reqGetPrivateMessages(userId, itemsPerPage, offset);
+            setLastOffset(offset)
 
             const sortedMessages = res.rows.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
             setMessages((prevMessages) => ({
@@ -68,6 +76,8 @@ const ChatView = () => {
         setPage(1)
         setInitLoad(true)
         setLastScrollTop(0)
+        setIdleOffset(0)
+        setLastOffset(0)
         loadMoreData(1)
             .then(() => {
             })
@@ -88,7 +98,7 @@ const ChatView = () => {
 
     useEffect(() => {
         const handleScroll = async () => {
-            if (!loading && hasMore && messages.count > ((page - 1) * itemsPerPage)) {
+            if (!loading && hasMore && messages.rows.length <= messages.count) {
                 const container = paperRef?.current;
                 const {scrollTop} = container;
                 if (scrollTop < 50 && scrollTop <= lastScrollTop) {
@@ -140,6 +150,7 @@ const ChatView = () => {
                         count: prevState.count + 1,
                         rows: [...prevState.rows, data],
                     }));
+                    setIdleOffset((prevPage) => prevPage + 1);
                 } else {
                     const message = (
                         <>
