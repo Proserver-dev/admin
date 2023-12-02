@@ -86,7 +86,7 @@ const UserListView = () => {
                         const updatedRows = prevData.rows.map((row) =>
                             row.id === userId ? {
                                 ...row,
-                                isLoggedIn: false, // TODO: tutaj będzie musiało być (dataSocket.isLoggedIn || false), ale na backendzie trzeba będzie zrobić setTimeout, bo w przeciwnym razie prawie zawsze będzie tutaj true, bo user jeszcze nie zdąży się wylogować
+                                isLoggedIn: (dataSocket.isLoggedIn || false),
                                 socketId: null
                             } : row
                         );

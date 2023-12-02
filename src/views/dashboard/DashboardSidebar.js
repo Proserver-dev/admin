@@ -18,6 +18,7 @@ import {setSnackBar} from "../../redux/actions";
 import RoutesPath from "../../constants/RoutesPath";
 import Logo from "../../assets/rideclub_logo.png";
 import {useTranslation} from "react-i18next";
+import {stringAvatar} from "../../helpers/functions/avatarFunctions";
 
 // ----------------------------------------------------------------------
 
@@ -89,7 +90,7 @@ export default function DashboardSidebar({isOpenSidebar, onCloseSidebar}) {
 
             <Box sx={{mb: 5, mx: 2.5}}>
                 <AccountStyle>
-                    <Avatar alt=""/>
+                    <Avatar {...stringAvatar(currentUser?.nameLastname || currentUser?.userName || currentUser?.email)}/>
                     <Box sx={{ml: 2, textAlign: 'center'}}>
                         <Typography variant="subtitle2" sx={{color: 'text.primary'}}>
                             {currentUser?.nameLastname || currentUser?.userName || currentUser?.email}
