@@ -94,13 +94,13 @@ const UserListView = () => {
                     }
                 });
             });
-
-            return () => {
-                if (socket) {
-                    socket.off(SocketEvents.LISTEN_CONNECTION_ACTION);
-                }
-            };
         }
+
+        return () => {
+            if (socket) {
+                socket.off(SocketEvents.LISTEN_CONNECTION_ACTION);
+            }
+        };
     }, [socket, dispatch])
 
     useEffect(() => {

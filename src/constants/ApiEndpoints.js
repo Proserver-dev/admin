@@ -24,6 +24,9 @@ const ApiEndpoints = {
     DELETE_USER: '/admin/users', // DELETE/:userId
     POST_CREATE_NEW_ACCOUNT: '/admin/users/create-new-account',
     PUT_CHANGE_USER_IS_ACTIVATED: '/admin/users/change-is-activated', // PUT/:userId
+
+    GET_PRIVATE_MESSAGES: '/private-messages', // GET/:userId
+    POST_PRIVATE_MESSAGE: '/private-messages', // POST/:userId
 }
 
 export default ApiEndpoints;
