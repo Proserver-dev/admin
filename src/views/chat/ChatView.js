@@ -5,14 +5,15 @@ import {
     Typography,
     TextField,
     Button,
-    Paper, Tooltip,
+    Paper, Tooltip, Link
 } from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {reqGetPrivateMessages, reqPostPrivateMessage} from "../../helpers/API/PrivateMessages";
 import {setSnackBar} from "../../redux/actions";
 import SocketEvents from "../../constants/SocketEvents";
+import RoutesPath from "../../constants/RoutesPath";
 
 const itemsPerPage = 20; // Liczba elementów na stronę
 const messagesInit = {count: 0, rows: []}
@@ -20,6 +21,7 @@ const messagesInit = {count: 0, rows: []}
 const ChatView = () => {
     const {t, i18n} = useTranslation();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const currentUser = useSelector((state) => state.currentUser);
     const socket = useSelector((state) => state.socket);
     const {userId} = useParams();
@@ -34,8 +36,8 @@ const ChatView = () => {
     const [initLoad, setInitLoad] = useState(true);
     const [lastScrollTop, setLastScrollTop] = useState(0);
 
-    const loadMoreData = async () => {
-        if(loading)
+    const loadMoreData = async (page) => {
+        if (loading)
             return;
 
         try {
@@ -61,11 +63,16 @@ const ChatView = () => {
     // załadowanie pierwszej porcji wiadomości
     useEffect(() => {
         setMessages(messagesInit)
-        setInitLoad(true)
+        setLoading(false)
+        setHasMore(false)
         setPage(1)
-        loadMoreData()
-            .then(() => {})
-            .catch(() => {})
+        setInitLoad(true)
+        setLastScrollTop(0)
+        loadMoreData(1)
+            .then(() => {
+            })
+            .catch(() => {
+            })
     }, [userId]);
 
     // przescrolowanie do samego dołu po przejściu do widoku chatu (tylko raz, na początku)
@@ -87,7 +94,7 @@ const ChatView = () => {
                 if (scrollTop < 50 && scrollTop <= lastScrollTop) {
                     // const distanceFromBottom = container.scrollHeight - (container.scrollTop + container.clientHeight);
 
-                    loadMoreData();
+                    loadMoreData(page);
 
                     await new Promise((resolve) => setTimeout(resolve, 0));
                     container.scrollTo({
@@ -134,9 +141,21 @@ const ChatView = () => {
                         rows: [...prevState.rows, data],
                     }));
                 } else {
+                    const message = (
+                        <>
+                            Dostałeś wiadomość od innego użytkownika id {data.sourceUserId} -{' '}
+                            <Link onClick={() => {
+                                navigate(`${RoutesPath.CHAT}/${data.sourceUserId}`)
+                                dispatch({type: 'HIDE_SNACK_BAR'});
+                            }}
+                                  component="button"
+                                  variant="body2"
+                                  style={{ color: '#FFF', textDecoration: 'underline' }}>przejdź do chatu</Link>
+                        </>
+                    );
                     dispatch(setSnackBar({
                         type: 'info',
-                        message: `Dostałeś wiadomość od innego użytkownika id ${data.sourceUserId}`,
+                        message: message,
                         show: true
                     }));
                 }
@@ -152,7 +171,7 @@ const ChatView = () => {
 
 
     const handleSendMessage = async () => {
-        dispatch({ type: "SHOW_SPINNER" });
+        dispatch({type: "SHOW_SPINNER"});
 
         try {
             const res = await reqPostPrivateMessage(userId, messageInput);
@@ -175,9 +194,9 @@ const ChatView = () => {
                 t(err?.response?.data?.error) ||
                 err?.response?.data?.error ||
                 t("ERR_UNKNOWN");
-            dispatch(setSnackBar({ type: "error", message: message, show: true }));
+            dispatch(setSnackBar({type: "error", message: message, show: true}));
         } finally {
-            dispatch({ type: "HIDE_SPINNER" });
+            dispatch({type: "HIDE_SPINNER"});
         }
 
         await new Promise((resolve) => setTimeout(resolve, 0));

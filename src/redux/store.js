@@ -22,6 +22,8 @@ const reducer = (state = initialState, action) => {
             return { ...state, currentUser: { id: null }};
         case 'SET_SNACK_BAR':
             return { ...state, snackBar: action.payload };
+        case 'HIDE_SNACK_BAR':
+            return { ...state, snackBar: initialState.snackBar };
         case 'SHOW_SPINNER':
             return { ...state, showSpinner: true };
         case 'HIDE_SPINNER':
