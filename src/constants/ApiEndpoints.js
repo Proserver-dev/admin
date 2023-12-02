@@ -27,6 +27,7 @@ const ApiEndpoints = {
 
     GET_PRIVATE_MESSAGES: '/private-messages', // GET/:userId
     POST_PRIVATE_MESSAGE: '/private-messages', // POST/:userId
+    GET_ACTIVE_CONTACTS: '/private-messages/get-active-contacts',
 }
 
 export default ApiEndpoints;

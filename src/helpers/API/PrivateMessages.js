@@ -37,3 +37,19 @@ export const reqPostPrivateMessage = (userId, message, attachments = []) => {
             .catch(err => reject(err))
     });
 }
+
+export const reqGetActiveContacts = (limit, offset) => {
+    return new Promise((resolve, reject) => {
+
+        const config = {
+            params: {
+                limit: limit,
+                offset: offset,
+            }
+        }
+
+        axiosWithToken.get(`${Settings.API}${ApiEndpoints.GET_ACTIVE_CONTACTS}`, config)
+            .then(res => resolve(res.data))
+            .catch(err => reject(err))
+    });
+}

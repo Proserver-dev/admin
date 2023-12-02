@@ -14,6 +14,7 @@ import {reqGetPrivateMessages, reqPostPrivateMessage} from "../../helpers/API/Pr
 import {setSnackBar} from "../../redux/actions";
 import SocketEvents from "../../constants/SocketEvents";
 import RoutesPath from "../../constants/RoutesPath";
+import ChevronLeft from "@mui/icons-material/ChevronLeft";
 
 const itemsPerPage = 20; // Liczba elementów na stronę
 const messagesInit = {count: 0, rows: []}
@@ -238,6 +239,11 @@ const ChatView = () => {
                 </Typography>
                 <Typography variant="caption" paragraph={true} style={{marginBottom: 0}}>Wymienionych
                     wiadomości: {messages.count}</Typography>
+            </Stack>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} marginTop={5}>
+                <Link onClick={() => { navigate(RoutesPath.ACTIVE_CONTACTS) }} component="button" variant="body2" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                    <ChevronLeft/> Wróć do listy aktywnych kontaktów
+                </Link>
             </Stack>
             <Stack
                 direction="column"

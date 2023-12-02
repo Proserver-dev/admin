@@ -75,6 +75,8 @@ const MapUsersLocationView = () => {
                     }
                 });
             });
+
+            // TODO: tutaj dodać jeszcze nasłuchiwanie na LISTEN_CONNECTION_ACTION - jeśli disconnected to usunąć pinezkę z mapy
         }
     }, [socket]);
 
